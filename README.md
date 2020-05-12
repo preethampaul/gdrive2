@@ -1,5 +1,5 @@
 # **gdrive**
-## File management for Google Drive using python
+## File management for Google Drive using python (Readme under construction)
 
 gdrive is inspired from git's push-pull functionalities from command line. With gdrive, some command line functions like `cd` and `ls` can be used to view files in drive folders directly from command line.
 
