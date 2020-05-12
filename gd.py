@@ -11,6 +11,7 @@ import shutil
 
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from pydrive.apiattr import ApiResourceList
 
 import util
 
@@ -33,10 +34,14 @@ STAGE_PATH = os.path.join(INFO_FOLDER, '.gdstage')
 #Credentials path
 CRED_MAP_PATH = os.path.join(ROOT_PATH, 'api_data', 'creds')
 
+#URL to list drives
+SHARED_DRIVE_REQ = "https://www.googleapis.com/drive/v3/drives"
+
 #Deafult info during initialization
 DEFAULT_INFO = {
         'default_parent' : 'origin',
-        'origin' : ['no_user', '', 'root']
+        'origin' : ['no_user', '', 'root', 'My Drive', 'root']
+        #parent_name : [user_name, parent_path, parent_id, drive_name, drive_id]
         }
 
 #Text to show for 'gd -help'
@@ -48,9 +53,9 @@ Overview of initializing/listing fucnctions:\n\
 'init'   : initialize gdrive, add new parents to initialized dir.\n\
 'status' : show parents list, show stage list\n\
 'reset'  : change default parent,\n\
-           change user_names, paths of parents\n\
+           change user_names, paths of parents, parent root folders (Ex: shared drives)\n\
            delete parents, delete authentication data\n\
-'ls'     : list_all files/folders in parent paths, shows registered users\n\
+'ls'     : list_all files/folders in parent paths, shows registered users and shared drives\n\
 'cd'     : changes parent_path directly without using 'reset' function\n\
 \n\
 Overview of push/pull functions:\n\
@@ -136,7 +141,10 @@ def check_info():
     
 #------------------------------------------
 def create_info(info, parent_path=DEFAULT_INFO[DEFAULT_INFO['default_parent']][1],
-                parent_name=DEFAULT_INFO['default_parent'], same_user=False):
+                parent_name=DEFAULT_INFO['default_parent'],
+                drive_name=DEFAULT_INFO[DEFAULT_INFO['default_parent']][3],
+                drive_id=DEFAULT_INFO[DEFAULT_INFO['default_parent']][4],
+                same_user=False):
     
     if len(info) == 0:
         #default values
@@ -148,16 +156,19 @@ def create_info(info, parent_path=DEFAULT_INFO[DEFAULT_INFO['default_parent']][1
     
     else:
         if not parent_name in list(info.keys()):
-            info[parent_name] = [info[info['default_parent']][0], parent_path, 'root']
+            def_parent = info['default_parent']
+            info[parent_name] = [info[def_parent][0], parent_path, *DEFAULT_INFO[DEFAULT_INFO["default_parent"]][2:]]
             
         info[parent_name][1] = parent_path
+        info[parent_name][3] = drive_name
+        info[parent_name][4] = drive_id
     
     if not same_user:
         info[parent_name][0], _ = check_user_name()
-            
+        
     util.auth_from_cred(gauth, info[parent_name][0])
     drive = GoogleDrive(gauth)
-    info[parent_name][2] = util.get_path_ids(parent_path, drive, create_missing_folders = False, path_to = 'folder')[-1]
+    info[parent_name][2] = util.get_path_ids(parent_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
     
     with open(INFO_PATH, 'w') as file:
         json.dump(info, file)
@@ -234,7 +245,7 @@ def init(args):
 def reset(args):
     
     if '-h' in args or '-help' in args:
-        print("gd reset <parent_name> [-user, -path, -d, -default]")
+        print("gd reset <parent_name> [-user, -path, -drive, -d, -default]")
         print("gd reset -info")
         print("gd reset -user [<user_name>, -a]")
         print("\nDescription: changes the parent information for the curr dir.")
@@ -243,6 +254,7 @@ def reset(args):
         print("                                 default prop. of existing parent")
         print("'gd reset <parent_name> -user' : resets user_name/account in the parent name given.")
         print("'gd reset <parent_name> -path' : resets path in the parent name given.")
+        print("'gd reset <parent_name> -drive': resets drive in the parent name given (useful to set shared drives as roots)")
         print("'gd reset <parent_name> -d'    : deletes parent name given and its path, user_name and id")
         print("'gd reset <parent_name> -default': set parent name given as 'default'")
         print("'gd reset -info'               : erases all parents and user_names for current directory and re-initializes")
@@ -351,9 +363,7 @@ def reset(args):
                         return
                     
                     shutil.rmtree(INFO_FOLDER)
-                    info = check_info()
-                    create_info(info)
-                    print("Current parents reset and initialized.")
+                    print("Current directory reset.")
                     return
                 
                 else:
@@ -383,10 +393,57 @@ def reset(args):
                     parent_path = input("Enter drive folder path : ")
                     if "'" in parent_path or "\"" in parent_path:
                         parent_path = parent_path[1:-1]
-                        
-                    create_info(info, parent_path, parent_name=parent_name, same_user=True)
+                    
+                    drive_name = info[parent_name][3]
+                    drive_id = info[parent_name][4]
+                    
+                    create_info(info, parent_path, parent_name=parent_name, drive_name=drive_name, drive_id=drive_id, same_user=True)
                     print("\n" + parent_name + "'s path changed. Use 'gd status' to check.")
                     return
+                
+                elif args[1] == '-drive':
+                    if not exists_bool:
+                        print("The username : '" + user_name + "'is not registered. Add a new parent using 'gd init -add' to register username.")
+                        print("Use 'gd reset' to change username or delete this parent.")
+                        return
+            
+                    util.auth_from_cred(gauth, user_name)
+                    drives_list = gauth.service.drives().list().execute()['items']
+                    drive_names_list = [dic['name'] for dic in drives_list]
+                    drive_ids_list = [dic['id'] for dic in drives_list]
+                    
+                    print("Shared drives for username:" + user_name)
+                    print("----------------------------------------")
+                    for num in range(len(drive_names_list)):
+                        print(str(num+1) + ". " + drive_names_list[num])
+                    
+                    print("----------------------------------------")
+                    
+                    drive_num = input("\nEnter serial no. of these shared folders : ")
+                    try:
+                        drive_num = int(drive_num)
+                    except:
+                        drive_num = -1
+                    
+                    while not (drive_num < len(drive_names_list)+1 and drive_num>0):
+                        drive_num = input("\nPlease a serial number from list shown above: ")
+                        try:
+                            drive_num = int(drive_num)
+                        except:
+                            drive_num = -1
+                    
+                    drive_id = drive_ids_list[drive_num-1]
+                    drive_name = drive_names_list[drive_num-1]
+                    info[parent_name][2] = drive_id
+                    info[parent_name][3] = drive_name
+                    info[parent_name][4] = drive_id
+                    
+                    with open(INFO_PATH, 'w') as file:
+                        json.dump(info, file)
+                    
+                    print(parent_name+": changed root drive to '"+drive_name+"'")
+                        
+                        
                     
                 elif args[1] == '-default':
                     prev_def = info['default_parent']
@@ -423,7 +480,10 @@ def reset(args):
                     print("current username : '"+ user_name + "' is deleted from the system.")
                     print("Recommended to change the user_name.")
                     print("------")
-            
+                
+                drive_name = info[parent_name][3]
+                drive_id = info[parent_name][4]
+                    
                 prompt = ''
                 while prompt!='y' and prompt!='n':
                     prompt = input("Change user_name for this parent ? [y/n] : ")
@@ -451,7 +511,7 @@ def reset(args):
                     if "'" in parent_path or "\"" in parent_path:
                         parent_path = parent_path[1:-1]
                     
-                    create_info(info, parent_path, parent_name=parent_name, same_user=True)
+                    create_info(info, parent_path, parent_name=parent_name, drive_name=drive_name, drive_id=drive_id, same_user=True)
                     print("\n" + parent_name + "'s path changed. Use 'gd status' to check.")
                     info = check_info()
                 
@@ -518,8 +578,10 @@ def status(args):
                 print("// " + par + " //")
             
             print('username : ' + user_name[0:2] + stars + user_name[-1])
-            print("path : '" + info[par][1] + "'")
-            print("id   : '" + info[par][2] + "'\n")
+            print("path    : '" + info[par][1] + "'")
+            print("id      : '" + info[par][2] + "'")
+            print("drive   : '" + info[par][3] + "'")
+            print("driveId : '" + info[par][4] + "'\n")
     
     miss_paths = []
     with open(STAGE_PATH, 'r') as file:
@@ -546,7 +608,7 @@ def status(args):
 def ls(args):
     
     if '-h' in args or '-help' in args:
-        print("gd ls [<parent_name>] [-a, -users]")
+        print("gd ls [<parent_name>, <path>] [-a, -users, shared]")
         print("\nDescription: lists files in parents")
         print("------\n")
         print("'gd ls'                     : shows files/folders in the <default> parent cwd")
@@ -555,8 +617,37 @@ def ls(args):
         print("'gd ls <parent_name> <path>'       : shows files/folders in <path> in the <parent_name>")
         print("'gd ls [<parent_name>] [path] -a'  : shows files/folders in [<parent_name>, <default>],[path] with ids")
         print("'gd ls -users'                     : shows all usernames registered in the SYSTEM")
-        
+        print("'gd ls -shared <user_name>'        : shows all shared drives in <user_name>")
         return
+    
+    if '-shared' in args:
+        if len(args)==1:
+            print("username arguement required. Try 'gd ls -h' for help.")
+            return
+        elif len(args)>2:
+            print("Extra arguements passes. Try 'gd ls -h' for help.")
+            return
+        else:
+            user_name = args[1]
+            _, user_exists = check_user_name(user_name=user_name)
+            
+            if not user_exists:
+                print("The username : '" + user_name + "'is not registered. Add a new parent using 'gd init -add' to register username.")
+                return
+            
+            util.auth_from_cred(gauth, user_name)
+            drives_list = gauth.service.drives().list().execute()['items']
+            
+            print("---------------------------------------")
+            print("Shared Drive" + "    :    " + "driveId")
+            print("---------------------------------------")
+            
+            for dic in drives_list:
+                drive_name = dic['name']
+                drive_id = dic['id']
+                print(drive_name + "    :    " + drive_id)
+           
+            return
     
     if '-users' in args:
         
@@ -589,34 +680,32 @@ def ls(args):
         
     if len(args)==0:
         parent_name = info['default_parent']
-        [user_name, parent_path, parent_id] = info[parent_name]
+        [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]
     
     else:
         
         if len(args)==2 and not '-' in args[0]:
             parent_name = args[0]
+            drive_path = args[1]
+            
             if not parent_name in parents_list:
                 print("'" + parent_name + "' : parent name not defined before.")
                 return
-            else:
-                [user_name, parent_path, parent_id] = info[parent_name]
             
-            drive_path = args[1]
-            
-            [user_name, parent_path, parent_id] = info[parent_name]  
+            [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]  
             util.auth_from_cred(gauth, user_name)
             drive = GoogleDrive(gauth)
             
             if drive_path == '~':
                 new_parent_path = ''
-                new_parent_id = 'root'
+                new_parent_id = drive_id
             
             elif drive_path == '..':
-                par_drive_path, par_path_ids = util.get_path_from_id(drive, parent_id)
+                par_drive_path, par_path_ids = util.get_path_from_id(drive, parent_id, default_root=drive_id)
                 
                 if len(par_path_ids)==1:
                     new_parent_path = ''
-                    new_parent_id = 'root'
+                    new_parent_id = drive_id
                 else:
                     new_parent_path = '/'.join(re.split('[\\\\/]', par_drive_path)[:-2])
                     new_parent_id = par_path_ids[-2]
@@ -627,13 +716,13 @@ def ls(args):
                 #try:
                     #forrelative paths within cwd
                     if drive_path != parent_path:
-                        new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = parent_id, path_to = 'folder')[-1]
+                        new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = parent_id, path_to = 'folder', default_root=drive_id)[-1]
                         new_parent_path = os.path.join(parent_path, drive_path)
                 
                 else:
                 #except:
                     #Forabsolute paths
-                    new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder')[-1]
+                    new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
                     new_parent_path = drive_path
             
             parent_path = new_parent_path
@@ -646,7 +735,7 @@ def ls(args):
                 print("'" + parent_name + "' : parent name not defined before.")
                 return
             else:
-                [user_name, parent_path, parent_id] = info[parent_name]
+                [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]
         else:
             
             print("Unexpected arguements : use 'gd ls -h' for help")
@@ -654,7 +743,7 @@ def ls(args):
     
     util.auth_from_cred(gauth, user_name)
     drive = GoogleDrive(gauth)
-    _, _, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids)
+    _, _, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
 
 #-----------------------------------------
 def cd(args):
@@ -681,20 +770,20 @@ def cd(args):
         parent_name = args[0]
         drive_path = args[1]
     
-    [user_name, parent_path, parent_id] = info[parent_name]  
+    [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]  
     util.auth_from_cred(gauth, user_name)
     drive = GoogleDrive(gauth)
     
     if drive_path == '~':
         new_parent_path = ''
-        new_parent_id = 'root'
+        new_parent_id = drive_id
     
     elif drive_path == '..':
-        par_drive_path, par_path_ids = util.get_path_from_id(drive, parent_id)
+        par_drive_path, par_path_ids = util.get_path_from_id(drive, parent_id, default_root=drive_id)
         
         if len(par_path_ids)==1:
             new_parent_path = ''
-            new_parent_id = 'root'
+            new_parent_id = drive_id
         else:
             new_parent_path = '/'.join(re.split('[\\\\/]', par_drive_path)[:-2])
             new_parent_id = par_path_ids[-2]
@@ -710,15 +799,15 @@ def cd(args):
         #try:
             #for relative paths within cwd
             drive_path = drive_path
-            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = parent_id, path_to = 'folder')[-1]
+            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = parent_id, path_to = 'folder', default_root=drive_id)[-1]
             new_parent_path = os.path.join(parent_path, drive_path)
         #except:
         else:
             #For absolute paths
-            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder')[-1]
+            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
             new_parent_path = drive_path
             
-    info[parent_name] = [user_name, new_parent_path, new_parent_id]
+    info[parent_name] = [user_name, new_parent_path, new_parent_id, drive_name, drive_id]
     print(parent_name + " cwd changed to '" + new_parent_path + "'")
     with open(INFO_PATH, 'w') as file:
         json.dump(info, file)
@@ -796,8 +885,8 @@ def push(args):
         print("No staged files. Use 'gd add <paths>' first")
         return
     
-    #Default : creates copies
-    prompt = 'c'
+    #Default : asks the user
+    prompt = 'ask'
     
     if '-s' in args:
         args.remove('-s')
@@ -819,9 +908,7 @@ def push(args):
     
     if len(args)==0:
         parent_name = info['default_parent']
-        user_name = info[parent_name][0]
-        parent_path = info[parent_name][1]
-        parent_id = info[parent_name][2]
+        [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]  
         
         print("---------------\n" + parent_name + "\n---------------")
         util.auth_from_cred(gauth, user_name)
@@ -831,7 +918,7 @@ def push(args):
             path = path.rstrip()
             if os.path.exists(path):
                 if os.path.isdir(path):
-                    util.upload(path, parent_path, drive, prompt=prompt)
+                    util.upload(path, parent_path, drive, prompt=prompt, default_root=drive_id)
                 else:
                     util.upload_file_by_id(path, parent_id, drive, prompt=prompt)
             else:
@@ -843,9 +930,7 @@ def push(args):
                 print("'" + par + "' : parent name not defined before.")
                 continue
             
-            user_name = info[par][0]
-            parent_path = info[par][1]
-            parent_id = info[par][2]
+            [user_name, parent_path, parent_id, drive_name, drive_id] = info[par]
             
             print("---------------\n" + par + "\n---------------")
             util.auth_from_cred(gauth, user_name)
@@ -855,7 +940,7 @@ def push(args):
                 path = path.rstrip()
                 if os.path.exists(path):
                     if os.path.isdir(path):
-                        util.upload(path, parent_path, drive, prompt=prompt)
+                        util.upload(path, parent_path, drive, prompt=prompt, default_root=drive_id)
                     else:
                         util.upload_file_by_id(path, parent_id, drive, prompt=prompt)
                 else:
@@ -898,8 +983,8 @@ def pull(args):
     is_id = False #Checks if path given or id given
     is_dest = False #Checks if path is destinations' or drive's
     
-    #Default : creates copies
-    prompt = 'c'
+    #Default : asks the user
+    prompt = 'ask'
     
     if '-s' in args:
         args.remove('-s')
@@ -938,9 +1023,7 @@ def pull(args):
     else:
         parent_name = info['default_parent']
         
-    user_name = info[parent_name][0]
-    parent_path = info[parent_name][1]
-    parent_id = info[parent_name][2]
+    [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]
     util.auth_from_cred(gauth, user_name)
     drive = GoogleDrive(gauth)
     
@@ -973,9 +1056,7 @@ def pull(args):
         print("The path : '" + save_path + "' doesn't exist.")
         return
     
-    util.download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt)
-
-    
+    util.download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
 
 #COMMAND-LINE INTERACTION----------------------------------------
 

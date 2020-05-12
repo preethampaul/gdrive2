@@ -1,5 +1,6 @@
 import os
 import uuid
+import json
 
 UTIL_PATH = os.path.dirname(__file__)
 ROOT_PATH = os.path.dirname(UTIL_PATH)
@@ -72,7 +73,7 @@ def auth_from_cred(gauth, user_name=None):
         
         if gauth.credentials is None:
             # Authenticate if they're not there
-            print('credentials empty : authentication required ...')
+            print('Credentials empty : authentication required ...')
             gauth.LocalWebserverAuth()
         
         elif gauth.access_token_expired:
@@ -98,8 +99,11 @@ def auth_from_cred(gauth, user_name=None):
         
         else:
             try:
+                
+                print("\n----------Authentication required-----------\n")
                 with open(CLIENT_SECRETS_PATH) as file:
                     temp = json.load(file)
+                    
                 gauth.LoadClientConfigFile(CLIENT_SECRETS_PATH)
                 gauth.LocalWebserverAuth()
                 gauth.SaveCredentialsFile(creds_path)

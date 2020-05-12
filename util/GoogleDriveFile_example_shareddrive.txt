@@ -1,0 +1,66 @@
+GoogleDriveFile(
+{
+'kind': 'drive#file',
+'id': '1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-',
+'etag': '"MTU4NDU4MTE0NDU5Mw"',
+'selfLink': 'https://www.googleapis.com/drive/v2/files/1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-',
+'webContentLink': 'https://drive.google.com/uc?id=1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-&export=download',
+'alternateLink': 'https://drive.google.com/file/d/1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-/view?usp=drivesdk',
+'embedLink': 'https://drive.google.com/file/d/1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-/preview?usp=drivesdk',
+'iconLink': 'https://drive-thirdparty.googleusercontent.com/16/type/text/plain',
+'thumbnailLink': 'https://lh3.googleusercontent.com/hRkfhwVTecRzseDtFTlYcEkaZongnMOYbmucKHAF8kAJfgN4MEr7M8tGo_15lq__w1HNW4pkdYA=s220',
+'title': 'README.txt',
+'mimeType': 'text/plain',
+'labels':
+	{'starred': False,
+	'hidden': False,
+	'trashed': False,
+	'restricted': False,
+	'viewed': True},
+'copyRequiresWriterPermission': False,
+'createdDate': '2020-02-25T00:38:22.598Z',
+'modifiedDate': '2020-03-19T01:25:44.593Z',
+'modifiedByMeDate': '2020-03-19T01:25:44.593Z',
+'lastViewedByMeDate': '2020-03-19T01:25:48.877Z',
+'markedViewedByMeDate': '1970-01-01T00:00:00.000Z',
+'version': '10',
+'parents': 
+	[
+	{'kind': 'drive#parentReference',
+	'id': '194lVM7fnqjS2VnwjXYeQx7twHB8koEk1',
+	'selfLink': 'https://www.googleapis.com/drive/v2/files/1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-/parents/194lVM7fnqjS2VnwjXYeQx7twHB8koEk1', 'parentLink': 'https://www.googleapis.com/drive/v2/files/194lVM7fnqjS2VnwjXYeQx7twHB8koEk1',
+	'isRoot': False}
+	],
+'downloadUrl': 'https://www.googleapis.com/drive/v2/files/1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-?alt=media&source=downloadUrl',
+'userPermission':
+	{'kind': 'drive#permission',
+	'etag': '"u9Qwua_AdBsKwZDTtO1yMu5NN7U"',
+	'id': 'me',
+	'selfLink': 'https://www.googleapis.com/drive/v2/files/1GvcoFh-PVOt5wjV2Jmwvv439ZgUYzeI-/permissions/me',
+	'role': 'fileOrganizer',
+	'type': 'user'},
+'originalFilename': 'README.txt',
+'fileExtension': 'txt',
+'md5Checksum': 'db3b49fed0b6792fad3ef0d520f06d52',
+'fileSize': '4420',
+'quotaBytesUsed': '0',
+'teamDriveId': '0ABGL4p921Z40Uk9PVA',
+'driveId': '0ABGL4p921Z40Uk9PVA',
+'lastModifyingUserName': 'Preetham Paul Sunkari',
+'lastModifyingUser':
+	{
+	'kind': 'drive#user',
+	'displayName': 'Preetham Paul Sunkari',
+	'picture': {'url': 'https://lh3.googleusercontent.com/a-/AOh14GixPSGf2nxtBkuLvPisJiD9uii-BnfTmlflDpqPbA=s64'},
+	'isAuthenticatedUser': True,
+	'permissionId': '10883782692306781107',
+	'emailAddress': 'preeth@uw.edu'},
+'capabilities': {'canCopy': True, 'canEdit': True},
+'editable': True,
+'copyable': True,
+'explicitlyTrashed': False,
+'appDataContents': False,
+'headRevisionId': '0BzrOmB_i87B5Z1pBUmU1cXA1cWF6bjkzT05JNkFoWmpHcGxjPQ',
+'spaces': ['drive']
+
+})

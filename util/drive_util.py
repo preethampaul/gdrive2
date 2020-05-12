@@ -6,49 +6,39 @@ Created on Sun Feb 23 10:43:31 2020
 
 import os
 import re
-from time import sleep
-from datetime import date
+from apiclient import errors
 
-def dancing_dots(switch):
+#when my drive is the current drive
+DEFAULT_ROOT = 'root'
+
+def fetchMetadata(drive_file):
     """
-    An attempt to create loading animation
-    switch = 'on' shows one complete load animation
-            = 'off' erases previous stdout line
+    A replica of FetchMetadata() from GoogleDriveFile class of pydrive
+    - replaced supportsTeamDrives with supportsAllDrive
+    
     """
-    char_len = 10
+    fields = drive_file._ALL_FIELDS
+    file_id = drive_file.metadata.get('id') or drive_file.get('id')
     
-    if switch=='on':
-        for i in range(0, char_len, 1):
-            j = 0
-            while j<i:
-                print('-', end='')
-                j+=1
-            
-            if j>=0 and j<char_len:
-                print('|', end='')
-                j+=1
-                
-            if j>=0 and j<char_len:
-                print('O', end='')
-                j+=1
-                
-            if j>=0 and j<char_len:
-                print('|', end='')
-                j+=1
-            
-            while j<char_len:
-                print('-', end='')
-                j+=1
-                
-            sleep(1)
-            
-            for j in range(char_len):
-                print('\b', end='')
-    
-    elif switch=='off':
+    if file_id:
+      try:
+        metadata = drive_file.auth.service.files().get(
+          fileId=file_id,
+          fields=fields,
+          # Support All drives -- Changed here
+          supportsAllDrives=True
+        ).execute(http=drive_file.http)
         
-        for j in range(char_len):
-                print('\b', end='')
+      except errors.HttpError as error:
+        print("ApiRequestError() : HttpError")
+      
+      else:
+        drive_file.uploaded = True
+        drive_file.UpdateMetadata(metadata)
+    
+    else:
+      print("FileNotUploadedError()")
+      
 
 def create_folders_path(path):
     """
@@ -88,17 +78,17 @@ def create_folder(folder_name, parent_folder_id, drive):
     """
     
     folder = drive.CreateFile({'parents' : [{'id' : parent_folder_id}],'mimeType' : 'application/vnd.google-apps.folder', 'title' : folder_name})
-    folder.Upload()
+    folder.Upload(param={'supportsAllDrives' : True})
     return folder['id']
 
-def get_path_from_id(drive, file_id):
+def get_path_from_id(drive, file_id, default_root=DEFAULT_ROOT):
     
     path = ['']
     ids = []
     
-    while file_id!='root':
+    while file_id!=default_root:
         file = drive.CreateFile({'id' : file_id})
-        file.FetchMetadata()
+        fetchMetadata(file)
         path.append(file['title'])
         ids.append(file_id)
         
@@ -107,7 +97,7 @@ def get_path_from_id(drive, file_id):
         
         file_id = file['parents'][0]['id']
         
-    ids.append('root')
+    ids.append(default_root)
     
     return '/'.join(path[::-1]), ids[::-1]
 
@@ -130,7 +120,11 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
     """
     
     try:
-        file_list = drive.ListFile({'q' : "title = '" + name + "' and '" + parent_folder_id + "' in parents and trashed=false"}).GetList()
+        file_list = drive.ListFile({'q' : "title = '" + name + "' and '" + parent_folder_id + "' in parents and trashed=false",
+                                    'supportsAllDrives' : "true",
+                                    'corpora' : "allDrives",
+                                    'includeItemsFromAllDrives' : "true"
+                                    }).GetList()
     except:
         file_list = []
         
@@ -151,7 +145,7 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
         
     return file_id_list, file_mime_list
 
-def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id = None, path_to = 'folder'):
+def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id = None, path_to = 'folder', default_root=DEFAULT_ROOT):
     
     """
     Returns list of ids for folders or files in the path to the drive_path
@@ -187,7 +181,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     """
     #For root path
     if drive_path == '':
-        return ['root']
+        return [default_root]
     
     path_list = re.split('[\\\\/]', drive_path)
     path_id_list = path_list
@@ -196,7 +190,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
         
         if i == 0:
             if relative_id == None:
-                parent_folder_id = 'root'
+                parent_folder_id = default_root
             else:
                 parent_folder_id = relative_id
         else:
@@ -227,7 +221,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     return path_id_list
  
     
-def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic_show=False, tier = 'all', show_ids=False):
+def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic_show=False, tier = 'all', show_ids=False, default_root=DEFAULT_ROOT):
     
     if drive == None:
         system = 'local'    
@@ -307,11 +301,15 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
         #--------------------------------------------DRIVE-------------------------------
         elif system == 'drive':
             file = drive.CreateFile({'id' : folder_id})
-            file.FetchMetadata()
+            fetchMetadata(file)
             
             if 'folder' in file['mimeType']:
                 #if folder_path leads to a folder, list contents
-                sub_folders_list = drive.ListFile({'q' : " '" + folder_id + "' in parents and trashed=false" }).GetList()
+                sub_folders_list = drive.ListFile({'q' : " '" + folder_id + "' in parents and trashed=false",
+                                                   'supportsAllDrives' : "true",
+                                                   'corpora' : "allDrives",
+                                                   'includeItemsFromAllDrives' : "true"
+                                                   }).GetList()
                 sub_folders = [file['title'] for file in sub_folders_list]
                 sub_folder_ids = [file['id'] for file in sub_folders_list]
                 
@@ -399,10 +397,10 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     else: #if system is drive
         if init_folder_id == None:
             try:
-                list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'folder')
+                list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'folder', default_root=default_root)
                 init_folder_id = list_path_ids[-1]
             except:
-                list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'not-folder')
+                list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'not-folder', default_root=default_root)
                 init_folder_id = list_path_ids[-1]
     
     total_count = list_all_contents_recur(init_folder_path, init_folder_id, paths_list, ids_list, 0)    
@@ -446,13 +444,17 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
     file.SetContentFile(curr_file_path)    
     
     #Checking if file already exists :
-    files_list = drive.ListFile({'q' : "title = '" + file_name + "' and '" + drive_folder_id + "' in parents and trashed=false"}).GetList()
+    files_list = drive.ListFile({'q' : "title = '" + file_name + "' and '" + drive_folder_id + "' in parents and trashed=false",
+                                 'supportsAllDrives' : "true",
+                                 'corpora' : "allDrives",
+                                 'includeItemsFromAllDrives' : "true"
+                                 }).GetList()
     
     try:
         files_names = [f['title'] for f in files_list]
         match = files_names.index(file_name)
         drive_file_size = round(float(files_list[match]['quotaBytesUsed'])/1000, 2)
-        print(' already ({} kB) exists : '.format(drive_file_size), end='')
+        print(' already ({} kB) exists : \n'.format(drive_file_size), end='')
         
         if prompt=='ask':
             prompt = input("Press 's' to skip / 'o' to overwrite / 'c' to create copy ('as'/'ao'/'ac' to repeat action for rest) : ")
@@ -462,7 +464,7 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
                 
         if prompt=='o' or prompt == 'ao' or prompt=='overwrite':
             file['id'] = files_list[match]['id']
-            file.Upload()
+            file.Upload(param={'supportsAllDrives' : True})
             print('Overwritten')
             
         elif prompt=='s' or prompt == 'as' or prompt=='skip':
@@ -478,12 +480,12 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
                 new_file_name = '.'.join(file_name_split[:-1]) + '({}).'.format(j) + file_name_split[-1]
             
             file['title'] = new_file_name
-            file.Upload()
+            file.Upload(param={'supportsAllDrives' : True})
             print('copy_created')
             
         
     except:
-        file.Upload()
+        file.Upload(param={'supportsAllDrives' : True})
         print('Done!')
         
     if len(prompt)>1:
@@ -491,49 +493,8 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
     else:
         return None
 
-
-### This function is redundant ###------------------------------------------------------------------
-def upload_file_by_path(curr_file_path, parent_folder_path, drive, empty_folder = False, create_missing_folders = True, prompt='ask'):
-    
-    """
-    Uploads a file with current path = curr_file_path on system into
-    a drive folder with path = parent_folder_path
-    (This function is redundant - use upload_by_path() function)
-    
-    A typical drive path must be like this :
-        Folder1_title\Folder2_title\Folder3_title or file_title
         
-    Input = {
-            curr_file_path = path to file on current system
-            parent_folder_path = id of drive folder into which upload will be done
-            drive = GoogleDrive object
-            empty-folder(boolean input) = False [DEFAULT] shows an error if the file is
-                                                absent at curr_file_path
-                    = True creates a path of folders till the parent folder of the file
-                                    and leaves the last folder empty if file is absent
-                                    at curr_file_path
-            prompt = 'ask' asks user to skip or overwrite if file already exists in drive
-                    = 'skip' or 's' skips file if already exists
-                    = 'overwrite' or 'o' overwrites the file if it already exists
-            
-    }
-    Output = {
-            Uploads the file into the drive folder with path = parent_folder_path
-            returns None if no change in prompt,
-            returns change in prompt from user otherwise
-    }
-    """
-    print('Use upload_by_path() instead of this. This function is obsolete.')
-    path_id_list = get_path_ids(parent_folder_path, drive, create_missing_folders, path_to = 'folder')
-    if os.path.exists(curr_file_path):
-        prompt_chg = upload_file_by_id(curr_file_path, path_id_list[-1], drive, prompt=prompt)
-        print('Done!')
-    elif not empty_folder:
-        raise FileNotFoundError(curr_file_path + ' doesnt exist.\n Try making the arguement empty_folder = True to keep the last folder empty at the end of the path : ' + parent_folder_path)
-##This function is redundant#-----------------------------------------------------------
-
-        
-def upload(curr_path, drive_parent_folder_path, drive, prompt='ask'):
+def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_root=DEFAULT_ROOT):
     
     """
     Uploads a folder/file at curr_path into the folder at drive_parent_folder_path
@@ -587,7 +548,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask'):
         else:
             path_id_list = get_path_ids(drive_path, drive, create_missing_folders = True, path_to = 'not-folder')
             if len(path_id_list) == 1:
-                path_id = 'root'
+                path_id = default_root
             else:
                 path_id = path_id_list[-2]
             
@@ -601,6 +562,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask'):
             count += 1
         
     print('Done!')
+
     
 def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1, total_count=1):
     """
@@ -628,7 +590,7 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
     }
     """
     file = drive.CreateFile({ 'id' : file_id })
-    file.FetchMetadata()
+    fetchMetadata(file)
     file_name = file['title']
     file_size = round(float(file['quotaBytesUsed'])/1000, 2)
     print("Download {}/{} ".format(file_count,total_count) + file_name + ' ({} kB) : '.format(file_size), end='')
@@ -636,7 +598,7 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
     new_file_path = download_path + '\\'+ file_name
     if os.path.exists(new_file_path):
         fsize = round(os.path.getsize(new_file_path)/1000, 2)
-        print(' already ({} kB) exists : '.format(fsize), end='')
+        print(' already ({} kB) exists :\n'.format(fsize), end='')
         
         if prompt=='ask':
             prompt = input("Press 's' to skip / 'o' to overwrite / 'c' to create copy ('as'/'ao'/'ac' to repeat action for rest) : ")
@@ -674,8 +636,9 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
         return prompt[-1]
     else:
         return None
+
     
-def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd(), prompt='ask'):
+def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd(), prompt='ask', default_root=DEFAULT_ROOT):
     """
     Downloads a file/folder at drive_path into the folder at download_path
     Either id or path - one of them is sufficient
@@ -701,7 +664,7 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     if drive_path==None and drive_path_id != None:
         drive_path, _ = get_path_from_id(drive, drive_path_id)
             
-    paths_list, ids_list, total_count = list_all_contents(drive_path, drive_path_id, drive=drive, dynamic_show=False, tier = 'all')
+    paths_list, ids_list, total_count = list_all_contents(drive_path, drive_path_id, drive=drive, dynamic_show=False, tier = 'all', default_root=default_root)
     count = 1
     print("{} paths found ...".format(total_count))
     
@@ -722,7 +685,7 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
         path_i = '\\' + re.split('[\\\\/]', drive_path)[-1] + path_i
         
         file = drive.CreateFile({'id' : id_i})
-        file.FetchMetadata()
+        fetchMetadata(file)
         if file['mimeType'] == 'application/vnd.google-apps.folder':
             create_folders_path(download_path + path_i)
             count+=1
