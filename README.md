@@ -1,12 +1,9 @@
-### IT IS HIGHLY RECOMMENDED TO READ THIS : (5 min read)
+# **gdrive**
+## File management for Google Drive using python
 
-PyDrive doesn't work with Python versions above 3.7
+gdrive is inspired from git's push-pull functionalities from command line. With gdrive, some command line functions like `cd` and `ls` can be used to view files in drive folders directly from command line.
 
-This folder contains utility functions that can allow one to upload data
-to a GoogleDrive account instantly through python, without the effort of going
-to the browser and doing this manually. Once data is uploaded, anyone with access
-to the GDrive can view and edit the data
-
+### Requirements
 PyDrive library is required for this :
 To install Pydrive :
 for PIP : use command
@@ -16,7 +13,8 @@ for PIP : use command
 for ANACONDA : use command
 ```conda install -c conda-forge pydrive```
 
-NOTE : NEED TO CREATE client_secrets.json from Google Cloud Platform first!
+**NOTE:**
+A client secrets file is required. Read [pydrive's documentation](https://pythonhosted.org/PyDrive/quickstart.html)
 
 ___
 The following files are ESSENTIAL for the Google API to work :
