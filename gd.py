@@ -1060,17 +1060,18 @@ def pull(args):
 
 #COMMAND-LINE INTERACTION----------------------------------------
 
-#optional arguements
-opt_args=[]
-
-#Parsing Command-line arguements
-parser = argparse.ArgumentParser(description=help_text, formatter_class=argparse.RawTextHelpFormatter)
-parser.add_argument('func')
-parser.add_argument('args', nargs = argparse.REMAINDER)
-args_func = parser.parse_args()
-
-#func is the main function
-func = args_func.func
-args = args_func.args
-
-exec( func + '(args)' )
+if __name__ == "__main__":
+    #optional arguements
+    opt_args=[]
+    
+    #Parsing Command-line arguements
+    parser = argparse.ArgumentParser(description=help_text, formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('func')
+    parser.add_argument('args', nargs = argparse.REMAINDER)
+    args_func = parser.parse_args()
+    
+    #func is the main function
+    func = args_func.func
+    args = args_func.args
+    
+    exec( func + '(args)' )
