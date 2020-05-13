@@ -4,8 +4,12 @@ import json
 
 UTIL_PATH = os.path.dirname(__file__)
 ROOT_PATH = os.path.dirname(UTIL_PATH)
-CRED_MAP_PATH = os.path.join(ROOT_PATH, 'api_data', 'creds')
-CLIENT_SECRETS_PATH = os.path.join(ROOT_PATH, 'api_data', 'client_secrets.json')
+CLIENT_SECRETS = 'client_secrets.json'
+CRED_MAP = 'creds'
+CREDS_DIR = os.path.join(ROOT_PATH, 'api_data')
+
+CRED_MAP_PATH = os.path.join(CREDS_DIR, CRED_MAP)
+CLIENT_SECRETS_PATH = os.path.join(CREDS_DIR, CLIENT_SECRETS)
 #gauth must be a GoogleAuth() object
 
 def check_creds_list(user_name, check_only=False):
@@ -51,8 +55,7 @@ def auth_from_cred(gauth, user_name=None):
     Also required to retrieve credential data from creds_path
     and refresh expired access tokens
     
-    Checks for <cred_id>.txt and client_secrets.json paths and other settings
-    from the settings.yaml file in util folder.
+    Checks for <cred_id>.txt and client_secrets.json paths
     Also, updates these paths with authentication
     
     Input : gauth = pydrive.GoogleAuth() object
@@ -63,7 +66,7 @@ def auth_from_cred(gauth, user_name=None):
     
     #creating for creds_path
     creds_id = check_creds_list(user_name)
-    creds_path = os.path.join(ROOT_PATH, 'api_data', creds_id)
+    creds_path = os.path.join(CREDS_DIR, creds_id)
         
     if os.path.exists(creds_path) and os.path.exists(CLIENT_SECRETS_PATH):
         
@@ -94,7 +97,7 @@ def auth_from_cred(gauth, user_name=None):
     
     else:
         if not os.path.exists(CLIENT_SECRETS_PATH):
-            print("'client_secrets.json' file not found. Download and paste it in : " + os.path.join(ROOT_PATH, 'api_data'))
+            print("client secrets file not found. Download and paste it in : " + os.path.join(ROOT_PATH, 'api_data'))
             return
         
         else:
@@ -109,5 +112,5 @@ def auth_from_cred(gauth, user_name=None):
                 gauth.SaveCredentialsFile(creds_path)
             
             except:
-                print("'client_secrets.json' file found in '"+ CLIENT_SECRETS_PATH + "' is invalid.")
+                print("client secrets file found in '"+ CLIENT_SECRETS_PATH + "' is invalid.")
                 

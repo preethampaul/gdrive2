@@ -12,6 +12,7 @@ import shutil
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.apiattr import ApiResourceList
+from apiclient import errors
 
 import util
 
@@ -21,6 +22,9 @@ drive = GoogleDrive(gauth) #for drive utilities
 
 #Current Working Directory
 CURR_PATH = os.getcwd()
+
+#Local Home directory
+CURR_HOME_DIR = '/'.join(re.split('[\\\\/]', os.path.expanduser('~')))
 
 #gd Code paths
 HOME_DIR = re.split("[\\\\/]", CURR_PATH)[0]
@@ -32,10 +36,13 @@ INFO_PATH = os.path.join(INFO_FOLDER, '.gdinfo.json')
 STAGE_PATH = os.path.join(INFO_FOLDER, '.gdstage')
 
 #Credentials path
-CRED_MAP_PATH = os.path.join(ROOT_PATH, 'api_data', 'creds')
+CLIENT_SECRETS = 'client_secrets.json'
+CRED_MAP = 'creds'
+CREDS_DIR = os.path.join(ROOT_PATH, 'api_data')
 
-#URL to list drives
-SHARED_DRIVE_REQ = "https://www.googleapis.com/drive/v3/drives"
+CRED_MAP_PATH = os.path.join(CREDS_DIR, CRED_MAP)
+CLIENT_SECRETS_PATH = os.path.join(CREDS_DIR, CLIENT_SECRETS)
+
 
 #Deafult info during initialization
 DEFAULT_INFO = {
@@ -202,6 +209,14 @@ def check_parent_name():
             prob = True
             
     return par
+
+def delete_cred_files():
+    file_list = os.listdir(CREDS_DIR)
+    file_list.remove(CLIENT_SECRETS)
+    file_list.remove(CRED_MAP)
+    
+    for i in file_list:
+        os.remove(os.path.join(CREDS_DIR, i))
 
 #USAGE-FUNCTIONS------------------------------------------------------------------------------------
 #These are the main command functions called from terminal
@@ -608,11 +623,10 @@ def status(args):
 def ls(args):
     
     if '-h' in args or '-help' in args:
-        print("gd ls [<parent_name>, <path>] [-a, -users, shared]")
+        print("gd ls [<parent_name> [<path>]] [-a, -users, shared]")
         print("\nDescription: lists files in parents")
         print("------\n")
         print("'gd ls'                     : shows files/folders in the <default> parent cwd")
-        print("'gd ls <path>'              : shows files/folders in <path> in <default> parent")
         print("'gd ls <parent_name>'       : shows files/folders in the <parent_name> cwd")
         print("'gd ls <parent_name> <path>'       : shows files/folders in <path> in the <parent_name>")
         print("'gd ls [<parent_name>] [path] -a'  : shows files/folders in [<parent_name>, <default>],[path] with ids")
@@ -681,13 +695,18 @@ def ls(args):
     if len(args)==0:
         parent_name = info['default_parent']
         [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]
+        util.auth_from_cred(gauth, user_name)
+        drive = GoogleDrive(gauth)
     
     else:
         
-        if len(args)==2 and not '-' in args[0]:
+        if len(args)==2:
             parent_name = args[0]
-            drive_path = args[1]
-            
+            drive_path = '/'.join(re.split('[\\\\/]', args[1]))
+                
+            if CURR_HOME_DIR in drive_path :
+                drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+                
             if not parent_name in parents_list:
                 print("'" + parent_name + "' : parent name not defined before.")
                 return
@@ -696,53 +715,39 @@ def ls(args):
             util.auth_from_cred(gauth, user_name)
             drive = GoogleDrive(gauth)
             
-            if drive_path == '~':
-                new_parent_path = ''
-                new_parent_id = drive_id
+            #---------------DEBUGGING REQ---------------------
+            if drive_path.startswith('/'):
+                drive_path = '~/' + drive_path[1:]
+                
+            if CURR_HOME_DIR in drive_path:
+                drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+              
+            if drive_path=='/':
+                drive_path = '~'
+            #----------------------------------------------------
+            drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
             
-            elif drive_path == '..':
-                par_drive_path, par_path_ids = util.get_path_from_id(drive, parent_id, default_root=drive_id)
-                
-                if len(par_path_ids)==1:
-                    new_parent_path = ''
-                    new_parent_id = drive_id
-                else:
-                    new_parent_path = '/'.join(re.split('[\\\\/]', par_drive_path)[:-2])
-                    new_parent_id = par_path_ids[-2]
-                    
-            elif drive_path!= parent_path:
-                if drive_path[0] == '/' or drive_path[0] == '\\':
-                    drive_path = drive_path[1:]
-                #try:
-                    #forrelative paths within cwd
-                    if drive_path != parent_path:
-                        new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = parent_id, path_to = 'folder', default_root=drive_id)[-1]
-                        new_parent_path = os.path.join(parent_path, drive_path)
-                
-                else:
-                #except:
-                    #Forabsolute paths
-                    new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
-                    new_parent_path = drive_path
+            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
+            new_parent_path = drive_path            
             
             parent_path = new_parent_path
             parent_id = new_parent_id
             
         
-        elif len(args) == 1  and not '-' in args[0]:
+        elif len(args) == 1:
             parent_name = args[0]
             if not parent_name in parents_list:
                 print("'" + parent_name + "' : parent name not defined before.")
                 return
             else:
                 [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]
+                util.auth_from_cred(gauth, user_name)
+                drive = GoogleDrive(gauth)
         else:
             
             print("Unexpected arguements : use 'gd ls -h' for help")
             return
     
-    util.auth_from_cred(gauth, user_name)
-    drive = GoogleDrive(gauth)
     _, _, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
 
 #-----------------------------------------
@@ -764,55 +769,176 @@ def cd(args):
     
     if len(args)==1:
         parent_name = info['default_parent']
-        drive_path = args[0] #relative path
+        drive_path = args[0]
     
     elif len(args)==2:
         parent_name = args[0]
         drive_path = args[1]
-    
+
     [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]  
     util.auth_from_cred(gauth, user_name)
     drive = GoogleDrive(gauth)
     
-    if drive_path == '~':
-        new_parent_path = ''
-        new_parent_id = drive_id
+    drive_path = '/'.join(re.split('[\\\\/]', drive_path))
     
-    elif drive_path == '..':
-        par_drive_path, par_path_ids = util.get_path_from_id(drive, parent_id, default_root=drive_id)
+    #---------------DEBUGGING REQ---------------------
+    if drive_path.startswith('/'):
+        drive_path = '~/' + drive_path[1:]
         
-        if len(par_path_ids)==1:
-            new_parent_path = ''
-            new_parent_id = drive_id
-        else:
-            new_parent_path = '/'.join(re.split('[\\\\/]', par_drive_path)[:-2])
-            new_parent_id = par_path_ids[-2]
+    if CURR_HOME_DIR in drive_path:
+        drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+      
+    if drive_path=='/':
+        drive_path = '~'
+    #----------------------------------------------------
+    drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
     
-    elif drive_path == parent_path:
-        return
-    
-    else:
-        if drive_path[0] == '/' or drive_path[0] == '\\':
-            drive_path = drive_path[1:]
-            if drive_path == parent_path:
-                return
-        #try:
-            #for relative paths within cwd
-            drive_path = drive_path
-            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = parent_id, path_to = 'folder', default_root=drive_id)[-1]
-            new_parent_path = os.path.join(parent_path, drive_path)
-        #except:
-        else:
-            #For absolute paths
-            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
-            new_parent_path = drive_path
+    new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
+    new_parent_path = drive_path
             
     info[parent_name] = [user_name, new_parent_path, new_parent_id, drive_name, drive_id]
     print(parent_name + " cwd changed to '" + new_parent_path + "'")
     with open(INFO_PATH, 'w') as file:
         json.dump(info, file)
 
-#-----------------------------------------
+#------------------------------
+def rm(args):
+    
+    if '-h' in args or '-help' in args:
+        print("gd rm [<parent_name>, <path>] [-f]")
+        print("\nDescription: lists files in parents")
+        print("------\n")
+        print("'gd rm <path>'       : trashes files/folders at the parent_path in <parent_name> parent")
+        print("'gd rm [parent_name] <path>': trashes files/folders in <path> in <default> parent")
+        print("'gd rm [parent_name] [path] -f': deletes files/folders in <path> in the <parent_name>")
+        return
+        
+    info = check_info()
+    if len(info) == 0:
+        print('gd not initiated in this folder, try : gd init')
+        return
+    
+    hard_delete= False
+    
+    if '-f' in args:
+        args.remove('-f')
+        hard_delete = True
+    
+    parents_list = list(info.keys())
+    parents_list.remove('default_parent')
+        
+    if len(args)==2:
+        parent_name = args[0]
+        drive_path = '/'.join(re.split('[\\\\/]', args[1]))
+        [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]  
+        
+    elif len(args)==1:
+        parent_name = info['default_parent']
+        drive_path = '/'.join(re.split('[\\\\/]', args[0]))
+        
+        if not parent_name in parents_list:
+            print("'" + parent_name + "' : parent name not defined before.")
+            return
+        
+        [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name] 
+    
+    elif len(args) == 0:
+        parent_name = info['default_parent']
+        drive_path = parent_path
+    
+    else:
+        print("Extra arguements passed. Try 'gd rm -h'.")
+        return
+    
+    util.auth_from_cred(gauth, user_name)
+    drive = GoogleDrive(gauth)
+    prompt = 'y'
+    
+    #---------------DEBUGGING REQ---------------------
+    if drive_path.startswith('/'):
+        drive_path = '~/' + drive_path[1:]
+        
+    if CURR_HOME_DIR in drive_path:
+        drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+      
+    if drive_path=='/':
+        drive_path = '~'
+    #----------------------------------------------------
+    drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+    
+    delete_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'all', default_root=drive_id)[-1]
+    delete_path = drive_path
+    
+    
+    if delete_path == '' or delete_id == drive_id:
+        prompt = input("WARNING: The entire drive with be deleted. Continue?[y/n] : ")
+    elif delete_id == parent_id:
+        prompt = input("All files in current parent will be deleted. Continue?[y/n]: ")
+    
+    if prompt=='y':
+        util.delete(drive, drive_path=delete_path, drive_path_id=delete_id, hard_delete=hard_delete, default_root=drive_id)
+    else:
+        print("Delete action aborted.")
+        
+#----------------------------------        
+def mkdir(args):
+    if '-h' in args or '-help' in args:
+        print("gd mkdir [<parent_name>, <path>]")
+        print("\nDescription: lists files in parents")
+        print("------\n")
+        print("'gd mkdir <path>'       : creates folder at the path in default parent")
+        print("'gd mkdir [parent_name] <path>': creates folder at the path in <parent_name> parent")
+        return
+        
+    info = check_info()
+    if len(info) == 0:
+        print('gd not initiated in this folder, try : gd init')
+        return
+    
+    parents_list = list(info.keys())
+    parents_list.remove('default_parent')
+        
+    if len(args)==0:
+        print("No path given. Check 'gd mkdir -h'.")
+        return
+    
+    elif len(args)>2:
+        print("Extra arguements passed. Check 'gd mkdir -h'.")
+        return
+    
+    else:
+        drive_path = '/'.join(re.split('[\\\\/]', args[-1]))
+        if len(args)==1:
+            parent_name = info['default_parent']
+        else:
+            parent_name = args[0]
+            if not parent_name in parents_list:
+                print("'" + parent_name + "' : parent name not defined before.")
+                return
+        
+        [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]  
+        util.auth_from_cred(gauth, user_name)
+        drive = GoogleDrive(gauth)
+        
+        #---------------DEBUGGING REQ---------------------
+        if drive_path.startswith('/'):
+            drive_path = '~/' + drive_path[1:]
+            
+        if CURR_HOME_DIR in drive_path:
+            drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+          
+        if drive_path=='/':
+            drive_path = '~'
+        #----------------------------------------------------
+        drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+        
+        _ = util.get_path_ids(drive_path, drive, create_missing_folders = True, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
+    
+    return
+
+#-----------------------------------------------------------------------------
+#PUSH/PULL FUNCTIONS:
+#-----------------------------------------------------------------------------
 def add(args):
     
     if '-h' in args or '-help' in args:
@@ -1045,7 +1171,13 @@ def pull(args):
                 drive_path = None
             else:
                 drive_path = args[0]
-            
+        
+        if not drive_path == None:
+            drive_path = '/'.join(re.split('[\\\\/]', drive_path))
+            #relative paths
+            if drive_path[0] == '/' or drive_path[0] == '\\':
+                drive_path = parent_path + drive_path
+        
         if "'" in save_path or "\"" in save_path:
             save_path= save_path[1:-1]
         
@@ -1058,6 +1190,7 @@ def pull(args):
     
     util.download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
 
+#----------------------
 #COMMAND-LINE INTERACTION----------------------------------------
 
 if __name__ == "__main__":
@@ -1074,4 +1207,13 @@ if __name__ == "__main__":
     func = args_func.func
     args = args_func.args
     
+    
     exec( func + '(args)' )
+    """
+    except errors.HttpError:
+        delete_cred_files()
+        exec( func + '(args)' )
+    
+    except Exception as e:
+        print(e)
+    """

@@ -11,6 +11,60 @@ from apiclient import errors
 #when my drive is the current drive
 DEFAULT_ROOT = 'root'
 
+def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
+    
+    if "'" in path or "\"" in path:
+        path = path[1:-1]
+        
+    path_list = re.split("[\\\\/]", path)
+    init_len = len(path_list)
+    
+    parent_id_i = parent_id    
+    char = path_list[0]
+    
+    while char == '~' or char == '..':
+        
+        #Home relative paths
+        if char == '~':
+            parent_id_i = default_root
+            path_list.remove('~')
+            
+        #parent relative paths
+        elif char == '..':
+            parent_list_joined, ids_list = get_path_from_id(drive, parent_id_i, default_root=default_root)
+            parent_list = re.split("[\\\\/]", parent_list_joined)
+            
+            if len(ids_list)>1:
+                parent_id_i = ids_list[-2]
+            else:
+                parent_id_i = ids_list[-1]
+                
+            path_list.remove('..')
+        
+        if len(path_list)>0:
+            char = path_list[0]
+        else:
+            break
+    
+    base_path, _ = get_path_from_id(drive, parent_id_i, default_root=default_root)
+    
+    if len(path_list)==0:
+        return base_path
+    
+    #relative paths
+    if path_list[0] == '' and len(path_list)>1:
+        new_path = base_path + '/'.join(path_list)
+        return new_path
+    
+    if len(path_list) == init_len:
+        return path
+    
+    if base_path=='':
+        return '/'.join(path_list)
+    else:
+        return base_path + '/' + '/'.join(path_list)
+
+
 def fetchMetadata(drive_file):
     """
     A replica of FetchMetadata() from GoogleDriveFile class of pydrive
@@ -25,12 +79,13 @@ def fetchMetadata(drive_file):
         metadata = drive_file.auth.service.files().get(
           fileId=file_id,
           fields=fields,
-          # Support All drives -- Changed here
+          # Support All drives -- Changed this
           supportsAllDrives=True
         ).execute(http=drive_file.http)
         
       except errors.HttpError as error:
-        print("ApiRequestError() : HttpError")
+        reason = error._get_reason
+        print(str(reason))
       
       else:
         drive_file.uploaded = True
@@ -83,7 +138,7 @@ def create_folder(folder_name, parent_folder_id, drive):
 
 def get_path_from_id(drive, file_id, default_root=DEFAULT_ROOT):
     
-    path = ['']
+    path = []
     ids = []
     
     while file_id!=default_root:
@@ -181,7 +236,10 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     """
     #For root path
     if drive_path == '':
-        return [default_root]
+        if not relative_id==None:
+            return [relative_id]
+        else:
+            return [default_root]
     
     path_list = re.split('[\\\\/]', drive_path)
     path_id_list = path_list
@@ -696,5 +754,26 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     
     print("Done!")
     
+def delete(drive, drive_path=None, drive_path_id=None, relative_id=None, hard_delete=False, default_root=DEFAULT_ROOT):
     
+    if drive_path_id==None and drive_path != None:
+        try:
+            drive_path_id = get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = relative_id, path_to = 'folder', default_root=DEFAULT_ROOT)[-1]
+        except:
+            drive_path_id = get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = relative_id, path_to = 'not-folder', default_root=DEFAULT_ROOT)[-1]
     
+    if drive_path_id == 'no-file-found':
+        print("The file doesn't exists.")
+        return
+    
+    file = drive.CreateFile({'id' : drive_path_id})
+    fetchMetadata(file)
+    
+    if hard_delete:
+        file.Delete(param={'supportsAllDrives' : True})
+    else:
+        file.Trash(param={'supportsAllDrives' : True})
+        
+    
+        
+        
