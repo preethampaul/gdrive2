@@ -31,8 +31,7 @@ def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
             
         #parent relative paths
         elif char == '..':
-            parent_list_joined, ids_list = get_path_from_id(drive, parent_id_i, default_root=default_root)
-            parent_list = re.split("[\\\\/]", parent_list_joined)
+            _, ids_list = get_path_from_id(drive, parent_id_i, default_root=default_root)
             
             if len(ids_list)>1:
                 parent_id_i = ids_list[-2]
@@ -47,7 +46,6 @@ def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
             break
     
     base_path, _ = get_path_from_id(drive, parent_id_i, default_root=default_root)
-    
     if len(path_list)==0:
         return base_path
     
@@ -65,13 +63,15 @@ def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
         return base_path + '/' + '/'.join(path_list)
 
 
-def fetchMetadata(drive_file):
+def fetchMetadata(drive_file, fields=None):
     """
     A replica of FetchMetadata() from GoogleDriveFile class of pydrive
     - replaced supportsTeamDrives with supportsAllDrive
     
     """
-    fields = drive_file._ALL_FIELDS
+    if fields==None:
+        fields = drive_file._ALL_FIELDS
+    
     file_id = drive_file.metadata.get('id') or drive_file.get('id')
     
     if file_id:
@@ -141,7 +141,10 @@ def get_path_from_id(drive, file_id, default_root=DEFAULT_ROOT):
     path = []
     ids = []
     
-    while file_id!=default_root:
+    actual_root = drive.CreateFile({'id' : default_root})
+    fetchMetadata(actual_root, fields="id")
+    
+    while file_id!=actual_root['id']:
         file = drive.CreateFile({'id' : file_id})
         fetchMetadata(file)
         path.append(file['title'])

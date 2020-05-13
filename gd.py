@@ -864,7 +864,11 @@ def rm(args):
     if drive_path=='/':
         drive_path = '~'
     #----------------------------------------------------
+    
+    print(drive_path)
     drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+    
+    print(drive_path)
     
     delete_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'all', default_root=drive_id)[-1]
     delete_path = drive_path

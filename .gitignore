@@ -4,8 +4,8 @@
 Preetham
 util/GoogleDriveFile_example.txt
 util/GoogleDriveFile_example_shareddrive.txt
+api_data/client_secrets.json
 api_data
-*client_secrets*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
