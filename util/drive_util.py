@@ -323,7 +323,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 #if folder_path leads to a folder
                 sub_folders = os.listdir(folder_path)
                 if tier=='curr':
-                    paths_list = sub_folders
+                    paths_list+=sub_folders
                     if dynamic_show:
                         for count, i in enumerate(sub_folders):
                             if os.path.isdir(folder_path+'\\'+i):
@@ -375,8 +375,8 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 sub_folder_ids = [file['id'] for file in sub_folders_list]
                 
                 if tier=='curr':
-                    paths_list = sub_folders
-                    ids_list = sub_folder_ids
+                    paths_list+=sub_folders
+                    ids_list+=sub_folder_ids
                     
                     if dynamic_show:
                         
@@ -396,7 +396,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                                     print_id = sub_folder_ids[count]
                                     
                                 print(print_id +" : "+ ftype+'[{}kB] {} : '.format(fsize, count+1) + i)
-                            
+                    
                     return len(sub_folders)
                 
             else:

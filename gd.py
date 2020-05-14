@@ -13,12 +13,14 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from pydrive.apiattr import ApiResourceList
 from apiclient import errors
-
 import util
 
 #Important objects for gdrive
 gauth = GoogleAuth()    #for authentication
 drive = GoogleDrive(gauth) #for drive utilities
+
+#automatically set to True when importing gd.py
+RETURN_RESULT = False
 
 #Current Working Directory
 CURR_PATH = os.getcwd()
@@ -42,7 +44,6 @@ CREDS_DIR = os.path.join(ROOT_PATH, 'api_data')
 
 CRED_MAP_PATH = os.path.join(CREDS_DIR, CRED_MAP)
 CLIENT_SECRETS_PATH = os.path.join(CREDS_DIR, CLIENT_SECRETS)
-
 
 #Deafult info during initialization
 DEFAULT_INFO = {
@@ -748,8 +749,11 @@ def ls(args):
             print("Unexpected arguements : use 'gd ls -h' for help")
             return
     
+    if RETURN_RESULT:
+        file_paths_list, file_ids_list, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=False, tier = 'curr', show_ids=show_ids, default_root=drive_id)
+        return file_paths_list, file_ids_list
+    
     _, _, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
-
 #-----------------------------------------
 def cd(args):
     
@@ -1211,7 +1215,7 @@ if __name__ == "__main__":
     func = args_func.func
     args = args_func.args
     
-    
+    RETURN_RESULT = False
     exec( func + '(args)' )
     """
     except errors.HttpError:
@@ -1221,3 +1225,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
     """
+else:
+    RETURN_RESULT = True
