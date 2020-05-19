@@ -256,7 +256,8 @@ def init(args):
         print("Command unknown.")
         print("Expected commands : gd init [-add]")
         return
-              
+    
+    util.auth_from_cred(gauth, info[parent_name][0])
 #------------------------------------------
 def reset(args):
     
