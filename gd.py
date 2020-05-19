@@ -243,8 +243,7 @@ def init(args):
             return
         
         create_info(info)
-        return
-    
+        
     elif '-add' in args:
         parent_name = check_parent_name()
         create_info(info, parent_name=parent_name, same_user=False)
@@ -257,6 +256,7 @@ def init(args):
         print("Expected commands : gd init [-add]")
         return
     
+    info = check_info()
     util.auth_from_cred(gauth, info[parent_name][0])
 #------------------------------------------
 def reset(args):
