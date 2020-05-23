@@ -1045,6 +1045,7 @@ def rm(args):
     
     elif len(args) == 0:
         parent_name = info['default_parent']
+        [user_name, parent_path, parent_id, drive_name, drive_id] = info[parent_name]
         drive_path = parent_path
     
     else:
@@ -1072,7 +1073,7 @@ def rm(args):
     
     
     if delete_path == '' or delete_id == drive_id:
-        prompt = input("WARNING: The entire drive with be deleted. Continue?[y/n] : ")
+        prompt = input("WARNING: The entire drive will be deleted. Continue?[y/n] : ")
     elif delete_id == parent_id:
         prompt = input("All files in current parent will be deleted. Continue?[y/n]: ")
     
