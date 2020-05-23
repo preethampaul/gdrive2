@@ -85,7 +85,7 @@ def auth_from_cred(gauth, user_name=None):
                 gauth.Refresh()
             except:
                 print('username : ' + user_name)
-                print('Token Expired : authentication required ...')
+                print('Refresh token Expired : authentication required ...')
                 gauth.LocalWebserverAuth()
                 
         else:
