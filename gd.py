@@ -11,7 +11,6 @@ import shutil
 
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from pydrive.apiattr import ApiResourceList
 from apiclient import errors
 import util
 
@@ -19,7 +18,7 @@ import util
 gauth = GoogleAuth()    #for authentication
 drive = GoogleDrive(gauth) #for drive utilities
 
-#automatically set to True when importing gd.py
+#set to True when importing gd.py
 RETURN_RESULT = False
 
 #Current Working Directory
@@ -65,6 +64,8 @@ Overview of initializing/listing fucnctions:\n\
            delete parents, delete authentication data\n\
 'ls'     : list_all files/folders in parent paths, shows registered users and shared drives\n\
 'cd'     : changes parent_path directly without using 'reset' function\n\
+'mkdir'  : creates new folder in the parent or path provided\n\
+'rm'     : creates existing folder/file in the parent or path provided\n\
 \n\
 Overview of push/pull functions:\n\
 ---------------------------------\n\
@@ -73,14 +74,15 @@ Overview of push/pull functions:\n\
 'pull'   : download files/folders from parent_paths\n\n\
 "
 
-
-#UTILITY-FUNCTIONS----------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
+#UTILITY-FUNCTIONS
 #These are used in main command functions
 #---------------------------------------------------------------------------------------
 
 
 def check_user_name(user_name=None):
-    
+    """ Checks if username is valid/ already assigned """
+
     if user_name == None:
         print("The username you set will represent the Google account.")
         user_name = input('username for drive acc. : ')
@@ -138,6 +140,7 @@ def check_user_name(user_name=None):
 
 #-----------------------------------------
 def check_info():
+    """Checks if the info file exists in current working directory"""
     
     info = {}
     
@@ -153,6 +156,8 @@ def create_info(info, parent_path=DEFAULT_INFO[DEFAULT_INFO['default_parent']][1
                 drive_name=DEFAULT_INFO[DEFAULT_INFO['default_parent']][3],
                 drive_id=DEFAULT_INFO[DEFAULT_INFO['default_parent']][4],
                 same_user=False):
+
+    """Creates a new info file"""
     
     if len(info) == 0:
         #default values
@@ -183,6 +188,7 @@ def create_info(info, parent_path=DEFAULT_INFO[DEFAULT_INFO['default_parent']][1
 
 #---------------------------------------------
 def check_parent_name():
+    """Checks if the parent name is valid/ already exists within the current directory"""
     
     with open(INFO_PATH, 'r') as file:
         info = json.load(file)
@@ -212,6 +218,7 @@ def check_parent_name():
     return par
 
 def delete_cred_files():
+    """Deletes all the authentication data except cred_map and client_secrets"""
     file_list = os.listdir(CREDS_DIR)
     file_list.remove(CLIENT_SECRETS)
     file_list.remove(CRED_MAP)
@@ -219,12 +226,43 @@ def delete_cred_files():
     for i in file_list:
         os.remove(os.path.join(CREDS_DIR, i))
 
-#USAGE-FUNCTIONS------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#USAGE-FUNCTIONS:
 #These are the main command functions called from terminal
 #---------------------------------------------------------------------------------------------------
-    
+#--------------------------------------------------------------------------------------------
+# 1. FIlE-VIEWING & INFO-MANAGING FUNCTIONS       
+# The first set of functions are used to manage files within Google drive and to edit the
+# info file in the cwd of local system.
+#--------------------------------------------------------------------------------------------
+        
 def init(args):
+    """
+    Initializes the current working directory.
+    Creates an info file and authenticates the username
     
+    If used for the first time, the username is requested
+    and authentication reqiuested.
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Just creates the .gd folder
+    
+    optional arguements
+    ----------
+    -add : adds new parent to the current directory
+    
+    Examples
+    ----------
+    init([])
+    init(['-add'])
+    
+    """
+
     if '-h' in args or '-help' in args:
         print("gd init [-add]")
         print("\nDescription: creates new parent info")
@@ -256,10 +294,56 @@ def init(args):
         print("Expected commands : gd init [-add]")
         return
     
+    #authenticates the username
     info = check_info()
     util.auth_from_cred(gauth, info[parent_name][0])
+
+
 #------------------------------------------
 def reset(args):
+    """
+    Modifies/deletes the parent information of the current working directory.
+    Deletes authentication data in the local system
+    Resets the current working directory
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Just modifies/deletes the info file or the credentials.
+    
+    Arguements
+    ----------
+    1. reset(['<parent_name>', ])
+        If no arg. after '<parent_name>', it prompts inputs for
+        user_name, path and default prop. of existing parent
+        
+        '-user'   : resets user_name/account in the parent name given.
+        '-path'   : resets path in the parent name given.
+        '-drive'  : resets drive in the parent name given
+                  (useful to set shared drives as roots)
+        '-d'      : deletes parent name given and its path, user_name and id
+        '-default': set parent name given as 'default'
+    
+    2. reset(['-info'])
+        erases all parents and user_names for current directory and re-initializes
+    
+    3. reset(['-user', ])
+        If no arg. after '-user', it erases all parents and
+        user_names for current directory.
+        
+        '<user_name>' : deletes <user_name>'s authentication data in the SYSTEM
+        '-a'          : deletes all users authentication data in the SYSTEM
+    
+    Examples
+    ----------
+    reset(['origin', '-path'])
+    reset(['-info'])
+    reset(['-user', '<user_name>'])
+    
+    """
     
     if '-h' in args or '-help' in args:
         print("gd reset <parent_name> [-user, -path, -drive, -d, -default]")
@@ -274,7 +358,7 @@ def reset(args):
         print("'gd reset <parent_name> -drive': resets drive in the parent name given (useful to set shared drives as roots)")
         print("'gd reset <parent_name> -d'    : deletes parent name given and its path, user_name and id")
         print("'gd reset <parent_name> -default': set parent name given as 'default'")
-        print("'gd reset -info'               : erases all parents and user_names for current directory and re-initializes")
+        print("'gd reset -info'               : erases all parents and user_names for current directory.")
         print("'gd reset -user <user_name>'   : deletes <user_name>'s authentication data in the SYSTEM")
         print("'gd reset -user -a'            : deletes all users authentication data in the SYSTEM")
         
@@ -460,8 +544,6 @@ def reset(args):
                     
                     print(parent_name+": changed root drive to '"+drive_name+"'")
                         
-                        
-                    
                 elif args[1] == '-default':
                     prev_def = info['default_parent']
                     info['default_parent'] = parent_name
@@ -551,9 +633,49 @@ def reset(args):
             else:
                 print("Extra arguements found : use 'gd reset -h' for help.")
                 return        
-                
+         
+
 #-------------------------------------------------------
 def status(args):
+    """
+    Displays parent information, staged paths and usernames registered.
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    type: List. Depends on the arguements passed.  
+    
+    Arguements
+    ----------
+    1. status([])
+        displays parent details and staged files
+        Returns : List with contents as shown below
+                    [<dictionary as in .gdinfo.json>,
+                    <list of existing staged paths>,
+                    <list of missing/non-existing staged paths>]
+        
+    2. status(['-stage'])
+        displays only stage contents
+        Returns : List with contents as shown below
+                    [<list of existing staged paths>,
+                    <list of missing/non-existing staged paths>]
+    
+    3. status(['-user'])
+        displays all users registered on the system
+        Returns : List with contents as shown below
+                    [<user_names>]
+                    
+    Examples
+    ----------
+    status([])
+    status(['-stage'])
+    status(['-user'])
+    
+    """
+
     
     if '-h' in args or '-help' in args:
         print("gd status [-stage]")
@@ -576,30 +698,25 @@ def status(args):
             
     parent_list = list(info.keys())
     parent_list.remove('default_parent')
+    return_list = [info]
     
     if not '-stage' in args:
         print("---------------\nParent dicts :\n---------------")
         for par in parent_list:
             user_name = info[par][0]
-            char_len = len(user_name)
-        
-            stars = user_name[2:-1]
-            """
-            for i in range(char_len-3):
-                stars = stars+'*'
-            """
             
             if par == info['default_parent']:
                 print("// " + par + " // <DEFAULT>")
             else:
                 print("// " + par + " //")
             
-            print('username : ' + user_name[0:2] + stars + user_name[-1])
+            print('username : ' + user_name)
             print("path    : '" + info[par][1] + "'")
             print("id      : '" + info[par][2] + "'")
             print("drive   : '" + info[par][3] + "'")
             print("driveId : '" + info[par][4] + "'\n")
     
+    existing_paths = []
     miss_paths = []
     with open(STAGE_PATH, 'r') as file:
         stage_list = file.readlines()
@@ -613,6 +730,7 @@ def status(args):
         i = i.rstrip()
         if os.path.exists(i):
             print(i)
+            existing_paths.append(i)
         else:
             miss_paths.append(i)
     
@@ -620,9 +738,52 @@ def status(args):
         print("\nThe following staged paths do not exist : \n---")
         for i in miss_paths:
             print(i)
-        
+    
+    if RETURN_RESULT:
+        return_list += [existing_paths, miss_paths]
+        return return_list
+    
+    
 #----------------------------------------------
 def ls(args):
+    """
+    list files/folder names in the parent_path or specified path
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    type: List as shown here
+                [file_paths_list, file_ids_list]
+    
+    Arguements
+    ----------
+    1. ls([])
+        shows files/folders in the <default> parent cwd
+    
+    2. ls(['<parent_name>',])
+        If no arg. after '<parent_name>', it shows files/folders in the <parent_name> cwd
+        
+        '<path>' : shows files/folders in <path> in the <parent_name>
+        '-a'     : shows files/folders in parent_name and/or path with ids
+            
+    3. ls(['-users'])
+        shows all usernames registered in the SYSTEM
+        
+    4. ls(['-shared', '<username>'])
+        shows all shared drives in <user_name>
+        
+    Examples
+    ----------
+    ls([])
+    ls(['origin', '-path', '-a'])
+    ls(['-info'])
+    ls(['-users'])
+    ls(['-shared', '<username>'])
+    
+    """
     
     if '-h' in args or '-help' in args:
         print("gd ls [<parent_name> [<path>]] [-a, -users, shared]")
@@ -755,8 +916,39 @@ def ls(args):
         return file_paths_list, file_ids_list
     
     _, _, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
+
+
 #-----------------------------------------
 def cd(args):
+    """
+    Changes parent_paths (the cwd paths of parents)
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Updates the .gdinfo.json file
+    
+    Arguements
+    ----------
+    The <path> being passed need no be limited to be within the parent_path folder.
+    It can to any file/folder within current driveID.
+    It can be relative to the parent_path or can be absolute wrt to driveId.
+    
+    1. cd(['<path>'])
+        changes cwd to <path> for default parent
+    
+    2. cd(['<parent_name>', '<path>'])
+        changes cwd to <path> for <parent_name>
+        
+    Examples
+    ----------
+    cd(['<path>'])
+    cd(['<parent_name>', '<path>'])
+    
+    """
     
     if '-h' in args or '-help' in args:
         print("gd cd [<parent_name>] path")
@@ -808,14 +1000,46 @@ def cd(args):
 
 #------------------------------
 def rm(args):
+    """
+    Deletes the file/folder at specified path in Google Drive
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Edits the folders/files on Google drive
+    
+    Arguements
+    ----------
+    The <path> being passed need no be limited to be within the parent_path folder.
+    It can to any file/folder within current driveID.
+    It can be relative to the parent_path or can be absolute wrt to driveId.
+    
+    1. rm(['<path>'])
+        trashes files/folders at the parent_path in <default> parent
+    
+    2. rm(['<parent_name>', '<path>'])
+        trashes files/folders in <path> in <parent_name> parent
+        
+    3. rm(['<parent_name>', '<path>, '-f'])
+        Permanently deletes files/folders in <path> in the <parent_name>
+        
+    Examples
+    ----------
+    rm(['<parent_name>', '<path>'])
+    rm(['<parent_name>', '<path>, '-f'])
+    
+    """
     
     if '-h' in args or '-help' in args:
         print("gd rm [<parent_name>, <path>] [-f]")
-        print("\nDescription: lists files in parents")
+        print("\nDescription: deletes the file/folder at specified path")
         print("------\n")
-        print("'gd rm <path>'       : trashes files/folders at the parent_path in <parent_name> parent")
-        print("'gd rm [parent_name] <path>': trashes files/folders in <path> in <default> parent")
-        print("'gd rm [parent_name] [path] -f': deletes files/folders in <path> in the <parent_name>")
+        print("'gd rm <path>'       : trashes files/folders at the parent_path in <default> parent")
+        print("'gd rm [parent_name] <path>': trashes files/folders in <path> in <parent_name> parent")
+        print("'gd rm [parent_name] [path] -f': permanently deletes files/folders in <path> in the <parent_name>")
         return
         
     info = check_info()
@@ -889,11 +1113,42 @@ def rm(args):
     else:
         print("Delete action aborted.")
         
+    
 #----------------------------------        
 def mkdir(args):
+    """
+    Makes an empty folder in specified path
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Edits the folders/files on Google drive
+    
+    Arguements
+    ----------
+    The <path> being passed need no be limited to be within the parent_path folder.
+    It can to any file/folder within current driveID.
+    It can be relative to the parent_path or can be absolute wrt to driveId.
+    
+    1. mkdir(['<path>'])
+        creates folder at the path in default parent
+    
+    2. mkdir(['<parent_name>', '<path>'])
+        creates folder at the path in <parent_name> parent
+        
+    Examples
+    ----------
+    mkdir(['<path>'])
+    mkdir(['<parent_name>', '<path>'])
+    
+    """    
+
     if '-h' in args or '-help' in args:
         print("gd mkdir [<parent_name>, <path>]")
-        print("\nDescription: lists files in parents")
+        print("\nDescription: makes an empty folder in specified path")
         print("------\n")
         print("'gd mkdir <path>'       : creates folder at the path in default parent")
         print("'gd mkdir [parent_name] <path>': creates folder at the path in <parent_name> parent")
@@ -945,17 +1200,49 @@ def mkdir(args):
     
     return
 
-#-----------------------------------------------------------------------------
-#PUSH/PULL FUNCTIONS:
-#-----------------------------------------------------------------------------
+
+#----------------------------------------------------------------------------------------
+# 2. PUSH/PULL FUNCTIONS:
+# This set of functions used to download/upload files/folder from/to Google Drive
+#----------------------------------------------------------------------------------------
 def add(args):
+    """
+    Adds paths to stage for pushing to Google Drive
+    This function just adds the paths to .gdstage file. It doesn't push any file.
+    For pushing, use function push()
     
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Just adds paths to .gdstage file.
+    
+    Arguements
+    ----------
+    The <path> must be in local system
+    
+    1. add(['<path1>', '<path2>', '<path3>', ...])
+        adds multiple <path>s to the gd stage
+    
+    2. add(['-clear'])
+        clears all paths in the stage
+        
+    Examples
+    ----------
+    add(['<path1>', '<path2>', '<path3>', ...])
+    add(['-clear'])
+    
+    """ 
+
     if '-h' in args or '-help' in args:
         print("gd add <paths>,[-clear]")
         print("\nDescription: adds file to stage")
         print("------\n")
         print("'gd add <paths>' : adds multiple <path>s to the gd stage")
         print("'gd add -clear'  : clears the stage")
+        print("\nFor pushing, try 'gd push'")
         
         return
     
@@ -989,18 +1276,50 @@ def add(args):
      
 #-----------------------------------------
 def push(args):
+    """
+    Pushes/uploads files into path of the parent_name specified.
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Edits the folders/files on Google drive
+    
+    Arguements
+    ----------
+    1. push([])
+        pushes staged files to default parent
+    
+    2. push(['<parent_name1>', '<parent_name2>', '<parent_name3>', ... ])
+        pushes staged files to <parent_name> folder
+    
+    Optional arguements if pushed files already exist on drive
+    ----------
+    '-c' :  creates copy
+    '-s' :  skip
+    '-o' :  overwrites existing file
+    '-i' :  prompt for each file  (DEFAULT)
+    
+    Examples
+    ----------
+    push(['-i'])
+    push(['<parent_name1>', '<parent_name2>', '-s'])
+    
+    """
     
     if '-h' in args or '-help' in args:
         print("gd push [-s,-c,-o,-i] [parent_names]]")
         print("\nDescription: pushes/uploads files into drive")
         print("------\n")
-        print("'gd push' : pushed staged files to default parent")
+        print("'gd push'                : pushes staged files to default parent")
         print("'gd push <parent_name>'  :  ... to <parent_name> folder")
         print("\nUse the optional arguements if pushed files already exist on drive:")
-        print("-c    :  creates copy (DEFAULT)")
+        print("-c    :  creates copy")
         print("-s    :  skip")
         print("-o    :  overwrites existing file")
-        print("-i    :  prompt each time")
+        print("-i    :  prompt for each file (DEFAULT)")
         
         
         return
@@ -1060,6 +1379,7 @@ def push(args):
                 miss_paths.append(path)
         
     else:
+        
         for par in args:
             if not par in parent_list:
                 print("'" + par + "' : parent name not defined before.")
@@ -1088,6 +1408,54 @@ def push(args):
  
 #-----------------------------------------        
 def pull(args):
+    """
+    Pulls/downloads files from drive
+    
+    Parameters
+    ----------
+    args : list of arguement strings.
+    
+    Returns
+    ----------
+    None. Edits the folders/files on local system
+    
+    Arguements
+    ----------
+    The <path> being passed need no be limited to be within the parent_path folder.
+    It can to any file/folder within current driveID.
+    It can be relative to the parent_path or can be absolute wrt to driveId.
+    
+    1. pull([])
+        pdownloads complete default parent folder to current dir.
+    
+    2. pull(['<parent_name>'])
+        downloads complete <parent_name> folder to current dir.
+    
+    3. pull(['<parent_name>', '<path>'])
+        downloads drive_path into current dir. If <parent_name> is not provided, then
+        <path> is looked from default parent's username if absolute and parent_path
+        if relative.
+        
+    4. push(['<parent_name>', '-id', '<path_id>'])
+        downloads from path_id into current dir. If <parent_name> is not provided,
+        it looks into default parent's username and driveId to locate <path_id>
+        
+    2. push(['<parent_name>'])
+        downloads complete <parent_name> folder to current dir.
+    
+    Optional arguements if pulled files already exist on local system
+    ----------
+    '-c' :  creates copy
+    '-s' :  skip
+    '-o' :  overwrites existing file
+    '-i' :  prompt for each file (DEFAULT)
+    
+    Examples
+    ----------
+    push(['-i'])
+    push(['<parent_name1>', '<parent_name2>', '-s'])
+    
+    """
     
     if '-h' in args or '-help' in args:
         print("gd pull [-s,-c,-o,-i] [-id, -dest] [parent_names] [drive_path] [save_path]")
@@ -1096,15 +1464,15 @@ def pull(args):
         print("'gd pull'                : downloads complete default parent folder to current dir.")
         print("'gd pull <parent_name>'  :  downloads complete <parent_name> folder to current dir.")
         print("\n'gd pull [<parent_name>] <drive_path>'  :  downloads drive_path into current dir.")
-        print("'gd pull [<parent_name>] -id <drive_id>'  :  downloads from drive_id into current dir.")
+        print("'gd pull [<parent_name>] -id <path_id>'  :  downloads from path_id into current dir.")
         print("'gd pull [<parent_name>] -dest <save_path>'  :  downloads complete parent_path into <save_path>")
         print("\n'gd pull [<parent_name>] <drive_path> <save_path>'  :  downloads drive_path into save_path")
 
-        print("\nUse the optional arguements if pushed files already exist on drive:")
-        print("-c    :  creates copy (DEFAULT)")
+        print("\nUse the optional arguements if pulled files already exist on local system:")
+        print("-c    :  creates copy")
         print("-s    :  skip")
         print("-o    :  overwrites existing file")
-        print("-i    :  prompt each time")
+        print("-i    :  prompt for each file (DEFAULT)")
         
         return
     
@@ -1165,7 +1533,7 @@ def pull(args):
     #Initializing drive_path params
     drive_path = parent_path
     drive_path_id = None
-    save_path = CURR_PATH #default
+    save_path = CURR_PATH #default save path is current working directory
     
     if len(args)>0:
         
@@ -1199,8 +1567,10 @@ def pull(args):
     
     util.download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
 
-#----------------------
-#COMMAND-LINE INTERACTION----------------------------------------
+
+#-------------------------------------------------------------------------------------------------
+#COMMAND-LINE INTERACTION
+#-------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     #optional arguements
