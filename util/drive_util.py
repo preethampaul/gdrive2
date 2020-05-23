@@ -12,6 +12,7 @@ from apiclient import errors
 DEFAULT_ROOT = 'root'
 
 def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
+    """parses path into an absolute drive path"""
     
     if "'" in path or "\"" in path:
         path = path[1:-1]
@@ -46,6 +47,7 @@ def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
             break
     
     base_path, _ = get_path_from_id(drive, parent_id_i, default_root=default_root)
+        
     if len(path_list)==0:
         return base_path
     
@@ -156,6 +158,8 @@ def get_path_from_id(drive, file_id, default_root=DEFAULT_ROOT):
         file_id = file['parents'][0]['id']
         
     ids.append(default_root)
+    if "My Drive" in path:
+        path.remove("My Drive")
     
     return '/'.join(path[::-1]), ids[::-1]
 
@@ -363,6 +367,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
         elif system == 'drive':
             file = drive.CreateFile({'id' : folder_id})
             fetchMetadata(file)
+            print(file)
             
             if 'folder' in file['mimeType']:
                 #if folder_path leads to a folder, list contents
