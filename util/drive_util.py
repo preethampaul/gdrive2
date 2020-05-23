@@ -367,7 +367,6 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
         elif system == 'drive':
             file = drive.CreateFile({'id' : folder_id})
             fetchMetadata(file)
-            print(file)
             
             if 'folder' in file['mimeType']:
                 #if folder_path leads to a folder, list contents
@@ -468,7 +467,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
             except:
                 list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'not-folder', default_root=default_root)
                 init_folder_id = list_path_ids[-1]
-    
+                
     total_count = list_all_contents_recur(init_folder_path, init_folder_id, paths_list, ids_list, 0)    
     
     return paths_list, ids_list, total_count
@@ -737,7 +736,7 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     #if drive_path leads to a file
     if len(paths_list)==1 and not (paths_list[0][0] == '\\' and paths_list[0][0] == '/'):
         prompt_chg = download_file_by_id(ids_list[0], download_path, drive, prompt=prompt)
-        print("Done!")
+        print("Done!\n------------\n")
         return 
     
     prompt_chg = None
