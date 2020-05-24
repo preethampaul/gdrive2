@@ -2,10 +2,10 @@
 #Preetham's pc : My laptop generates a particular folder whernever I use
 #jupyter notebook, so ignoring this folder
 Preetham
-util/GoogleDriveFile_example.txt
-util/GoogleDriveFile_example_shareddrive.txt
-api_data/client_secrets.json
-api_data
+gd/util/GoogleDriveFile_example.txt
+gd/util/GoogleDriveFile_example_shareddrive.txt
+gd/api_data/client_secrets.json
+gd/api_data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

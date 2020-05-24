@@ -7,7 +7,7 @@ Created on Mon Feb 24 13:21:48 2020
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
-import util
+import gd.util
 
 gauth = GoogleAuth()
 util.auth_from_cred(gauth)
