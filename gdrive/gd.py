@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 22 15:43:40 2020
-@author: Preetham
-"""
+
 import argparse
 import os
 import json
@@ -11,9 +7,16 @@ import shutil
 
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-import util
-from util.paths import *
 
+if __name__ == "__main__":
+    from paths import *
+    from auth_util import *
+    from drive_util import *
+else:
+    from .paths import *
+    from .auth_util import *
+    from .drive_util import *
+    
 #Important objects for gdrive
 gauth = GoogleAuth()    #for authentication
 drive = GoogleDrive(gauth) #for drive utilities
@@ -39,21 +42,21 @@ help_text = "\n\
 <args> = arguements\n\n\
 Overview of initializing/listing fucnctions:\n\
 --------------------------------\n\
-'init'   : initialize gdrive, add new parents to initialized dir.\n\
-'status' : show parents list, show stage list\n\
-'reset'  : change default parent, client secrets\n\
-           change user_names, paths of parents, parent root folders (Ex: shared drives)\n\
-           delete parents, delete authentication data,\n\
-'ls'     : list_all files/folders in parent paths, shows registered users, clients and shared drives\n\
+'init'   : initialize gdrive, add new parents to initialized dir., add new clients\n\
+'status' : show parents list, show stage list, show users and clients list\n\
+'reset'  : changes default parent, client secrets\n\
+           changes parent information like user_names, paths, root folders (Ex: shared drives), clients\n\
+           deletes parents, delete authentication data,\n\
+'ls'     : lists all files/folders in parent paths, shows registered usernames and their shared drives, clients\n\
 'cd'     : changes parent_path directly without using 'reset' function\n\
 'mkdir'  : creates new folder in the parent or path provided\n\
 'rm'     : creates existing folder/file in the parent or path provided\n\
 \n\
 Overview of push/pull functions:\n\
 ---------------------------------\n\
-'add'    : add paths to the stage, clear stage\n\
-'push'   : upload files/folders to parent_paths\n\
-'pull'   : download files/folders from parent_paths\n\n\
+'add'    : adds paths to the stage, clear stage\n\
+'push'   : uploads files/folders to parent_paths\n\
+'pull'   : downloads files/folders from parent_paths\n\n\
 "
 
 #---------------------------------------------------------------------------------------
@@ -103,7 +106,7 @@ def check_user_name(user_name=None):
                 prob = True
                 
     
-        if util.check_creds_list(user_name, check_only=True):
+        if check_creds_list(user_name, check_only=True):
             print('This account already registered.')
             prob = False
             exists_bool = True
@@ -143,7 +146,7 @@ def create_info(info, parent_path=DEFAULT_INFO[DEFAULT_INFO['default_parent']][1
     
     if len(info) == 0:
         #default values
-        util.create_folders_path(INFO_FOLDER)
+        create_folders_path(INFO_FOLDER)
         with open(STAGE_PATH, 'w') as file:
             pass
         
@@ -161,9 +164,9 @@ def create_info(info, parent_path=DEFAULT_INFO[DEFAULT_INFO['default_parent']][1
     if not same_user:
         info[parent_name][0], _ = check_user_name()
         
-    util.auth_from_cred(gauth, info[parent_name][0], info[parent_name][5])
+    auth_from_cred(gauth, info[parent_name][0], info[parent_name][5])
     drive = GoogleDrive(gauth)
-    info[parent_name][2] = util.get_path_ids(parent_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
+    info[parent_name][2] = get_path_ids(parent_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
     
     with open(INFO_PATH, 'w') as file:
         json.dump(info, file)
@@ -201,6 +204,9 @@ def check_parent_name():
 
 #--------------------------------------------
 def check_client(client=None):
+    
+    #List of client files
+    CLIENT_SECRETS_LIST = os.listdir(CLIENT_SECRETS_DIR)
     
     #When client is not passed as arguement
     if client==None:
@@ -267,7 +273,8 @@ def init(args):
     
     optional arguements
     ----------
-    '-add' / -add : adds new parent to the current directory
+    '-add' / -add                 : adds new parent to the current directory
+    '--add-client' / --add-client : registers new client secrets file.
     
     Examples
     ----------
@@ -288,7 +295,32 @@ def init(args):
         create_info(info, parent_name=parent_name, same_user=False)
         print(parent_name + " : new parent created.")
         return
+    
+    if '--add-client' in args:
+        #List of client files
+        CLIENT_SECRETS_LIST = os.listdir(CLIENT_SECRETS_DIR)
+        
+        client_path = input("Enter absolute path to the new client secrets file: ")
+        client = input("Enter new client <name> as in <name>.json with no spaces : ")
+        
+        valid_client = False
+        
+        while not valid_client:
             
+            if '.' in client:
+                client = input("Enter client's name without file extension:")
+                continue
+            
+            if client + '.json' in CLIENT_SECRETS_LIST:
+                print("Client name: " + client + " already exists.")
+                client = input("Choose another name: ")
+                continue
+                
+            valid_client = True
+            
+        copy_client_secrets(client_path, client)
+        return
+        
     if not len(args) == 0:
         print("Command unknown.")
         print("Expected commands : gd init [-add]")
@@ -303,7 +335,7 @@ def init(args):
         create_info(info)
     
     else:
-        util.auth_from_cred(gauth, info[parent_name][0], info[parent_name][5])
+        auth_from_cred(gauth, info[parent_name][0], info[parent_name][5])
 
 
 #------------------------------------------
@@ -343,11 +375,16 @@ def reset(args):
         erases all parents and user_names for current directory and re-initializes
     
     3. reset(['-user', ]) / gd reset -user
-        If no arg. after '-user', it erases all parents and
-        user_names for current directory.
+        required arguements after '-user' / -user :
         
         '<user_name>' / <user_name> : deletes <user_name>'s authentication data in the SYSTEM
         '-a'          / -a          : deletes all users authentication data in the SYSTEM
+        
+    4. reset(['-client', ]) / gd reset -client
+        required arguements after '-client' / -client :
+        
+        '<client_name>' / <client_name> : deletes <client_name>.json
+        '-a'          / -a              : deletes all client secrets files
         
     
     Examples
@@ -445,7 +482,37 @@ def reset(args):
             else:
                 print("Unexpected/invalid no. of arguements passed. Use 'gd reset -h' for help.")
                 return
-                
+        
+        if parent_name == '-client':
+            CLIENT_SECRETS_LIST = os.listdir(CLIENT_SECRETS_DIR)
+            if len(CLIENT_SECRETS_LIST) == 0:
+                print("No client secret files found.")
+                return
+            
+            if not len(args)==2:
+                print("Invalid no. of arguements passed. Use 'gd reset -h' for help.")
+                return
+            
+            client = args[1]
+            client_file = client+'.json'
+            
+            if client == '-a':
+                shutil.rmtree(CLIENT_SECRETS_DIR)
+                os.mkdir(CLIENT_SECRETS_DIR)
+                return
+            
+            if '.' in client:
+                print("file extension should not be included in client name")
+                return
+            
+            if client_file in CLIENT_SECRETS_LIST:
+                os.remove(os.path.join(CLIENT_SECRETS_DIR, client_file))
+                print(client_file + " removed from " + CLIENT_SECRETS_DIR)
+                return
+            else:
+                print(client_file + " doesn't exist.")
+                return
+        
         #arguement is not a parent name
         if not parent_name in parents_list:
             if parent_name[0] != '-':
@@ -504,7 +571,7 @@ def reset(args):
                         print("Use 'gd reset' to change username or delete this parent.")
                         return
             
-                    util.auth_from_cred(gauth, user_name, info[parent_name][5])
+                    auth_from_cred(gauth, user_name, info[parent_name][5])
                     drives_list = gauth.service.drives().list().execute()['items']
                     drive_names_list = [dic['name'] for dic in drives_list]
                     drive_ids_list = [dic['id'] for dic in drives_list]
@@ -694,12 +761,10 @@ def status(args):
         return
     
     if '-users' in args:
-        ls(['-users'])
-        return
+        return ls(['-users'])
     
     if '-clients' in args:
-        ls(['-clients'])
-        return
+        return ls(['-clients'])
     
     info = check_info()
     
@@ -711,7 +776,7 @@ def status(args):
     parent_list.remove('default_parent')
     return_list = [info]
     
-    if not '-stage' in args:
+    if not '-stage' in args and not RETURN_RESULT:
         print("---------------\nParent dicts :\n---------------")
         for par in parent_list:
             user_name = info[par][0]
@@ -733,27 +798,32 @@ def status(args):
     with open(STAGE_PATH, 'r') as file:
         stage_list = file.readlines()
     
-    if len(stage_list)==0:
-        print("No files/folders staged.")
-        return
+    if not RETURN_RESULT:
+        if len(stage_list)==0:
+            print("No files/folders staged.")
+            return
+        
+        print("---------------\nStaged paths :\n---------------")
     
-    print("---------------\nStaged paths :\n---------------")
     for i in stage_list:
         i = i.rstrip()
         if os.path.exists(i):
-            print(i)
+            if not RETURN_RESULT:
+                print(i)
             existing_paths.append(i)
         else:
             miss_paths.append(i)
     
-    if not len(miss_paths)==0:
-        print("\nThe following staged paths do not exist : \n---")
-        for i in miss_paths:
-            print(i)
+    if not RETURN_RESULT:
+        if not len(miss_paths)==0:
+            print("\nThe following staged paths do not exist : \n---")
+            for i in miss_paths:
+                print(i)
+        
+        return
     
-    if RETURN_RESULT:
-        return_list += [existing_paths, miss_paths]
-        return return_list
+    return_list += [existing_paths, miss_paths]
+    return return_list
     
     
 #----------------------------------------------
@@ -825,7 +895,7 @@ def ls(args):
                 print("The username : '" + user_name + "'is not registered. Add a new parent using 'gd init -add' to register username.")
                 return
             
-            util.auth_from_cred(gauth, user_name)
+            auth_from_cred(gauth, user_name)
             drives_list = gauth.service.drives().list().execute()['items']
             
             if RETURN_RESULT:
@@ -866,6 +936,8 @@ def ls(args):
         return
     
     if '-clients' in args:
+        #List of client files
+        CLIENT_SECRETS_LIST = os.listdir(CLIENT_SECRETS_DIR)
         clients_list = [re.split(".json", i)[0] for i in CLIENT_SECRETS_LIST]
         
         if RETURN_RESULT:
@@ -893,7 +965,7 @@ def ls(args):
     if len(args)==0:
         parent_name = info['default_parent']
         [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
-        util.auth_from_cred(gauth, user_name, client)
+        auth_from_cred(gauth, user_name, client)
         drive = GoogleDrive(gauth)
     
     else:
@@ -910,7 +982,7 @@ def ls(args):
                 return
             
             [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]  
-            util.auth_from_cred(gauth, user_name, client)
+            auth_from_cred(gauth, user_name, client)
             drive = GoogleDrive(gauth)
             
             #---------------DEBUGGING REQ---------------------
@@ -923,9 +995,9 @@ def ls(args):
             if drive_path=='/':
                 drive_path = '~'
             #----------------------------------------------------
-            drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+            drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
             
-            new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
+            new_parent_id = get_path_ids(drive_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
             new_parent_path = drive_path            
             
             parent_path = new_parent_path
@@ -939,7 +1011,7 @@ def ls(args):
                 return
             else:
                 [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
-                util.auth_from_cred(gauth, user_name, client)
+                auth_from_cred(gauth, user_name, client)
                 drive = GoogleDrive(gauth)
         else:
             
@@ -947,10 +1019,10 @@ def ls(args):
             return
     
     if RETURN_RESULT:
-        file_paths_list, file_ids_list, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=False, tier = 'curr', show_ids=show_ids, default_root=drive_id)
+        file_paths_list, file_ids_list, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=False, tier = 'curr', show_ids=show_ids, default_root=drive_id)
         return file_paths_list, file_ids_list
     
-    _, _, _ = util.list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
+    _, _, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
 
 
 #-----------------------------------------
@@ -1005,7 +1077,7 @@ def cd(args):
         drive_path = args[1]
 
     [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]  
-    util.auth_from_cred(gauth, user_name, client)
+    auth_from_cred(gauth, user_name, client)
     drive = GoogleDrive(gauth)
     
     drive_path = '/'.join(re.split('[\\\\/]', drive_path))
@@ -1020,9 +1092,9 @@ def cd(args):
     if drive_path=='/':
         drive_path = '~'
     #----------------------------------------------------
-    drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+    drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
     
-    new_parent_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
+    new_parent_id = get_path_ids(drive_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
     new_parent_path = drive_path
             
     info[parent_name][:5] = [user_name, new_parent_path, new_parent_id, drive_name, drive_id]
@@ -1109,7 +1181,7 @@ def rm(args):
         print("Extra arguements passed. Try 'gd rm -h'.")
         return
     
-    util.auth_from_cred(gauth, user_name, client)
+    auth_from_cred(gauth, user_name, client)
     drive = GoogleDrive(gauth)
     prompt = 'y'
     
@@ -1123,9 +1195,9 @@ def rm(args):
     if drive_path=='/':
         drive_path = '~'
     #----------------------------------------------------
-    drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+    drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
     
-    delete_id = util.get_path_ids(drive_path, drive, create_missing_folders = False, relative_id = None, path_to = 'all', default_root=drive_id)[-1]
+    delete_id = get_path_ids(drive_path, drive, create_missing_folders = False, path_to = 'all', default_root=drive_id)[-1]
     delete_path = drive_path
     
     
@@ -1135,7 +1207,7 @@ def rm(args):
         prompt = input("All files in current parent will be deleted. Continue?[y/n]: ")
     
     if prompt=='y':
-        util.delete(drive, drive_path=delete_path, drive_path_id=delete_id, hard_delete=hard_delete, default_root=drive_id)
+        delete(drive, drive_path=delete_path, drive_path_id=delete_id, hard_delete=hard_delete, default_root=drive_id)
     else:
         print("Delete action aborted.")
         
@@ -1205,7 +1277,7 @@ def mkdir(args):
                 return
         
         [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]  
-        util.auth_from_cred(gauth, user_name, client)
+        auth_from_cred(gauth, user_name, client)
         drive = GoogleDrive(gauth)
         
         #---------------DEBUGGING REQ---------------------
@@ -1218,9 +1290,9 @@ def mkdir(args):
         if drive_path=='/':
             drive_path = '~'
         #----------------------------------------------------
-        drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+        drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
         
-        _ = util.get_path_ids(drive_path, drive, create_missing_folders = True, relative_id = None, path_to = 'folder', default_root=drive_id)[-1]
+        _ = get_path_ids(drive_path, drive, create_missing_folders = True, path_to = 'folder', default_root=drive_id)[-1]
     
     return
 
@@ -1377,16 +1449,16 @@ def push(args):
         [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]  
         
         print("---------------\n" + parent_name + "\n---------------")
-        util.auth_from_cred(gauth, user_name, client)
+        auth_from_cred(gauth, user_name, client)
         drive = GoogleDrive(gauth)
         
         for path in stage_list:
             path = path.rstrip()
             if os.path.exists(path):
                 if os.path.isdir(path):
-                    util.upload(path, parent_path, drive, prompt=prompt, default_root=drive_id)
+                    upload(path, parent_path, drive, prompt=prompt, default_root=drive_id)
                 else:
-                    util.upload_file_by_id(path, parent_id, drive, prompt=prompt)
+                    upload_file_by_id(path, parent_id, drive, prompt=prompt)
             else:
                 miss_paths.append(path)
         
@@ -1400,16 +1472,16 @@ def push(args):
             [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[par]
             
             print("---------------\n" + par + "\n---------------")
-            util.auth_from_cred(gauth, user_name, client)
+            auth_from_cred(gauth, user_name, client)
             drive = GoogleDrive(gauth)
             
             for path in stage_list:
                 path = path.rstrip()
                 if os.path.exists(path):
                     if os.path.isdir(path):
-                        util.upload(path, parent_path, drive, prompt=prompt, default_root=drive_id)
+                        upload(path, parent_path, drive, prompt=prompt, default_root=drive_id)
                     else:
-                        util.upload_file_by_id(path, parent_id, drive, prompt=prompt)
+                        upload_file_by_id(path, parent_id, drive, prompt=prompt)
                 else:
                     miss_paths.append(path)
                     
@@ -1514,7 +1586,7 @@ def pull(args):
         parent_name = info['default_parent']
         
     [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
-    util.auth_from_cred(gauth, user_name, client)
+    auth_from_cred(gauth, user_name, client)
     drive = GoogleDrive(gauth)
     
     #Initializing drive_path params
@@ -1558,7 +1630,7 @@ def pull(args):
         if drive_path=='/':
             drive_path = '~'
         #----------------------------------------------------
-        drive_path = util.parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+        drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
         
         #parsing save_path
         if "'" in save_path or "\"" in save_path:
@@ -1571,7 +1643,7 @@ def pull(args):
             print("The path : '" + save_path + "' doesn't exist.")
             return
         
-        util.download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
+        download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
     
 
 #-------------------------------------------------------------------------------------------------
@@ -1579,8 +1651,7 @@ def pull(args):
 #-------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    #optional arguements
-    opt_args=[]
+    #When gd.py is called from command line
     
     #Parsing Command-line arguements
     parser = argparse.ArgumentParser(description=help_text, formatter_class=argparse.RawTextHelpFormatter)

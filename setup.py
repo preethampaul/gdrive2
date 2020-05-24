@@ -6,11 +6,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="gd",
-    version="0.0.1",
+    name="gdrive",
+    version="0.2.5",
     author="Preetham Paul",
     author_email="preeth@uw.edu",
-    description="File management for Google Drive based on PyDrive",
+    description="File management tools for Google Drive based on PyDrive",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/preethampaul/gdrive",
