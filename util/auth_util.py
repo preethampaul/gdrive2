@@ -1,16 +1,8 @@
 import os
 import uuid
 import json
+from .paths import *
 
-UTIL_PATH = os.path.dirname(__file__)
-ROOT_PATH = os.path.dirname(UTIL_PATH)
-CLIENT_SECRETS = 'client_secrets.json'
-CRED_MAP = 'creds'
-CREDS_DIR = os.path.join(ROOT_PATH, 'api_data')
-
-CRED_MAP_PATH = os.path.join(CREDS_DIR, CRED_MAP)
-CLIENT_SECRETS_PATH = os.path.join(CREDS_DIR, CLIENT_SECRETS)
-#gauth must be a GoogleAuth() object
 
 def check_creds_list(user_name, check_only=False):
     
@@ -48,7 +40,7 @@ def check_creds_list(user_name, check_only=False):
             return cred_id
         
 
-def auth_from_cred(gauth, user_name=None):
+def auth_from_cred(gauth, user_name=None, client=DEFAULT_CLIENT):
     """
     This function stores the authentication information
     in the gauth object
@@ -64,7 +56,15 @@ def auth_from_cred(gauth, user_name=None):
     if user_name==None:
         user_name = 'no_user'
     
-    #creating for creds_path
+    #Checking client_secrets
+    CLIENT_FILE = client +'.json'
+    if CLIENT_FILE in CLIENT_SECRETS_LIST:
+        CLIENT_SECRETS_PATH = os.path.join(CLIENT_SECRETS_DIR, CLIENT_FILE)
+    else:
+        print(CLIENT_FILE + " not found.")
+        raise Exception("Client secrets json file not found. Check "+ CLIENT_SECRETS_DIR)
+    
+    #creating creds_path
     creds_id = check_creds_list(user_name)
     creds_path = os.path.join(CREDS_DIR, creds_id)
         
@@ -97,7 +97,7 @@ def auth_from_cred(gauth, user_name=None):
     
     else:
         if not os.path.exists(CLIENT_SECRETS_PATH):
-            print("client secrets file not found. Download and paste it in : " + os.path.join(ROOT_PATH, 'api_data'))
+            print("client secrets file not found. Download and paste it in : " + CLIENT_SECRETS_DIR)
             return
         
         else:
