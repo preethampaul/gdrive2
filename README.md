@@ -111,16 +111,16 @@ This is the name of the drive in which the ***parent_path*** is located. Each go
 #### client_name
 
 To use Google Drive API, an application has to be created using the [Google Cloud Console](console.cloud.google.com). 
-> 1. Open the console and create a new project.
-> 2. After assigning name and organisation to the project, go to **APIs & Services --> Dashboard**
-> 3. Go to **OAuth consent screen** and configure a consent screen. Assign an application name and other details.
-> 4. Go to **Credentials --> Create Credentials --> OAuth client ID**
-> 5. For Application type, use **Web Application** and assign a name to it.
-> 6. For Authorized java script origins, use:
->>> <pre><code>http://localhost:8080</pre></code>
->>For Authorized redirect URIs, use:
->>> <pre><code>http://localhost:8080/</pre></code>
-> 7. Click "Create"
+1. Open the console and create a new project.
+2. After assigning name and organisation to the project, go to **APIs & Services --> Dashboard**
+3. Go to **OAuth consent screen** and configure a consent screen. Assign an application name and other details.
+4. Go to **Credentials --> Create Credentials --> OAuth client ID**
+5. For Application type, use **Web Application** and assign a name to it.
+6. For Authorized java script origins, use:
+<pre><code>http://localhost:8080</pre></code>
+&nbsp;&nbsp;&nbsp;For Authorized redirect URIs, use:
+<pre><code>http://localhost:8080/</pre></code>
+7. Click "Create"
 
 Once credentials are created, they can be downloaded as a ***.json*** file with the name ***client_secrets<some_long_id>.json***.
 This file can be renamed as <***client_name***>.json and can be used to access parent_path. If gdrive is being used for the time, it asks the user to show the file location of a client secrets file and creates a default file - ***client_secrets.json***. Later, more such files can be added with different ***client_names*** as <client_name1>.json, <someother_user_specified_name>.json etc. Each parent can be assigned a ***client_name*** different from the default name - ***client_secrets***.
