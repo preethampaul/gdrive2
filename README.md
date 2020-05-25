@@ -21,7 +21,7 @@ Use the following command to install the package.
 
 > ```conda install -c conda-forge pydrive```
 
-2. A client secrets file is required. Read [pydrive's documentation](https://pythonhosted.org/PyDrive/quickstart.html)
+2. A client secrets file is required. Read [client_name](#client_name) below.
 
 ## Data structuring
 
