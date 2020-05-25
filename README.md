@@ -73,11 +73,11 @@ For example, the user can initialize a directory and define ***parents*** as sho
 
 The **default_parent** has a string as its value, which is one of the parent_names.
 
-#### username
+### username
 
 The ***usernames*** used in parents are different from the google usernames (like in <google_username>@gmail.com). Each ***username*** corresponds to a single <google_username>, but each <google_username> can have multiple ***usernames***. A ***username*** is basically a nickname the user gives to their google account for easy pushing and pulling files. Once, a ***username*** is defined, the ***username*** can be used for other parents in different directories to use the same google account.
 
-#### parent_path and parent_id
+### parent_path and parent_id
 
 The ***parent_path*** is the path to a folder in drive in the google account registered with the nickname ***username***. For example, assume a drive like this:
 
@@ -104,11 +104,11 @@ Note that the root folder here is ***My Drive***, which will not be included in 
 
 Each file or folder in google drive has an ***ID***. See [this](https://developers.google.com/drive/api/v3/reference/files) to know more about file metadata in google drive. A ***parent_id*** is the ID of the folder at the ***parent_path***.
 
-#### drive_name and drive_id
+### drive_name and drive_id
 
 This is the name of the drive in which the ***parent_path*** is located. Each google account can have multiple shared drives along with the main ***"My Drive"***. ***drive_id*** is the ID of this drive.
 
-#### client_name
+### client_name
 
 To use Google Drive API, an application has to be created using the [Google Cloud Console](console.cloud.google.com). 
 1. Open the console and create a new project.
