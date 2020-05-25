@@ -3,6 +3,7 @@
 #jupyter notebook, so ignoring this folder
 Preetham
 gdrive/api_data
+pypi_push.ssh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

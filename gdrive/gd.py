@@ -1645,7 +1645,12 @@ def pull(args):
         
         download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
     
+#---------------------------------------------------------------
+def help():
+    """displays help text"""
+    print(help_text)
 
+    
 #-------------------------------------------------------------------------------------------------
 #COMMAND-LINE INTERACTION
 #-------------------------------------------------------------------------------------------------
