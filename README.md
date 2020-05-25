@@ -110,7 +110,8 @@ This is the name of the drive in which the ***parent_path*** is located. Each go
 
 ### client_name
 
-To use Google Drive API, an application has to be created using the [Google Cloud Console](console.cloud.google.com). 
+To use Google Drive API, an application has to be created using the [Google Cloud Console](console.cloud.google.com). To obtain a client secrets file, create an application as shown below.
+
 1. Open the console and create a new project.
 2. After assigning name and organisation to the project, go to **APIs & Services --> Dashboard**
 3. Go to **OAuth consent screen** and configure a consent screen. Assign an application name and other details.
