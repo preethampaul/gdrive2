@@ -39,7 +39,7 @@ Now, `gd` can be used as a command in command prompt or bash shell.
 
 ### Parents
 
-For convenient pushind and pull pulling files from various folders and google drive accounts with multiple api clients, a ***parent*** structure is used. When a working directory is ***initialized***, multiple ***parents*** can be used to store paths and ids for multiple google drives. Each ***parent*** is a list of other data like username, parent_path, parent_id, drive_name, drive_id and client_name stored as strings. All the parents are stored as dictionary items as shown below with the `parent_name` being the name or key of the parent.
+For convenient pushing and pulling files from various folders and google drive accounts with multiple api clients, a ***parent*** structure is used. When a working directory is ***initialized***, multiple ***parents*** can be used to store paths and ids for multiple google drives. Each ***parent*** is a list of other data like username, parent_path, parent_id, drive_name, drive_id and client_name stored as strings. All the parents are stored as dictionary items as shown below with the `parent_name` being the name or key of the parent.
 
 <pre><code>parent_name : [
       username,
