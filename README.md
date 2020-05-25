@@ -13,11 +13,11 @@ Use the following command to install the package.
 
 1. PyDrive library is required for this. To install Pydrive :
 
-> for PIP : use command
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for PIP : use command
 
 >> ```pip install PyDrive```
 
-> for ANACONDA : use command
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for ANACONDA : use command
 
 >> ```conda install -c conda-forge pydrive```
 
@@ -118,7 +118,7 @@ To use Google Drive API, an application has to be created using the [Google Clou
 5. For Application type, use **Web Application** and assign a name to it.
 6. For Authorized java script origins, use:
 <pre><code>http://localhost:8080</pre></code>
-&nbsp;&nbsp;&nbsp;For Authorized redirect URIs, use:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Authorized redirect URIs, use:
 <pre><code>http://localhost:8080/</pre></code>
 7. Click "Create"
 
