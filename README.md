@@ -15,11 +15,11 @@ Use the following command to install the package.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for PIP : use command
 
-> ```pip install PyDrive```
+```pip install PyDrive```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for ANACONDA : use command
 
-> ```conda install -c conda-forge pydrive```
+```conda install -c conda-forge pydrive```
 
 2. A client secrets file is required. Read [client_name](#client_name) below.
 
