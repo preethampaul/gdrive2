@@ -27,13 +27,13 @@ Use the following command to install the package.
 
 &nbsp;&nbsp;&nbsp;First, import the gdrive in a python console.
 
-<pre><code>$ python
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<pre><code>$ python
 >> import gdrive
 >> gdrive.ROOT_PATH
 </code></pre>
 
-This will show path to the gdrive package. Add this path to the `PATH` environment variable.
-Now, `gd` can be used as a command in command prompt or bash shell.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This will show path to the gdrive package. Add this path to the `PATH` environment variable.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now, `gd` can be used as a command in command prompt or bash shell.
 
 ## Data structuring
 
