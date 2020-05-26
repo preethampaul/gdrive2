@@ -94,18 +94,22 @@ The ***usernames*** used in parents are different from the google usernames (lik
 The ***parent_path*** is the path to a folder in drive in the google account registered with the nickname ***username***. For example, assume a drive like this:
 
 <pre><code>My Drive
+|
 |___fruits
-      |___hard
-            |__apple.jpg
-            |__guava.png
-      |___soft
-            |__grapes.jpg
+|      |___hard
+|      |     |__apple.jpg
+|      |     |__guava.png
+|      |
+|      |___soft
+|            |__grapes.jpg
+|
 |___flowers
       |___yellow
-            |__sunflower.tiff
+      |      |__sunflower.tiff
+      |
       |___red
-            |__roses.jpg
-            |__poppy.png
+           |__roses.jpg
+           |__poppy.png
 </pre></code>
 
 The path to the ***sunflower.tiff*** folder would be:
