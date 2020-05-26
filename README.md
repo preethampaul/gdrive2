@@ -23,7 +23,7 @@ Use the following command to install the package.
 
 2. A client secrets file is required. Read [client_name](#client_name) below.
 
-3. After installing `gdrive`, try the following steps to be able to use gd from command line.
+3. After installing `gdrive`, try the following steps to be able to use `gd.py`'s functions from command line.
 
 &nbsp;&nbsp;&nbsp;First, import the gdrive in a python console.
 
