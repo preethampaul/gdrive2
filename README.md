@@ -15,25 +15,25 @@ Use the following command to install the package.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for PIP : use command
 
-> ```pip install PyDrive```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```pip install PyDrive```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for ANACONDA : use command
 
-> ```conda install -c conda-forge pydrive```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```conda install -c conda-forge pydrive```
 
 2. A client secrets file is required. Read [client_name](#client_name) below.
 
-3. After installing `gdrive`, try the following steps to be able to use gd from command line.
+3. After installing `gdrive`, try the following steps to be able to use `gd.py`'s functions from command line.
 
 &nbsp;&nbsp;&nbsp;First, import the gdrive in a python console.
 
-<pre><code>$ python
->> import gdrive
->> gdrive.ROOT_PATH
-</code></pre>
+<pre><code>      $ python
+      >> import gdrive
+      >> gdrive.ROOT_PATH</code></pre>
 
-This will show path to the gdrive package. Add this path to the `PATH` environment variable.
-Now, `gd` can be used as a command in command prompt or bash shell.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This will show path to the gdrive package. Add this path to the `PATH` environment variable.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now, `gd` can be used as a command in command prompt or bash shell.
 
 ## Data structuring
 
@@ -94,18 +94,22 @@ The ***usernames*** used in parents are different from the google usernames (lik
 The ***parent_path*** is the path to a folder in drive in the google account registered with the nickname ***username***. For example, assume a drive like this:
 
 <pre><code>My Drive
+|
 |___fruits
-      |___hard
-            |__apple.jpg
-            |__guava.png
-      |___soft
-            |__grapes.jpg
+|      |___hard
+|      |     |__apple.jpg
+|      |     |__guava.png
+|      |
+|      |___soft
+|            |__grapes.jpg
+|
 |___flowers
       |___yellow
-            |__sunflower.tiff
+      |      |__sunflower.tiff
+      |
       |___red
-            |__roses.jpg
-            |__poppy.png
+           |__roses.jpg
+           |__poppy.png
 </pre></code>
 
 The path to the ***sunflower.tiff*** folder would be:
