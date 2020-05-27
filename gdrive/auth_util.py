@@ -146,6 +146,7 @@ def auth_from_cred(gauth, user_name=None, client=DEFAULT_CLIENT):
                 raise Exception("Invalid arguement passed.")
     
     CLIENT_SECRETS_PATH = os.path.join(CLIENT_SECRETS_DIR, CLIENT_FILE)            
+    
     #creating creds_path
     creds_id = check_creds_list(user_name)
     creds_path = os.path.join(CREDS_DIR, creds_id)

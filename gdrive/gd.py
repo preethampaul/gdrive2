@@ -58,6 +58,12 @@ Overview of push/pull functions:\n\
 'add'    : adds paths to the stage, clear stage\n\
 'push'   : uploads files/folders to parent_paths\n\
 'pull'   : downloads files/folders from parent_paths\n\n\
+\n\
+Miscelleneous functions:\n\
+---------------------------------\n\
+'help'   : Shows the list of functions or commands available\n\
+'rmgd'   : Removes the gd file created by importing gdrive\n\
+'default' : Brings the package to its default state (removes all clients, auth. data and the gd commandline functionality)\n\
 "
 
 #---------------------------------------------------------------------------------------
@@ -205,6 +211,7 @@ def check_parent_name():
 
 #--------------------------------------------
 def check_client(client=None):
+    """Asks for input and checks if the client"""
     
     #List of client files
     CLIENT_SECRETS_LIST = os.listdir(CLIENT_SECRETS_DIR)
@@ -403,7 +410,7 @@ def reset(args):
     
     info = check_info()
     
-    if not ('-user' in args and '-a' in args): 
+    if not ('-user' in args or '-client' in args): 
         
         if len(info)==0:
             print('gdrive not initialized in this folder. Try command : gd init')
@@ -940,6 +947,10 @@ def ls(args):
         #List of client files
         CLIENT_SECRETS_LIST = os.listdir(CLIENT_SECRETS_DIR)
         clients_list = [re.split(".json", i)[0] for i in CLIENT_SECRETS_LIST]
+
+        if not os.path.exists(CLIENT_SECRETS_DIR) or len(clients_list)==0:
+            print("No client secrets files found on this system")
+            return
         
         if RETURN_RESULT:
             return clients_list
@@ -1646,10 +1657,21 @@ def pull(args):
         
         download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
     
-#---------------------------------------------------------------
-def help():
+#------------------------------------------------------------------------------------------------
+#Miscelleneous functions
+#------------------------------------------------------------------------------------------------
+def help(args):
     """displays help text"""
     print(help_text)
+
+def rmgd(args):
+    """removes the created gd file"""
+    os.remove(os.path.join(ROOT_PATH, 'gd'))
+
+def default(args):
+    """brings the package to its default"""
+    shutil.rmtree(CREDS_DIR)
+    rmgd()
 
     
 #-------------------------------------------------------------------------------------------------
