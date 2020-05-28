@@ -1,7 +1,9 @@
 # **gdrive**
 ## File management for Google Drive using python (Readme under construction)
 
-**gdrive** is inspired from git's push-pull functionalities from command line. This is built using [pyDrive](https://github.com/gsuitedevs/PyDrive). **gdrive** allows easy access to google drive files without IDs, but with just file paths. With gdrive, some command line functions like `cd` and `ls` can be used to view files in drive folders directly from command line.
+**gdrive** is inspired from git's push-pull functionalities from command line. This is built using [pyDrive](https://github.com/gsuitedevs/PyDrive).
+
+**gdrive** allows easy access to google drive files without IDs, but with just file paths. With gdrive, some command line functions like `cd` and `ls` can be used to view files in drive folders directly from command line.
 
 ## Setup 
 Use the following command to install the package.
