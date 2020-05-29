@@ -1,0 +1,1097 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>gdrive package &#8212; gdrive 0.4.1 documentation</title>
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">gdrive 0.4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">gdrive package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-gdrive.auth_util">gdrive.auth_util module</a></li>
+<li><a class="reference internal" href="#module-gdrive.drive_util">gdrive.drive_util module</a></li>
+<li><a class="reference internal" href="#module-gdrive.gd">gdrive.gd module</a></li>
+<li><a class="reference internal" href="#module-gdrive.paths">gdrive.paths module</a></li>
+<li><a class="reference internal" href="#module-gdrive">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/gdrive.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="gdrive-package">
+<h1>gdrive package<a class="headerlink" href="#gdrive-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gdrive.auth_util">
+<span id="gdrive-auth-util-module"></span><h2>gdrive.auth_util module<a class="headerlink" href="#module-gdrive.auth_util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="gdrive.auth_util.auth_from_cred">
+<code class="sig-prename descclassname">gdrive.auth_util.</code><code class="sig-name descname">auth_from_cred</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gauth</span></em>, <em class="sig-param"><span class="n">user_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">client</span><span class="o">=</span><span class="default_value">'client_secrets'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.auth_util.auth_from_cred" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores the authentication information in the gauth object
+Also required to retrieve credential data and refresh expired access tokens
+Checks for &lt;cred_id&gt;.txt and client_secrets/&lt;client&gt;.json paths
+Also, updates these paths with authentication</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gauth</strong> (<em>pydrive.GoogleAuth</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>user_name</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – the username which requires authentication</p></li>
+<li><p><strong>client</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – client &lt;name&gt; corresponding to &lt;name&gt;.json in client_secrets/ folder
+If no client is passed, the DEFAULT_CLIENT is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Authenticates the username with the client provided</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.auth_util.check_creds_list">
+<code class="sig-prename descclassname">gdrive.auth_util.</code><code class="sig-name descname">check_creds_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user_name</span></em>, <em class="sig-param"><span class="n">check_only</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.auth_util.check_creds_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks if creds list (CRED_MAP) exists and creates one if it doesn’t
+looks for username in the CRED_MAP, if it doesnt exist
+creates unique id for the username and generates a credentials file for it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_name</strong> (<em>string</em>) – username to check</p></li>
+<li><p><strong>check_only</strong> (<em>boolean</em><em> (</em><em>optional</em><em>)</em>) – If True, returns a boolean value stating whether the username is previously registered or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>whether username exists already</strong> (<em>boolean</em>) – if check_only = True</p></li>
+<li><p><strong>cred_id</strong> (<em>string</em>) – the credentials file’s unique id if check_only = False</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.auth_util.copy_client_secrets">
+<code class="sig-prename descclassname">gdrive.auth_util.</code><code class="sig-name descname">copy_client_secrets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client_path</span></em>, <em class="sig-param"><span class="n">client</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.auth_util.copy_client_secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies client secrets .json files from client_path to the client_secrets/
+in the package folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client_path</strong> (<em>string</em>) – path to look for the source .json file</p></li>
+<li><p><strong>client</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – Name to be assigned to the client file. If None, DEFAULT_CLIENT name is assigned.
+Note that client should not include the extension ‘.json’ in it</p></li>
+<li><p><strong></strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Just copies the .json file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gdrive.drive_util">
+<span id="gdrive-drive-util-module"></span><h2>gdrive.drive_util module<a class="headerlink" href="#module-gdrive.drive_util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="gdrive.drive_util.create_folder">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">create_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder_name</span></em>, <em class="sig-param"><span class="n">parent_folder_id</span></em>, <em class="sig-param"><span class="n">drive</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.create_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates folder in drive with title = folder_name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folder_name</strong> (<em>string</em>) – name of folder</p></li>
+<li><p><strong>parent_folder_id</strong> (<em>string</em>) – ID of the parent folder</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>id of the created folder</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.create_folders_path">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">create_folders_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.create_folders_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates non-existing folders along the local system path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>string</em>) – path to a folder</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Creates folders in the local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.delete">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">drive_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">drive_path_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">relative_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">hard_delete</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>deletes a file or folder using the drive_path or the drive_path_id.
+A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>drive_path</strong> (<em>stringor None</em>) – path to the file or folder in drive to be deleted</p></li>
+<li><p><strong>drive_path_id</strong> (<em>string</em><em> or </em><em>None</em>) – id of the folder or file to be deleted
+Only one of drive_path and drive_path_id is sufficient.</p></li>
+<li><p><strong>relative_id</strong> (<em>None</em><em> or </em><em>string</em><em> (</em><em>optional</em><em>)</em>) – None if absolute paths are desired (default)
+&lt;current working folder id&gt; if relative paths are desired</p></li>
+<li><p><strong>hard_delete</strong> (<em>bool</em><em> (</em><em>optional</em><em>)</em>) – If False, files are moved to trash (default)
+If True, files are deleted permanently</p></li>
+<li><p><strong>default_root</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – id of the drive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Deletes the specified files or folders</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.download">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">drive_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">drive_path_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">download_path</span><span class="o">=</span><span class="default_value">'C:\\Users\\Preetham\\Desktop\\CHEME599\\gdrive'</span></em>, <em class="sig-param"><span class="n">prompt</span><span class="o">=</span><span class="default_value">'ask'</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a file or folder at drive_path into the folder at download_path
+Either id or path - one of them is sufficient</p>
+<p>A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>drive_path</strong> (<em>string</em><em> or </em><em>None</em>) – path to file/folder on drive (None is default)</p></li>
+<li><p><strong>drive_path_id</strong> (<em>string</em><em> or </em><em>None</em>) – id of file/folder in drive
+Either the drive path o the drive_path_id is sufficient (None is default)</p></li>
+<li><p><strong>download_path</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – path to folder into which download will be done
+current_working directory is default</p></li>
+<li><p><strong>prompt</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘ask’ asks user to skip or overwrite if file already exists in drive
+‘skip’ or ‘s’ skips file if already exists
+‘overwrite’ or ‘o’ overwrites the file if it already exists
+‘copy’ creates an extra copy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Just downloads the folder or file and returns None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.download_file_by_id">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">download_file_by_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_id</span></em>, <em class="sig-param"><span class="n">download_path</span></em>, <em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">prompt</span><span class="o">=</span><span class="default_value">'ask'</span></em>, <em class="sig-param"><span class="n">file_count</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">total_count</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.download_file_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a file at drive_path into the folder at download_path
+if file_id is known</p>
+<p>A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_id</strong> (<em>string</em>) – file’s id in drive</p></li>
+<li><p><strong>download_path</strong> (<em>string</em>) – path to folder into which download will be done</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>prompt</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘ask’ asks user to skip or overwrite if file already exists in drive
+‘skip’ or ‘s’ skips file if already exists
+‘overwrite’ or ‘o’ overwrites the file if it already exists
+‘copy’ creates an extra copy</p></li>
+<li><p><strong>file_count</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – 1 (default) to print the file’s count when downloading folder</p></li>
+<li><p><strong>total_count</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – 1 (default) to print the total files in a folder when downloading</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>multiple outputs</strong> – Just downloads the file
+returns None if no change in prompt,
+returns change in prompt from user otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None or string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.fetchMetadata">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">fetchMetadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive_file</span></em>, <em class="sig-param"><span class="n">fields</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.fetchMetadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>A replica of FetchMetadata() from GoogleDriveFile class of pyDrive 1.3.1
+Changes made : replaced ‘supportsTeamDrives’ with ‘supportsAllDrive’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drive_file</strong> (<em>pydrive.GoogleDriveFile</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>fields</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – If metadata about a specific field is required, pass it here as querry string
+For example : fields = “field1,field2,field3”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updates drive_file with metadata.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.get_id_by_name">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">get_id_by_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">parent_folder_id</span></em>, <em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">file_type</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.get_id_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list of ids for folders or files with title = name in the drive folder
+with id = parent_folder_id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – name of folder or file</p></li>
+<li><p><strong>parent_folder_id</strong> (<em>string</em>) – ID of the parent folder</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>file_type</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘folder’ to return only folders’ ids
+‘not-folder’ to return ids other than folders
+‘all’ to return all ids with the name (default)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ids and mime types</strong> – a tuple of 2 lists : (list of ids, list of corresponding mime types)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.get_path_from_id">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">get_path_from_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">file_id</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.get_path_from_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns drive path of file with specified id.
+A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>file_id</strong> (<em>string</em>) – id of file whose path is required</p></li>
+<li><p><strong>default_root</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – id of the drive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>path to file or folder</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.get_path_ids">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">get_path_ids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">drive_path</span></em>, <em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">create_missing_folders</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">relative_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">path_to</span><span class="o">=</span><span class="default_value">'folder'</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.get_path_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list of ids for folders or files in the path to the drive_path
+A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title
+The last id in this list will be of a folder or a file, which the user must determine
+with the path_to arguement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>drive_path</strong> (<em>string</em>) – path to a file or folder in drive</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>create_missing_folders</strong> (<em>bool</em><em> (</em><em>optional</em><em>)</em>) – True if create the folders in the path if they dont exist
+False returns a error if any of the folder in the path doesnt exist</p></li>
+<li><p><strong>relative_id</strong> (<em>None</em><em> or </em><em>string</em><em> (</em><em>optional</em><em>)</em>) – None if absolute paths are desired
+&lt;current working folder id&gt; if relative paths are desired</p></li>
+<li><p><strong>path_to</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘folder’ to return only folders’ ids (default)
+‘not-folder’ to return ids other than folders</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>path_ids</strong> – returns a list of all ids in the path like this -
+[Folder1_id, Folder2_id, Folder3_id] if path_to = ‘folder’
+[Folder1_id, Folder2_id, File id] if path_to = ‘not-folder’
+[Folder1_id, Folder2_id, ‘no-file-found’] if path_to = ‘not-folder’</p>
+<blockquote>
+<div><p>and the file at the end of path doesnt exist</p>
+</div></blockquote>
+<p>Gives error if there are more than one files or more than folders with same name</p>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.list_all_contents">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">list_all_contents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">init_folder_path</span></em>, <em class="sig-param"><span class="n">init_folder_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">drive</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dynamic_show</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tier</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">show_ids</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.list_all_contents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists “relative” paths to nested files and folders in a folder with path = folder_path
+Relative paths from the folder at init_folder_path</p>
+<dl class="simple">
+<dt>A typical drive path must be like this :</dt><dd><p>Folder1_title/Folder2_title/Folder3_title or file_title</p>
+</dd>
+<dt>For example<span class="classifier">if init_folder_path = Folder1_title</span></dt><dd><p>relative paths are Folder2_title and Folder2_title/Folder3_title</p>
+</dd>
+</dl>
+<p>If a file is present at init_folder_path, just returns the file_name and id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_folder_path</strong> (<em>string</em>) – path to folder on current system</p></li>
+<li><p><strong>init_folder_id</strong> (<em>string</em><em> or </em><em>None</em><em> (</em><em>optional</em><em>)</em>) – id of the folder at init_folder_path
+Only one of init_folder_path and init_folder_id is sufficient
+None if unknown, but init_folder_path is known</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>drive object</em><em> or </em><em>None</em><em> (</em><em>optional</em><em>)</em>) – None for listing paths in local system; otherwise, lists paths in drive</p></li>
+<li><p><strong>dynamic_show</strong> (<em>bool</em><em> (</em><em>optional</em><em>)</em>) – if True, prints each nested_path dynamically, False doesn’t</p></li>
+<li><p><strong>tier</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘all’ returns all nested paths
+‘curr’ returns contents immediately below current folder</p></li>
+<li><p><strong>show_ids</strong> (<em>bool</em><em> (</em><em>optional</em><em>)</em>) – If True, prints ids along with file names when dynamic_show = True</p></li>
+<li><p><strong>default_root</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – id of the drive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>contnets of the folder</strong> – a tuple of 3 elements
+(the paths_list with the relative paths,
+the list of ids of contents if used for GDrive (same as paths_list for drive = None) ,
+total_count = the number of ‘non-folder’ items in the folder at folder_path)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.parse_drive_path">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">parse_drive_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">parent_id</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.parse_drive_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses path into an absolute drive path
+A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>string</em>) – drive path to be parsed</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>parent_id</strong> (<em>string</em>) – parent id required to parse relative paths</p></li>
+<li><p><strong>default_root</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – id of the drive</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>parsed drive path</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.upload">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">upload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">curr_path</span></em>, <em class="sig-param"><span class="n">drive_parent_folder_path</span></em>, <em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">prompt</span><span class="o">=</span><span class="default_value">'ask'</span></em>, <em class="sig-param"><span class="n">default_root</span><span class="o">=</span><span class="default_value">'root'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a folder/file at curr_path into the folder at drive_parent_folder_path
+Use drive_parent_folder_path = ‘’ for uploading into the root folder</p>
+<p>A typical drive path must be like this :
+Folder1_title/Folder2_title/Folder3_title or file_title</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curr_path</strong> (<em>string</em>) – path to folder or file on current system</p></li>
+<li><p><strong>drive_parent_folder_path</strong> (<em>string</em>) – path to drive folder into which upload will be done</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>prompt</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘ask’ asks user to skip or overwrite if file already exists in drive (DEFAULT)
+‘skip’ or ‘s’ skips file if already exists
+‘overwrite’ or ‘o’ overwrites the file if it already exists
+‘copy’ creates an extra copy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Just uploads the folder or file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.drive_util.upload_file_by_id">
+<code class="sig-prename descclassname">gdrive.drive_util.</code><code class="sig-name descname">upload_file_by_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">curr_file_path</span></em>, <em class="sig-param"><span class="n">drive_folder_id</span></em>, <em class="sig-param"><span class="n">drive</span></em>, <em class="sig-param"><span class="n">prompt</span><span class="o">=</span><span class="default_value">'ask'</span></em>, <em class="sig-param"><span class="n">file_count</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">total_count</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.drive_util.upload_file_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a file with current path = curr_file_path on system into
+a drive folder with id = drive_folder_id</p>
+<dl class="simple">
+<dt>A typical drive path must be like this :</dt><dd><p>Folder1_title/Folder2_title/Folder3_title or file_title</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curr_file_path</strong> (<em>string</em>) – path to file on current system</p></li>
+<li><p><strong>drive_folder_id</strong> (<em>string</em>) – id of drive folder into which upload will be done</p></li>
+<li><p><strong>drive</strong> (<em>pydrive.GoogleDrive</em><em>(</em><em>) </em><em>object</em>) – </p></li>
+<li><p><strong>prompt</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – ‘ask’ asks user to skip or overwrite if file already exists in drive (default)
+‘skip’ or ‘s’ skips file if already exists
+‘overwrite’ or ‘o’ overwrites the file if it already exists
+‘copy’ creates an extra copy</p></li>
+<li><p><strong>file_count</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – 1 (default) to print the file’s count when uploading folder</p></li>
+<li><p><strong>total_count</strong> (<em>int</em><em> (</em><em>optional</em><em>)</em>) – 1 (DEFAULT) to print the total files in a folder when uploading</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>multiple outputs</strong> – Uploads the file into the drive folder with id = drive_folder_id
+returns None if no change in prompt,
+returns change in prompt from user otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None or string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gdrive.gd">
+<span id="gdrive-gd-module"></span><h2>gdrive.gd module<a class="headerlink" href="#module-gdrive.gd" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="gdrive.gd.add">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Adds paths to stage for pushing to Google Drive
+This function just adds the paths to .gdstage file. It doesn’t push any file.
+For pushing, use function push() / gd push</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edits the folders/files on local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<p>The &lt;path&gt; must be in local system</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>add([‘&lt;path1&gt;’, ‘&lt;path2&gt;’, ‘&lt;path3&gt;’, …]) / gd add &lt;path1&gt; &lt;path2&gt; &lt;path3&gt; …</dt><dd><p>adds multiple &lt;path&gt;s to the gd stage</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>add([‘-clear’])   /   gd add -clear</dt><dd><p>clears all paths in the stage</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>add([‘&lt;path1&gt;’, ‘&lt;path2&gt;’, ‘&lt;path3&gt;’, …]) / gd add &lt;path1&gt; &lt;path2&gt; &lt;path3&gt; …</p>
+<p>add([‘-clear’])                             / gd add -clear</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.cd">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">cd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.cd" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Changes parent_paths (the cwd paths of parents)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – List of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edits the folders or files on local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<p>The &lt;path&gt; being passed need no be limited to be within the parent_path folder.
+It can to any file or folder within current driveID.
+It can be relative to the parent_path or can be absolute wrt to driveId.</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>cd([‘&lt;path&gt;’])  /  gd cd &lt;path&gt;</dt><dd><p>changes cwd to &lt;path&gt; for default parent</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>cd([‘&lt;parent_name&gt;’, ‘&lt;path&gt;’])  / gd cd &lt;parent_path&gt; &lt;path&gt;</dt><dd><p>changes cwd to &lt;path&gt; for &lt;parent_name&gt;</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>cd([‘&lt;path&gt;’])                  /  gd cd &lt;path&gt;</p>
+<p>cd([‘&lt;parent_name&gt;’, ‘&lt;path&gt;’]) /  gd cd &lt;parent_name&gt; &lt;path&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.check_client">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">check_client</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.check_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks for input and checks if the client</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.check_info">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">check_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.check_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the info file exists in current working directory</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.check_parent_name">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">check_parent_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.check_parent_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the parent name input is valid/ already exists within the current directory</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.check_user_name">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">check_user_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">user_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.check_user_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if username is valid/ already assigned</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.create_info">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">create_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">info</span></em>, <em class="sig-param"><span class="n">parent_path</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">parent_name</span><span class="o">=</span><span class="default_value">'origin'</span></em>, <em class="sig-param"><span class="n">drive_name</span><span class="o">=</span><span class="default_value">'My Drive'</span></em>, <em class="sig-param"><span class="n">drive_id</span><span class="o">=</span><span class="default_value">'root'</span></em>, <em class="sig-param"><span class="n">same_user</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.create_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new info file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.default">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>brings the package to its default</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.delete_cred_files">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">delete_cred_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.delete_cred_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all the authentication data except cred_map and client_secrets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.help">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">help</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.help" title="Permalink to this definition">¶</a></dt>
+<dd><p>displays help text</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.init">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Initializes the current working directory.
+Creates an info file and authenticates the username</p>
+<p>If used for the first time, the username is requested
+and authentication reqiuested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Just creates the .gd folder</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<p>‘-add’ / -add                 : adds new parent to the current directory
+‘–add-client’ / –add-client : registers new client secrets file.</p>
+<p class="rubric">Examples</p>
+<p>init([])       / gd init</p>
+<p>init([‘-add’]) / gd init -add</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.ls">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">ls</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.ls" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>list files/folder names in the parent_path or specified path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>information</strong> –</p>
+<dl class="simple">
+<dt>List as shown here for files -</dt><dd><p>[file_paths_list, file_ids_list]</p>
+</dd>
+</dl>
+<p>List of usernames when -users is used
+List of names of client secrets json files when -clients is used.
+List of shared drives for a &lt;username&gt; when -shared is used, as shown below -</p>
+<blockquote>
+<div><p>[drive_names_list, drive_ids_list]</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<ol class="arabic">
+<li><dl class="simple">
+<dt>ls([])   /   gd ls</dt><dd><p>shows files/folders in the &lt;default&gt; parent cwd</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>ls([‘&lt;parent_name&gt;’,])   /   gd ls &lt;parent_name&gt;</dt><dd><p>If no arg. after ‘&lt;parent_name&gt;’, it shows files or folders in the &lt;parent_name&gt; cwd</p>
+<p>‘&lt;path&gt;’ : shows files/folders in &lt;path&gt; in the &lt;parent_name&gt;
+‘-a’     : shows files/folders in parent_name and/or path with ids</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ls([‘-users’])   /   gd ls -users</dt><dd><p>shows all usernames registered in the SYSTEM</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ls([‘-users’])   /   gd ls -users</dt><dd><p>shows all usernames registered in the SYSTEM</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>ls([‘-shared’, ‘&lt;username&gt;’])   /  gd ls -shared &lt;username&gt;</dt><dd><p>shows all shared drives in &lt;user_name&gt;</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>ls([])                          /   gd ls</p>
+<p>ls([‘origin’, ‘-path’, ‘-a’])   /   gd ls origin -path -a</p>
+<p>ls([‘-info’])                   /   gd ls -info</p>
+<p>ls([‘-users’])                  /   gd ls -users</p>
+<p>ls([‘-shared’, ‘&lt;username&gt;’])   /   gd ls -shared &lt;username&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.mkdir">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">mkdir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Makes an empty folder in specified path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edits the folders or files on local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<p>The &lt;path&gt; being passed need no be limited to be within the parent_path folder.
+It can to any file or folder within current driveID.
+It can be relative to the parent_path or can be absolute wrt to driveId.</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>mkdir([‘&lt;path&gt;’]) / gd mkdir &lt;path&gt;</dt><dd><p>creates folder at the path in default parent</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>mkdir([‘&lt;parent_name&gt;’, ‘&lt;path&gt;’])  /  gd mkdir &lt;parent_ame&gt; &lt;path&gt;</dt><dd><p>creates folder at the path in &lt;parent_name&gt; parent</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>mkdir([‘&lt;path&gt;’])                  /  gd mkdir &lt;path&gt;</p>
+<p>mkdir([‘&lt;parent_name&gt;’, ‘&lt;path&gt;’]) /  gd mkdir &lt;parent_name&gt; &lt;path&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.pull">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">pull</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.pull" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Pulls or downloads files from drive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edits the folders or files on local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<p>The &lt;path&gt; being passed need no be limited to be within the parent_path folder.
+It can to any file/folder within current driveID.
+It can be relative to the parent_path or can be absolute wrt to driveId.</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>pull([]) / gd pull</dt><dd><p>Downloads complete default parent folder to current dir.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>pull([‘&lt;parent_name&gt;’]) / gd pull &lt;parent_name&gt;</dt><dd><p>Downloads complete &lt;parent_name&gt; folder to current dir. If arguements
+passed in the list, then the first arguement must always be the parent name</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>pull([‘&lt;parent_name&gt;’, ‘&lt;path1&gt;’, &lt;path2&gt;, &lt;path3&gt;, …]) / gd pull &lt;parent_name&gt; &lt;path1&gt; &lt;path2&gt; &lt;path3&gt; …</dt><dd><p>Downloads all the paths specified into current dir from the username
+related to this parent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>push([‘&lt;parent_name&gt;’, ‘-id’, ‘&lt;path_id1&gt;’, ‘&lt;path_id2&gt;’, …]) / gd pull &lt;parent_name&gt; -id &lt;path_id1&gt; &lt;path_id2&gt; …</dt><dd><p>Use of ‘-id’ : Downloads from all the path_ids specified into current dir from the username
+related to this parent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>push([‘&lt;parent_name&gt;’, ‘-dest’, ‘&lt;save_path&gt;’]) / gd pull &lt;parent_name&gt; -dest &lt;save_path&gt;</dt><dd><p>Use of ‘-dest’ : downloads into &lt;save_path&gt; in local system specified from parent_path”)</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p>Optional arguements if pulled files already exist on local system -</p>
+<p>‘-c’ :  creates copy
+‘-s’ :  skip
+‘-o’ :  overwrites existing file
+‘-i’ :  prompt for each file (DEFAULT)</p>
+<p class="rubric">Examples</p>
+<p>pull([‘-i’]) / gd pull -i</p>
+<dl class="simple">
+<dt>pull([‘&lt;parent_name&gt;’, ‘&lt;path1&gt;’, &lt;path2&gt;, ‘-s’, ‘-id’, ‘id3’, ‘-dest’, ‘&lt;save_path&gt;’]) /</dt><dd><p>gd pull &lt;parent_name&gt; &lt;path1&gt; &lt;path2&gt; -s -id &lt;id3&gt; -dest &lt;save_path&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.push">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Pushes or uploads files into path of the parent_name specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edits the folders or files on local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<ol class="arabic">
+<li><dl class="simple">
+<dt>push([]) / gd push</dt><dd><p>Pushes staged files to default parent</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>push([‘&lt;parent_name1&gt;’, ‘&lt;parent_name2&gt;’, ‘&lt;parent_name3&gt;’, … ])</dt><dd><blockquote>
+<div><p>/ gd push &lt;parent_name1&gt; &lt;parent_name2&gt; &lt;parent_name3&gt; …</p>
+</div></blockquote>
+<p>Pushes staged files to &lt;parent_name&gt; folder</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p>Optional arguements if pushed files already exist on drive-</p>
+<p>‘-c’ :  creates copy
+‘-s’ :  skip
+‘-o’ :  overwrites existing file
+‘-i’ :  prompt for each file  (DEFAULT)</p>
+<p class="rubric">Examples</p>
+<p>push([‘-i’])                                     / gd push -i</p>
+<p>push([‘&lt;parent_name1&gt;’, ‘-s’, ‘&lt;parent_name2&gt;’]) / gd push &lt;parent_name1&gt; -s &lt;parent_name2&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.reset">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">reset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Modifies/deletes the parent information of the current working directory.
+Deletes authentication data in the local system
+Resets the current working directory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Just modifies or deletes the info file or the credentials.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<ol class="arabic">
+<li><dl>
+<dt>reset([‘&lt;parent_name&gt;’, ]) / gd reset &lt;parent_name&gt;</dt><dd><p>If no arg. after ‘&lt;parent_name&gt;’, it prompts inputs for
+user_name, path and default prop. of existing parent</p>
+<p>optional arguements after ‘&lt;parent_name&gt;’ / &lt;parent_name&gt;:</p>
+<p>‘-user’ / -user   : resets user_name/account in the parent name given.
+‘-path’ / -path   : resets path in the parent name given.
+‘-drive’/ -drive  : resets drive in the parent name given</p>
+<blockquote>
+<div><p>(useful to set shared drives as roots)</p>
+</div></blockquote>
+<p>‘-d’    / -d      : deletes parent name given and its path, user_name and id
+‘-default’ / -default : set parent name given as ‘default’
+‘-client’ / -client : resets the client secrets file name for the parent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>reset([‘-info’]) / gd reset -info</dt><dd><p>erases all parents and user_names for current directory and re-initializes</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>reset([‘-user’, ]) / gd reset -user</dt><dd><p>required arguements after ‘-user’ / -user :</p>
+<p>‘&lt;user_name&gt;’ / &lt;user_name&gt; : deletes &lt;user_name&gt;’s authentication data in the SYSTEM
+‘-a’          / -a          : deletes all users authentication data in the SYSTEM</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>reset([‘-client’, ]) / gd reset -client</dt><dd><p>required arguements after ‘-client’ / -client :</p>
+<p>‘&lt;client_name&gt;’ / &lt;client_name&gt; : deletes &lt;client_name&gt;.json
+‘-a’          / -a              : deletes all client secrets files</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>reset([‘origin’, ‘-path’])       / gd reset origin -path</p>
+<p>reset([‘-info’])                 / gd reset -info</p>
+<p>reset([‘-user’, ‘&lt;user_name&gt;’])  / gd reset -user &lt;user_name&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.rm">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">rm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.rm" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Deletes the file or folder at specified path in Google Drive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Edits the folders or files on local system</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<p>The &lt;path&gt; being passed need no be limited to be within the parent_path folder.
+It can to any file or folder within current driveID.
+It can be relative to the parent_path or can be absolute wrt to driveId.</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>rm([‘&lt;path&gt;’])   /   gd rm &lt;path&gt;</dt><dd><p>trashes files or folders at the parent_path in &lt;default&gt; parent</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>rm([‘&lt;parent_name&gt;’, ‘&lt;path&gt;’])  /  gd rm &lt;parent_name&gt; &lt;path&gt;</dt><dd><p>trashes files or folders in &lt;path&gt; in &lt;parent_name&gt; parent</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>rm([‘&lt;parent_name&gt;’, ‘&lt;path&gt;, ‘-f’])  /  gd rm &lt;parent_name&gt; &lt;path&gt; -f</dt><dd><p>Permanently deletes files or folders in &lt;path&gt; in the &lt;parent_name&gt;</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>rm([‘&lt;parent_name&gt;’, ‘&lt;path&gt;’])      /  gd rm &lt;parent_name&gt; &lt;path&gt;</p>
+<p>rm([‘&lt;parent_name&gt;’, ‘&lt;path&gt;, ‘-f’]) /  gd rm &lt;parent_name&gt; &lt;path&gt; -f</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.rmgd">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">rmgd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.rmgd" title="Permalink to this definition">¶</a></dt>
+<dd><p>removes the created gd file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="gdrive.gd.status">
+<code class="sig-prename descclassname">gdrive.gd.</code><code class="sig-name descname">status</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gdrive.gd.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>[syntax when imported / syntax when called via CMD]</p>
+<p>Displays parent information, staged paths and usernames registered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>list</em>) – list of arguement strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>information</strong> – Depends on the arguements passed.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following commands go into args :</p>
+<ol class="arabic">
+<li><dl>
+<dt>status([]) / gd status</dt><dd><p>displays parent details and staged files
+Returns (if imported) : List with contents as shown below</p>
+<blockquote>
+<div><p>[&lt;dictionary as in .gdinfo.json&gt;,
+&lt;list of existing staged paths&gt;,
+&lt;list of missing or non-existing staged paths&gt;]</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>status([‘-stage’]) / gd status -stage</dt><dd><p>displays only stage contents
+Returns (if imported) : List with contents as shown below</p>
+<blockquote>
+<div><p>[&lt;list of existing staged paths&gt;,
+&lt;list of missing or non-existing staged paths&gt;]</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>status([‘-users’]) / gd status -users</dt><dd><p>displays all users registered on the system
+Returns (if imported) : List with contents as shown below</p>
+<blockquote>
+<div><p>[&lt;user_names&gt;]</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>status([‘-clients’]) / gd status -clients</dt><dd><p>displays all client secrets or APIs registered on the system
+Returns (if imported) : List with contents as shown below</p>
+<blockquote>
+<div><p>[&lt;names of client secrets json files&gt;]</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+</ol>
+<p class="rubric">Examples</p>
+<p>status([])          / gd status</p>
+<p>status([‘-stage’])  / gd status -stage</p>
+<p>status([‘-users’])   / gd status -users</p>
+<p>status([‘-clients’])   / gd status -clients</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gdrive.paths">
+<span id="gdrive-paths-module"></span><h2>gdrive.paths module<a class="headerlink" href="#module-gdrive.paths" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gdrive">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gdrive" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">gdrive 0.4.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Preetham Paul.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
+    </div>
+  </body>
+</html>
