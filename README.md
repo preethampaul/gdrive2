@@ -1,7 +1,9 @@
 # **gdrive**
 ## File management for Google Drive using python (Readme under construction)
 
-**gdrive** is inspired from git's push-pull functionalities from command line. This is built using [pyDrive](https://github.com/gsuitedevs/PyDrive). **gdrive** allows easy access to google drive files without IDs, but with just file paths. With gdrive, some command line functions like `cd` and `ls` can be used to view files in drive folders directly from command line.
+**gdrive** is inspired from git's push-pull functionalities from command line. This is built using [pyDrive](https://github.com/gsuitedevs/PyDrive).
+
+**gdrive** allows easy access to google drive files without IDs, but with just file paths. With gdrive, some command line functions like `cd` and `ls` can be used to view files in drive folders directly from command line.
 
 ## Setup 
 Use the following command to install the package.
@@ -126,7 +128,7 @@ This is the name of the drive in which the ***parent_path*** is located. Each go
 
 ### client_name
 
-To use Google Drive API, an application has to be created using the [Google Cloud Console](console.cloud.google.com). To obtain a client secrets file, create an application as shown below.
+To use Google Drive API, an application has to be created using the [Google Cloud Console](https://console.cloud.google.com). To obtain a client secrets file, create an application as shown below.
 
 1. Open the console and create a new project.
 2. After assigning name and organisation to the project, go to **APIs & Services --> Dashboard**
