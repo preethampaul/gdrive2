@@ -271,22 +271,31 @@ def init(args):
     If used for the first time, the username is requested
     and authentication reqiuested.
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Just creates the .gd folder
+    None
+        Just creates the .gd folder
     
-    optional arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     '-add' / -add                 : adds new parent to the current directory
     '--add-client' / --add-client : registers new client secrets file.
     
+
     Examples
     ----------
     init([])       / gd init
+    
     init(['-add']) / gd init -add
     
     """
@@ -355,16 +364,23 @@ def reset(args):
     Deletes authentication data in the local system
     Resets the current working directory
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    returns
     ----------
-    None. Just modifies or deletes the info file or the credentials.
+    None
+        Just modifies or deletes the info file or the credentials.
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+
     1. reset(['<parent_name>', ]) / gd reset <parent_name>
         If no arg. after '<parent_name>', it prompts inputs for
         user_name, path and default prop. of existing parent
@@ -398,7 +414,9 @@ def reset(args):
     Examples
     ----------
     reset(['origin', '-path'])       / gd reset origin -path
+
     reset(['-info'])                 / gd reset -info
+    
     reset(['-user', '<user_name>'])  / gd reset -user <user_name>
     
     """
@@ -721,16 +739,23 @@ def status(args):
     
     Displays parent information, staged paths and usernames registered.
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    type: List. Depends on the arguements passed.  
+    information : list
+        Depends on the arguements passed.  
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     1. status([]) / gd status
         displays parent details and staged files
         Returns (if imported) : List with contents as shown below
@@ -753,12 +778,16 @@ def status(args):
         displays all client secrets or APIs registered on the system
         Returns (if imported) : List with contents as shown below
                     [<names of client secrets json files>]
-                    
+    
+
     Examples
     ----------
     status([])          / gd status
+
     status(['-stage'])  / gd status -stage
+
     status(['-users'])   / gd status -users 
+
     status(['-clients'])   / gd status -clients 
     
     """
@@ -841,21 +870,28 @@ def ls(args):
     
     list files/folder names in the parent_path or specified path
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    type: List as shown here for files
-                [file_paths_list, file_ids_list]
-                
-          List of usernames when -users is used
-          List of names of client secrets json files when -clients is used.
-          List of shared drives for a <username> when -shared is used, as shown below
-                [drive_names_list, drive_ids_list]
-    Arguements
+    information : list
+        List as shown here for files -
+            [file_paths_list, file_ids_list]
+        List of usernames when -users is used
+        List of names of client secrets json files when -clients is used.
+        List of shared drives for a <username> when -shared is used, as shown below -
+            [drive_names_list, drive_ids_list]
+    
+
+    Notes
     ----------
+    The following commands go into args :
+    
     1. ls([])   /   gd ls
         shows files/folders in the <default> parent cwd
     
@@ -874,12 +910,17 @@ def ls(args):
     5. ls(['-shared', '<username>'])   /  gd ls -shared <username>
         shows all shared drives in <user_name>
         
+
     Examples
     ----------
     ls([])                          /   gd ls
+
     ls(['origin', '-path', '-a'])   /   gd ls origin -path -a
+
     ls(['-info'])                   /   gd ls -info
+
     ls(['-users'])                  /   gd ls -users
+
     ls(['-shared', '<username>'])   /   gd ls -shared <username>
     
     """
@@ -1044,16 +1085,23 @@ def cd(args):
     
     Changes parent_paths (the cwd paths of parents)
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        List of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Edits the folders or files on local system
+    None
+        Edits the folders or files on local system
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file or folder within current driveID.
     It can be relative to the parent_path or can be absolute wrt to driveId.
@@ -1063,10 +1111,12 @@ def cd(args):
     
     2. cd(['<parent_name>', '<path>'])  / gd cd <parent_path> <path>
         changes cwd to <path> for <parent_name>
-        
+    
+
     Examples
     ----------
     cd(['<path>'])                  /  gd cd <path>
+
     cd(['<parent_name>', '<path>']) /  gd cd <parent_name> <path>
     
     """
@@ -1121,16 +1171,23 @@ def rm(args):
     
     Deletes the file or folder at specified path in Google Drive
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Edits the folders or files on local system
+    None
+        Edits the folders or files on local system
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file or folder within current driveID.
     It can be relative to the parent_path or can be absolute wrt to driveId.
@@ -1144,9 +1201,11 @@ def rm(args):
     3. rm(['<parent_name>', '<path>, '-f'])  /  gd rm <parent_name> <path> -f
         Permanently deletes files or folders in <path> in the <parent_name>
         
+
     Examples
     ----------
     rm(['<parent_name>', '<path>'])      /  gd rm <parent_name> <path>
+
     rm(['<parent_name>', '<path>, '-f']) /  gd rm <parent_name> <path> -f
     
     """
@@ -1231,16 +1290,23 @@ def mkdir(args):
     
     Makes an empty folder in specified path
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Edits the folders or files on local system
+    None
+        Edits the folders or files on local system
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file or folder within current driveID.
     It can be relative to the parent_path or can be absolute wrt to driveId.
@@ -1251,9 +1317,11 @@ def mkdir(args):
     2. mkdir(['<parent_name>', '<path>'])  /  gd mkdir <parent_ame> <path>
         creates folder at the path in <parent_name> parent
         
+
     Examples
     ----------
     mkdir(['<path>'])                  /  gd mkdir <path>
+    
     mkdir(['<parent_name>', '<path>']) /  gd mkdir <parent_name> <path>
     
     """    
@@ -1321,16 +1389,23 @@ def add(args):
     This function just adds the paths to .gdstage file. It doesn't push any file.
     For pushing, use function push() / gd push
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Edits the folders/files on local system
+    None
+        Edits the folders/files on local system
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     The <path> must be in local system
     
     1. add(['<path1>', '<path2>', '<path3>', ...]) / gd add <path1> <path2> <path3> ...
@@ -1338,10 +1413,12 @@ def add(args):
     
     2. add(['-clear'])   /   gd add -clear
         clears all paths in the stage
-        
+    
+
     Examples
     ----------
     add(['<path1>', '<path2>', '<path3>', ...]) / gd add <path1> <path2> <path3> ...
+    
     add(['-clear'])                             / gd add -clear
     
     """ 
@@ -1385,16 +1462,23 @@ def push(args):
     
     Pushes or uploads files into path of the parent_name specified.
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Edits the folders or files on local system
+    None
+        Edits the folders or files on local system
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     1. push([]) / gd push
         Pushes staged files to default parent
     
@@ -1402,16 +1486,18 @@ def push(args):
                 / gd push <parent_name1> <parent_name2> <parent_name3> ...
         Pushes staged files to <parent_name> folder
     
-    Optional arguements if pushed files already exist on drive
-    ----------
+    Optional arguements if pushed files already exist on drive-
+
     '-c' :  creates copy
     '-s' :  skip
     '-o' :  overwrites existing file
     '-i' :  prompt for each file  (DEFAULT)
     
+
     Examples
     ----------
     push(['-i'])                                     / gd push -i
+    
     push(['<parent_name1>', '-s', '<parent_name2>']) / gd push <parent_name1> -s <parent_name2>
     
     """
@@ -1509,16 +1595,23 @@ def pull(args):
     
     Pulls or downloads files from drive
     
-    If imported, parameters
+
+    Parameters
     ----------
-    args : list of arguement strings.
+    args : list
+        list of arguement strings.
     
-    If imported, returns
+
+    Returns
     ----------
-    None. Edits the folders or files on local system
+    None
+        Edits the folders or files on local system
     
-    Arguements
+
+    Notes
     ----------
+    The following commands go into args :
+    
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file/folder within current driveID.
     It can be relative to the parent_path or can be absolute wrt to driveId.
@@ -1541,16 +1634,19 @@ def pull(args):
     5. push(['<parent_name>', '-dest', '<save_path>']) / gd pull <parent_name> -dest <save_path>
         Use of '-dest' : downloads into <save_path> in local system specified from parent_path")
     
-    Optional arguements if pulled files already exist on local system
-    ----------
+
+    Optional arguements if pulled files already exist on local system -
+    
     '-c' :  creates copy
     '-s' :  skip
     '-o' :  overwrites existing file
     '-i' :  prompt for each file (DEFAULT)
     
+
     Examples
     ----------
     pull(['-i']) / gd pull -i
+
     pull(['<parent_name>', '<path1>', <path2>, '-s', '-id', 'id3', '-dest', '<save_path>']) /
                             gd pull <parent_name> <path1> <path2> -s -id <id3> -dest <save_path>
     

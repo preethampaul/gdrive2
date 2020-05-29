@@ -20,14 +20,17 @@ def check_creds_list(user_name, check_only=False):
 
     Parameters
     -----------
-    user_name : username to check
-    check_only (optional) : If True, returns a boolean value stating
-                                if the username is previously registered or not.
+    user_name : string
+        username to check
+    check_only : boolean (optional)
+        If True, returns a boolean value stating whether the username is previously registered or not.
     
     Returns
     -----------
-    a boolean if check_only = True
-    otherwise, the credentials file's unique id.
+    whether username exists already : boolean
+        if check_only = True
+    cred_id : string
+        the credentials file's unique id if check_only = False
     """
 
 
@@ -72,14 +75,16 @@ def copy_client_secrets(client_path, client=None):
 
     Parameters
     ------------
-    client_path : path to look for the source .json file
-    client : name to be assigned to the client file
-    If None, DEFAULT_CLIENT name is assigned
-    Note that client should not include the extension '.json' in it.
-
+    client_path : string
+        path to look for the source .json file
+    client : string (optional)
+        Name to be assigned to the client file. If None, DEFAULT_CLIENT name is assigned.
+        Note that client should not include the extension '.json' in it
+    .
     Returns
     ------------
-    None. Just copies the .json file
+    None
+        Just copies the .json file
 
     """
     
@@ -108,13 +113,16 @@ def auth_from_cred(gauth, user_name=None, client=DEFAULT_CLIENT):
     Parameters
     --------------
     gauth : pydrive.GoogleAuth() object
-    user_name : the username which requires authentication
-    client : client <name> corresponding to <name>.json in client_secrets/
-    If no client is passed, the DEFAULT_CLIENT is used.
+    user_name : string (optional)
+        the username which requires authentication
+    client : string (optional)
+        client <name> corresponding to <name>.json in client_secrets/ folder
+        If no client is passed, the DEFAULT_CLIENT is used.
 
     Returns
     --------------
-    None. Authenticates the username with the client provided
+    None
+        Authenticates the username with the client provided
 
     """
     
