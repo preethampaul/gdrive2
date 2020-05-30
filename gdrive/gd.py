@@ -265,11 +265,10 @@ def init(args):
     """
     [syntax when imported / syntax when called via CMD]
     
-    Initializes the current working directory.
-    Creates an info file and authenticates the username
+    Initializes the current working directory and
+    Creates an info file and authenticates the username.
     
-    If used for the first time, the username is requested
-    and authentication reqiuested.
+    If used for the first time, the username and authentication are requested.
     
 
     Parameters
@@ -289,6 +288,7 @@ def init(args):
     The following commands go into args :
     
     '-add' / -add                 : adds new parent to the current directory
+
     '--add-client' / --add-client : registers new client secrets file.
     
 
@@ -388,11 +388,15 @@ def reset(args):
         optional arguements after '<parent_name>' / <parent_name>:
             
         '-user' / -user   : resets user_name/account in the parent name given.
+
         '-path' / -path   : resets path in the parent name given.
-        '-drive'/ -drive  : resets drive in the parent name given
-                          (useful to set shared drives as roots)
+        
+        '-drive'/ -drive  : resets drive in the parent name given (useful to set shared drives as roots)
+        
         '-d'    / -d      : deletes parent name given and its path, user_name and id
+        
         '-default' / -default : set parent name given as 'default'
+        
         '-client' / -client : resets the client secrets file name for the parent.
     
     2. reset(['-info']) / gd reset -info
@@ -402,12 +406,14 @@ def reset(args):
         required arguements after '-user' / -user :
         
         '<user_name>' / <user_name> : deletes <user_name>'s authentication data in the SYSTEM
+        
         '-a'          / -a          : deletes all users authentication data in the SYSTEM
         
     4. reset(['-client', ]) / gd reset -client
         required arguements after '-client' / -client :
         
         '<client_name>' / <client_name> : deletes <client_name>.json
+        
         '-a'          / -a              : deletes all client secrets files
         
     
@@ -758,6 +764,7 @@ def status(args):
     
     1. status([]) / gd status
         displays parent details and staged files
+        
         Returns (if imported) : List with contents as shown below
                     [<dictionary as in .gdinfo.json>,
                     <list of existing staged paths>,
@@ -765,17 +772,20 @@ def status(args):
         
     2. status(['-stage']) / gd status -stage
         displays only stage contents
+        
         Returns (if imported) : List with contents as shown below
                     [<list of existing staged paths>,
                     <list of missing or non-existing staged paths>]
     
     3. status(['-users']) / gd status -users
         displays all users registered on the system
+        
         Returns (if imported) : List with contents as shown below
                     [<user_names>]
                     
     4. status(['-clients']) / gd status -clients
         displays all client secrets or APIs registered on the system
+        
         Returns (if imported) : List with contents as shown below
                     [<names of client secrets json files>]
     
@@ -882,8 +892,11 @@ def ls(args):
     information : list
         List as shown here for files -
             [file_paths_list, file_ids_list]
+        
         List of usernames when -users is used
+        
         List of names of client secrets json files when -clients is used.
+        
         List of shared drives for a <username> when -shared is used, as shown below -
             [drive_names_list, drive_ids_list]
     
@@ -899,6 +912,7 @@ def ls(args):
         If no arg. after '<parent_name>', it shows files or folders in the <parent_name> cwd
         
         '<path>' : shows files/folders in <path> in the <parent_name>
+        
         '-a'     : shows files/folders in parent_name and/or path with ids
             
     3. ls(['-users'])   /   gd ls -users
@@ -1385,9 +1399,9 @@ def add(args):
     """
     [syntax when imported / syntax when called via CMD]
     
-    Adds paths to stage for pushing to Google Drive
+    Adds paths to stage for pushing to Google Drive.
     This function just adds the paths to .gdstage file. It doesn't push any file.
-    For pushing, use function push() / gd push
+    For pushing, use function push() / gd push after adding.
     
 
     Parameters
@@ -1482,8 +1496,7 @@ def push(args):
     1. push([]) / gd push
         Pushes staged files to default parent
     
-    2. push(['<parent_name1>', '<parent_name2>', '<parent_name3>', ... ])
-                / gd push <parent_name1> <parent_name2> <parent_name3> ...
+    2. push(['<parent_name1>', '<parent_name2>', '<parent_name3>', ... ]) / gd push <parent_name1> <parent_name2> <parent_name3> ...
         Pushes staged files to <parent_name> folder
     
     Optional arguements if pushed files already exist on drive-
@@ -1647,8 +1660,7 @@ def pull(args):
     ----------
     pull(['-i']) / gd pull -i
 
-    pull(['<parent_name>', '<path1>', <path2>, '-s', '-id', 'id3', '-dest', '<save_path>']) /
-                            gd pull <parent_name> <path1> <path2> -s -id <id3> -dest <save_path>
+    pull(['<parent_name>', '<path1>', <path2>, '-s', '-id', 'id3', '-dest', '<save_path>']) / gd pull <parent_name> <path1> <path2> -s -id <id3> -dest <save_path>
     
     """
     
