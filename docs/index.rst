@@ -7,7 +7,7 @@ The code is available `here <https://github.com/preethampaul/gdrive>`_
 
 What is gdrive?
 ***********************
-gdrive helps users to easilty access files from Google Drive using paths, instead of File ids.
+gdrive helps users to easily access files from Google Drive using paths, instead of File ids.
 Google API requires the users to know the File ID to access it, but this package which is built
 using the `pyDrive <https://github.com/gsuitedevs/PyDrive>`_ package allows users to use a *file path*
 to access the file or folder.
