@@ -216,11 +216,6 @@ All these commands can be used in a python script as shown below. The only diffe
 	>> gd.add(['berry.jpg', 'mango.jpg'])
 
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
 Data Structuring
 **************************************
 Parents
@@ -323,6 +318,11 @@ client_name
 A client secrets (app credentials) file can be created on `Google Cloud Console <https://console.cloud.google.com>`_ as shown in `Requirements <Requirements>`_.
 Once credentials are created, they can be downloaded as a **.json** file with the name **client_secrets<some_long_id>.json**.
 This file can be renamed as <**client_name**>.json and can be used to access parent_path. If gdrive is being used for the time, it asks the user to show the file location of a client secrets file and creates a default file - **client_secrets.json**. Later, more such files can be added with different **client_names** as <client_name1>.json, <someother_user_specified_name>.json etc. Each parent can be assigned a **client_name** different from the default name - **client_secrets**.
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
 
 Functions
