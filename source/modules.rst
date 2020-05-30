@@ -5,4 +5,3 @@ gdrive
    :maxdepth: 4
 
    gdrive
-   setup
