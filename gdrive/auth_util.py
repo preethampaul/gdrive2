@@ -14,8 +14,8 @@ else:
 
 def check_creds_list(user_name, check_only=False):
     """
-    checks if creds list (CRED_MAP) exists and creates one if it doesn't
-    looks for username in the CRED_MAP, if it doesnt exist
+    This checks if creds list (CRED_MAP) exists and creates one if it doesn't.
+    It looks for username in the CRED_MAP, if it doesnt exist
     creates unique id for the username and generates a credentials file for it.
 
     Parameters
@@ -105,10 +105,10 @@ def copy_client_secrets(client_path, client=None):
 
 def auth_from_cred(gauth, user_name=None, client=DEFAULT_CLIENT):
     """
-    Stores the authentication information in the gauth object
-    Also required to retrieve credential data and refresh expired access tokens
-    Checks for <cred_id>.txt and client_secrets/<client>.json paths
-    Also, updates these paths with authentication
+    Stores the authentication information in the gauth object. This is also required 
+    to retrieve credential data and refresh expired access tokens.
+    It checks for <cred_id>.txt and client_secrets/<client>.json paths and updates 
+    these paths with authentication.
     
     Parameters
     --------------

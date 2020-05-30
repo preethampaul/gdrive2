@@ -300,11 +300,10 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     -------------
     path_ids : list
         returns a list of all ids in the path like this -
-        [Folder1_id, Folder2_id, Folder3_id] if path_to = 'folder'
-        [Folder1_id, Folder2_id, File id] if path_to = 'not-folder'
-        [Folder1_id, Folder2_id, 'no-file-found'] if path_to = 'not-folder'
-                                            and the file at the end of path doesnt exist
-                
+            [Folder1_id, Folder2_id, Folder3_id] if path_to = 'folder'
+            [Folder1_id, Folder2_id, File id] if path_to = 'not-folder'
+            [Folder1_id, Folder2_id, 'no-file-found'] if path_to = 'not-folder' and the file at the end of path doesnt exist
+        
         Gives error if there are more than one files or more than folders with same name
 
     """

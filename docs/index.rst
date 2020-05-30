@@ -1,8 +1,12 @@
 gdrive Documentation
 ==================================
 
+Github
+**********************
+The code is available `here <https://github.com/preethampaul/gdrive>`_
+
 What is gdrive?
-**********
+***********************
 gdrive helps users to easilty access files from Google Drive using paths, instead of File ids.
 Google API requires the users to know the File ID to access it, but this package which is built
 using the `pyDrive <https://github.com/gsuitedevs/PyDrive>`_ package allows users to use a *file path*
@@ -13,16 +17,16 @@ like ``cd``, ``ls``, ``pull`` or ``push``, to quickly view, modify, download or 
 a python code or just the command line.
 
 Getting Started
-*********
+***********************
 Setup
-#######
+#######################
 Use the following command to install the package.
 (The package is still under testing)
 ::
 	$ pip install -i https://test.pypi.org/simple/ gdrive
 
 Requirements
-#######
+#######################
 First of all, pyDrive library is required for this. To install Pydrive, use any one of these commands.
 ::
 	$ pip install PyDrive
@@ -54,7 +58,7 @@ This file can be renamed to some simple name and save on the local computer.
     If a client secrets file is used to authenticate a google account, the registered application or project is given permission by the google user to access data. Anyone with this .json file will be able to able to access those accounts with the same permissions set previously, however only if after authenticating or if the authentication credentials are saved previously.
 
 Quickstart
-#######
+###########################
 gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from command line.
 First, import the gdrive in a python console.::
 	$ python
@@ -65,7 +69,7 @@ First, import the gdrive in a python console.::
 Now, `gd` can be used as a command in command prompt or bash shell.
 
 Quickdemo 1 : Basics
-#######
+###########################
 Lets see how gdrive can be used from command line.
 
 Open terminal and set some folder where you intend to download or from where you intend to upload files.
@@ -185,7 +189,7 @@ If I want to upload *berry.png* to **fruits/hard**:
 
 
 Quickdemo 2 : Multiple Parent functionality
-#######
+############################################
 **.gd/.gdinfo.json** is a dictionary with each key defined as a parent (just like a remote in git). The first key of this dictionary is 'default_parent' whose value is the name of a default parent. Multiple parents can be set with multiple usernames(i.e. google accounts), paths, shared drives or even different client secrets files and one of these can be given the status of 'default_parent'. This makes frequent uploading and downloading as easy as git pull and push functions.
 
 To add a new parent:
@@ -200,7 +204,7 @@ Once a parent is added (say, origin2), we can assign different parameters (like 
 
 
 Quickdemo 3 : Use of these commands in python script:
-#######
+#####################################################
 All these commands can be used in a python script as shown below. The only difference from the terminal commands is that apart from the main function (init, status, etc), the optional arguements must be passed as strings in a list. If there is no arguements, an empty list must be passed in the function.
 
 ::
@@ -218,9 +222,9 @@ All these commands can be used in a python script as shown below. The only diffe
 
 
 Data Structuring
-***********
+**************************************
 Parents
-#######
+###############################
 
 For convenient pushing and pulling files from various folders and google drive accounts with multiple api clients, a **parent** structure is used. When a working directory is **initialized**, multiple **parents** can be used to store paths and ids for multiple google drives. Each **parent** is a list of other data like username, parent_path, parent_id, drive_name, drive_id and client_name stored as strings. All the parents are stored as dictionary items as shown below with the `parent_name` being the name or key of the parent.
 
@@ -269,12 +273,12 @@ Each **.gdinfo.json** is a dictionary of **parents**, defined by user for that d
 The **default_parent** has a string as its value, which is one of the parent_names.
 
 username
-######
+###############################
 
 The **usernames** used in parents are different from the google usernames (like in <google_username>@gmail.com). Each **username** corresponds to a single <google_username>, but each <google_username> can have multiple **usernames**. A **username** is basically a nickname the user gives to their google account for easy pushing and pulling files. Once, a **username** is defined, the **username** can be used for other parents in different directories to use the same google account.
 
 parent_path and parent_id
-#####
+###############################
 
 The **parent_path** is the path to a folder in drive in the google account registered with the nickname **username**. For example, assume a drive like this:
 
@@ -309,22 +313,21 @@ Note that the root folder here is **My Drive**, which will not be included in th
 Each file or folder in google drive has an **ID**. See `this <https://developers.google.com/drive/api/v3/reference/files>`_ to know more about file metadata in google drive. A **parent_id** is the ID of the folder at the **parent_path**.
 
 drive_name and drive_id
-######
+######################################
 
 This is the name of the drive in which the **parent_path** is located. Each google account can have multiple shared drives along with the main **"My Drive"**. **drive_id** is the ID of this drive.
 
 client_name
-######
+######################################
 
 A client secrets (app credentials) file can be created on `Google Cloud Console <https://console.cloud.google.com>`_ as shown in `Requirements <Requirements>`_.
 Once credentials are created, they can be downloaded as a **.json** file with the name **client_secrets<some_long_id>.json**.
 This file can be renamed as <**client_name**>.json and can be used to access parent_path. If gdrive is being used for the time, it asks the user to show the file location of a client secrets file and creates a default file - **client_secrets.json**. Later, more such files can be added with different **client_names** as <client_name1>.json, <someother_user_specified_name>.json etc. Each parent can be assigned a **client_name** different from the default name - **client_secrets**.
 
 
+Functions
+***************************
 
-Links to documentation
-==================
-
+* :doc:`gdrive`
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
