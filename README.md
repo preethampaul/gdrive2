@@ -8,9 +8,9 @@ gdrive helps users to easily access files from Google Drive using paths, instead
 In addition to this, the package also provides commands that can be called from a terminal, like cd, ls, pull or push, to quickly view, modify, download or upload files from or to Google drive using a python code or just the command line.
 
 ## Documentation:
-For more details about setup and commands, check [gdrive.readthedocs.io](https://gdrive.readthedocs.io).
+For more details about **setup** and **commands**, check [gdrive.readthedocs.io](https://gdrive.readthedocs.io).
 
-## Demo
+## Getting started:
 
 gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from command line.
 First, import the gdrive in a python console.
