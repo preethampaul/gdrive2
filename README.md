@@ -10,17 +10,6 @@ In addition to this, the package also provides commands that can be called from 
 ## Documentation:
 For more details about **setup** and **commands**, check [gdrive.readthedocs.io](https://gdrive.readthedocs.io).
 
-## Getting started:
-
-gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from command line.
-First, import the gdrive in a python console.
-<pre><code>$ python
->> import gdrive
->> gdrive.ROOT_PATH</code></pre>
-  
-**ROOT_PATH** is the local system path to the gdrive package. Add this path to the **PATH** environment variable.
-Now, `gd` can be used as a command in command prompt or bash shell.
-
 ### Quickdemo 1 : Basics
 
 Lets see how gdrive can be used from command line.
