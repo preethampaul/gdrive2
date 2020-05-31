@@ -33,7 +33,7 @@ When asked for a username, this is not same as the google username. More about t
 Enter some nickname (for example, ***mygdrive***) you would like to give to your google account, so that you can use this for quick authentication into your account in future.
 This should take you to a Oauth Consent screen, where you'll be asked to enter your Google username and password. You are good, if you see this a html page showing this.
 
->	The authentication is successful.
+>  The authentication is successful.
 
 Once authentication is done, from the current working folder, you can try several gdrive commands. Just like `git`, gdrive also creates a hidden folder **.gd** which contains information about the fileIDs, driveIDs etc. More about this explained in the *parents* documentation.
 
@@ -59,22 +59,22 @@ No files/folders staged.
 This command shows the contents of **.gd/.gdinfo.json** file created during initialization. The structure of this and the meaning of each term are explained in the *parents* documentation. For example, the folders in my drive are in this hierarchy.
 
 <pre><code>My Drive
-	|
-	|___fruits
-	|      |___hard
-	|      |     |__apple.jpg
-	|      |     |__guava.png
-	|      |
-	|      |___soft
-	|            |__grapes.jpg
-	|
-	|___flowers
-	      |___yellow
-	      |      |__sunflower.tiff
-	      |
-	      |___red
-	           |__roses.jpg
-	           |__poppy.png
+|
+|___fruits
+|      |___hard
+|      |     |__apple.jpg
+|      |     |__guava.png
+|      |
+|      |___soft
+|            |__grapes.jpg
+|
+|___flowers
+      |___yellow
+      |      |__sunflower.tiff
+      |
+      |___red
+	   |__roses.jpg
+	   |__poppy.png
 </code></pre>
 
 To list my files in the path stored in the **path** variable of the dictionary showed above:
@@ -130,8 +130,8 @@ $ gd cd fruits/hard
 $ gd push</code></pre>
 
 
-Quickdemo 2 : Multiple Parent functionality
-#######
+#### Quickdemo 2 : Multiple Parent functionality
+
 **.gd/.gdinfo.json** is a dictionary with each key defined as a parent (just like a remote in git). The first key of this dictionary is 'default_parent' whose value is the name of a default parent. Multiple parents can be set with multiple usernames(i.e. google accounts), paths, shared drives or even different client secrets files and one of these can be given the status of 'default_parent'. This makes frequent uploading and downloading as easy as git pull and push functions.
 
 To add a new parent:
@@ -143,8 +143,8 @@ Once a parent is added (say, origin2), we can assign different parameters (like 
 <pre><code>$ git push origin origin2</code></pre>
 
 
-Quickdemo 3 : Use of these commands in python script:
-#######
+#### Quickdemo 3 : Use of these commands in python script:
+
 All these commands can be used in a python script as shown below. The only difference from the terminal commands is that apart from the main function (init, status, etc), the optional arguements must be passed as strings in a list. If there is no arguements, an empty list must be passed in the function.
 
 <pre><code>>> import gdrive as gd
