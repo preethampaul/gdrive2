@@ -1,5 +1,5 @@
 # **gdrive**
-## File management for Google Drive using python
+## What is gdrive?
 
 [![Documentation Status](https://readthedocs.org/projects/gdrive/badge/?version=latest)](https://gdrive.readthedocs.io/en/latest/?badge=latest)
 
@@ -7,10 +7,10 @@ gdrive helps users to easily access files from Google Drive using paths, instead
 
 In addition to this, the package also provides commands that can be called from a terminal, like cd, ls, pull or push, to quickly view, modify, download or upload files from or to Google drive using a python code or just the command line.
 
-### Documentation:
+## Documentation:
 For more details about setup and commands, check [gdrive.readthedocs.io](https://gdrive.readthedocs.io).
 
-### DEMO
+## Demo
 
 gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from command line.
 First, import the gdrive in a python console.
@@ -21,7 +21,7 @@ First, import the gdrive in a python console.
 **ROOT_PATH** is the local system path to the gdrive package. Add this path to the **PATH** environment variable.
 Now, `gd` can be used as a command in command prompt or bash shell.
 
-#### Quickdemo 1 : Basics
+### Quickdemo 1 : Basics
 
 Lets see how gdrive can be used from command line.
 
@@ -130,7 +130,7 @@ $ gd cd fruits/hard
 $ gd push</code></pre>
 
 
-#### Quickdemo 2 : Multiple Parent functionality
+### Quickdemo 2 : Multiple Parent functionality
 
 **.gd/.gdinfo.json** is a dictionary with each key defined as a parent (just like a remote in git). The first key of this dictionary is 'default_parent' whose value is the name of a default parent. Multiple parents can be set with multiple usernames(i.e. google accounts), paths, shared drives or even different client secrets files and one of these can be given the status of 'default_parent'. This makes frequent uploading and downloading as easy as git pull and push functions.
 
@@ -143,7 +143,7 @@ Once a parent is added (say, origin2), we can assign different parameters (like 
 <pre><code>$ git push origin origin2</code></pre>
 
 
-#### Quickdemo 3 : Use of these commands in python script:
+### Quickdemo 3 : Use of these commands in python script:
 
 All these commands can be used in a python script as shown below. The only difference from the terminal commands is that apart from the main function (init, status, etc), the optional arguements must be passed as strings in a list. If there is no arguements, an empty list must be passed in the function.
 
