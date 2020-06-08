@@ -4,6 +4,7 @@
 Preetham
 gdrive/api_data
 pypi_push.ssh
+gdrive/gd
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
