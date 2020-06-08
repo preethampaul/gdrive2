@@ -4,9 +4,133 @@
 import os
 import re
 from apiclient import errors
+import numpy as np
 
 #when my drive is the current drive
 DEFAULT_ROOT = 'root'
+
+def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DEFAULT_ROOT):
+    """
+    Used in gdrive.find function to obtain paths from queries.
+    A query includes strings with * delimiter connected by 'and' and/or 'or' operators
+    
+    Parameters
+    -----------
+    drive : pydrive.GoogleDrive() object
+    query : string
+        query to search for a file in specified path
+    path : string
+        directory path in drive where the query is applied and files are searched.
+        All paths queried will be relative to this
+    path_id : string (optional)
+        id of the directory path
+    tier : string or int
+        The tier in the hierarchy of files
+        If tier = 'all', all tiers are searched (optional)
+        If tier = 'curr', only immediate children are searched
+        If integer passed, search will be done upto that tier.
+        For example, tier = 1 is same as tier = 'curr'
+    default_root : string (optional)
+        The id of the drive.    
+    
+    Returns
+    -----------
+    paths and path_ids satisfying the query : tuple
+        (paths, path_ids)
+    
+    """
+    cond_list = re.split(r"(\Wand\W|\Wor\W)+" ,query)
+    path_ind_list = cond_list
+    
+    #Listing all paths
+    (paths_list, ids_list, count) = list_all_contents(path, init_folder_id=path_id, drive=drive, dynamic_show=False, tier=tier, default_root=default_root)
+    
+    i = 0
+    while i<len(cond_list):
+        
+        if cond_list[i] == ' and ' or cond_list[i] == ' or ':
+            i+=1
+            continue
+        
+        file_cond = cond_list[i]
+        path_ind_list[i] = []
+        
+        if "\"" in file_cond or "'" in file_cond:
+            file_cond = re.split("\"|\'", file_cond)[1]
+        else:
+            file_cond = re.split("\"|\'", file_cond)[0]
+        
+        #full match
+        if not '*' in file_cond:
+            for j in range(len(paths_list)):
+                if file_cond == paths_list[j]:
+                    path_ind_list[i] += [j]
+            
+            i += 1
+            continue
+        
+        #partial matches using *
+        q_path_list = paths_list.copy()
+        path_ind_list[i] = list(range(len(paths_list)))
+        
+        #delimiters attached by *
+        delims = re.split('\*', file_cond)
+        for delim_i in range(len(delims)):
+            if delims[delim_i] == '':
+                continue
+            
+            q_path_len = len(q_path_list)
+            j = 0
+            while j < q_path_len:
+                path_j = q_path_list[j]
+                parted_q_path = path_j.partition(delims[delim_i])
+                
+                if not (delims[delim_i] == parted_q_path[1] and parted_q_path[-1] == ''):
+                    q_path_list[j] = parted_q_path[-1]
+                    
+                if not file_cond.startswith('*') and not parted_q_path[0] == '':
+                    q_path_list[j] = ''
+                
+                if not file_cond.endswith('*') and not parted_q_path[-1] == '':
+                    q_path_list[j] = ''
+                
+                if q_path_list[j] == '':
+                    _ = q_path_list.pop(j)
+                    _ = path_ind_list[i].pop(j)
+                    q_path_len -= 1
+                    continue
+                
+                j+=1
+        
+        #while loop for connecting strings connected by and/or operators
+        i+=1
+    
+    #logic operation
+    op = None
+    op_list = np.array([])
+    
+    for ii in path_ind_list:
+        if type(ii) == str:
+            op = ii
+            continue
+        
+        if len(op_list)==0:
+            op_list = np.array(ii)
+            continue
+        
+        if 'and' in op:
+            op_list = op_list[ [ind in ii for ind in op_list] ]
+        
+        elif 'or' in op:
+            op_list = np.unique(np.concatenate((op_list, ii)))
+            
+        op = None
+    
+    if len(op_list)==0:
+        return ([], [])
+    
+    return (list(np.array(paths_list)[op_list]), list(np.array(ids_list)[op_list]))
+
 
 def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
     """
@@ -377,9 +501,11 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
         None for listing paths in local system; otherwise, lists paths in drive
     dynamic_show : bool (optional)
         if True, prints each nested_path dynamically, False doesn't
-    tier : string (optional)
+    tier : string or int(optional)
         'all' returns all nested paths
         'curr' returns contents immediately below current folder
+        If int, tier should be the number of tiers in hierarchy of nested files to list.
+        For example, tier = 1 is same as tier == 'curr'
     show_ids : bool (optional)
         If True, prints ids along with file names when dynamic_show = True
     default_root : string (optional)
@@ -401,7 +527,11 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     else:
         system = 'drive'  
 
-    def list_all_contents_recur(folder_path, folder_id, paths_list, ids_list, file_count):
+    def list_all_contents_recur(folder_path, folder_id, paths_list, ids_list, file_count, tier):
+        
+        #if tiers end
+        if tier==0:
+            return 0
         
         #------------------------------------LOCAL---------------------------------------------
         if system == 'local':
@@ -528,10 +658,13 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 return 0
         
         #------------------------------------------Common for both drive and Local---------------------------
-        sub_folder_paths = [folder_path + '\\'+ p for p in sub_folders]
+        sub_folder_paths = [folder_path + '/'+ p for p in sub_folders]
         
         for path, path_id in zip(sub_folder_paths, sub_folder_ids):
-            file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, 0)
+            if type(tier)==int:
+                file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, 0, tier-1)
+            else:
+                file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, 0, tier)
         
         return file_count
     
@@ -550,7 +683,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'not-folder', default_root=default_root)
                 init_folder_id = list_path_ids[-1]
                 
-    total_count = list_all_contents_recur(init_folder_path, init_folder_id, paths_list, ids_list, 0)    
+    total_count = list_all_contents_recur(init_folder_path, init_folder_id, paths_list, ids_list, 0, tier)    
     
     return paths_list, ids_list, total_count
 
@@ -701,7 +834,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_roo
         if drive_parent_folder_path == '' :
             drive_path = curr_folder_name + path_i
         else:
-            drive_path = drive_parent_folder_path + '\\' + curr_folder_name +  path_i
+            drive_path = drive_parent_folder_path + '/' + curr_folder_name +  path_i
             
         if os.path.isdir(curr_path + path_i):
             path_id = (get_path_ids(drive_path, drive, create_missing_folders = True, path_to = 'folder'))[-1]

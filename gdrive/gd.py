@@ -64,7 +64,9 @@ Miscelleneous functions:\n\
 'help'   : Shows the list of functions or commands available\n\
 'rmgd'   : Removes the gd file created by importing gdrive\n\
 'default' : Brings the package to its default state (removes all clients, auth. data and the gd commandline functionality)\n\
-"
+\n\
+Use '-h' / -h  or '-help' / -help to see help about a function/command.\n\
+Example: gdrive.init(['-h']) / gd init -h\n"
 
 #---------------------------------------------------------------------------------------
 #UTILITY-FUNCTIONS
@@ -286,6 +288,8 @@ def init(args):
     Notes
     ----------
     The following commands go into args :
+        
+    '-h' / -h  or '-help' / -help : shows help
     
     '-add' / -add                 : adds new parent to the current directory
 
@@ -380,6 +384,8 @@ def reset(args):
     Notes
     ----------
     The following commands go into args :
+            
+    0. '-h' / -h  or '-help' / -help : shows help
 
     1. reset(['<parent_name>', ]) / gd reset <parent_name>
         If no arg. after '<parent_name>', it prompts inputs for
@@ -761,6 +767,8 @@ def status(args):
     Notes
     ----------
     The following commands go into args :
+        
+    0. '-h' / -h  or '-help' / -help : shows help
     
     1. status([]) / gd status
         displays parent details and staged files
@@ -904,6 +912,8 @@ def ls(args):
     Notes
     ----------
     The following commands go into args :
+    
+    0. '-h' / -h  or '-help' / -help : shows help
     
     1. ls([])   /   gd ls
         shows files/folders in the <default> parent cwd
@@ -1116,6 +1126,8 @@ def cd(args):
     ----------
     The following commands go into args :
     
+    0. '-h' / -h  or '-help' / -help : shows help
+    
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file or folder within current driveID.
     It can be relative to the parent_path or can be absolute wrt to driveId.
@@ -1201,6 +1213,8 @@ def rm(args):
     Notes
     ----------
     The following commands go into args :
+    
+    0. '-h' / -h  or '-help' / -help : shows help
     
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file or folder within current driveID.
@@ -1321,6 +1335,8 @@ def mkdir(args):
     ----------
     The following commands go into args :
     
+    0. '-h' / -h  or '-help' / -help : shows help
+    
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file or folder within current driveID.
     It can be relative to the parent_path or can be absolute wrt to driveId.
@@ -1420,6 +1436,8 @@ def add(args):
     ----------
     The following commands go into args :
     
+    0. '-h' / -h  or '-help' / -help : shows help
+    
     The <path> must be in local system
     
     1. add(['<path1>', '<path2>', '<path3>', ...]) / gd add <path1> <path2> <path3> ...
@@ -1492,6 +1510,8 @@ def push(args):
     Notes
     ----------
     The following commands go into args :
+    
+    0. '-h' / -h  or '-help' / -help : shows help
     
     1. push([]) / gd push
         Pushes staged files to default parent
@@ -1624,6 +1644,8 @@ def pull(args):
     Notes
     ----------
     The following commands go into args :
+    
+    0. '-h' / -h  or '-help' / -help : shows help
     
     The <path> being passed need no be limited to be within the parent_path folder.
     It can to any file/folder within current driveID.
@@ -1764,20 +1786,105 @@ def pull(args):
             return
         
         download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
+
+#--------------------------------------
+def find(args):
+    """
+    
+    
+    """
+    
+    if '-h' in args or '-help' in args:
+        print(find.__doc__)
+        return
+    
+    info = check_info()
+    if len(info) == 0:
+        print('gd not initiated in this folder, try : gd init')
+        return
+    
+    parents_list = list(info.keys())
+    parents_list.remove('default_parent')
+    
+    search_folder_path = None
+    search_folder_id = None
+    tier = 'curr'
+    
+    #path input
+    if '-path' in args:
+        try:
+            path_idx = args.index('-path') + 1
+            search_folder_path = args.pop(path_idx)
+        except:
+            print('No path provided.')
+        
+        #removes '-path' from args
+        _ = args.pop(path_idx-1)
+    
+    #tier input    
+    for iarg in args:
+        if '-' in iarg:
+            tier = iarg[1:]
+            args.remove(iarg)
+            break
+    
+    #converting tier to integer if not 'all' or 'curr'
+    try:
+        tier = int(tier)
+    except:
+        pass
+    
+    if len(args)==0 or len(args)>2:
+        print("Invalid number of arguements passed. See gd find -help")
+        return
+    
+    if len(args)==2:
+        parent_name = args[0]
+        if not parent_name in parents_list:
+            print("The parent name entered doesnt not exist.")
+            return
+    
+    else:
+        parent_name = info['default_parent']
+    
+    #Authentication
+    [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
+    auth_from_cred(gauth, user_name, client)
+    drive = GoogleDrive(gauth)
+    
+    if search_folder_path == None:
+        search_folder_path = parent_path
+        search_folder_id = parent_id
+        
+    #query to find files
+    find_query = args[-1]
+    
+    query_paths = query_to_paths(drive, find_query, search_folder_path, path_id=search_folder_id, 
+                           tier=tier, default_root=drive_id)
+    
+    if RETURN_RESULT:
+        return query_paths
+    
+    print("file id : file path\n-----------------------\n")
+    for i in range(len(query_paths[0])):
+        print(query_paths[1][i] + ' : ' + query_paths[0][i])
+        
+    print("")
+    
     
 #------------------------------------------------------------------------------------------------
 #Miscelleneous functions
 #------------------------------------------------------------------------------------------------
 def help(args):
-    """displays help text"""
+    """displays help text (if imported, args = [])"""
     print(help_text)
 
 def rmgd(args):
-    """removes the created gd file"""
+    """removes the created gd file (if imported, args = [])"""
     os.remove(os.path.join(ROOT_PATH, 'gd'))
 
 def default(args):
-    """brings the package to its default"""
+    """brings the package to its default (if imported, args = [])"""
     shutil.rmtree(CREDS_DIR)
     rmgd()
 
@@ -1800,7 +1907,11 @@ if __name__ == "__main__":
     args = args_func.args
     
     RETURN_RESULT = False
-    exec( func + '(args)' )
+    try:
+        exec( func + '(args)' )
+    #sometimes token fails to refresh
+    except:
+        exec( func + '(args)' )
     """
     except errors.HttpError:
         delete_cred_files()
