@@ -22,7 +22,7 @@ copyright = '2020, Preetham Paul'
 author = 'Preetham Paul'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.2'
+release = '0.4.5'
 
 
 # -- General configuration ---------------------------------------------------
