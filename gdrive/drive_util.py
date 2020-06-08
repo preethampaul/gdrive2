@@ -30,6 +30,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     default_root : string (optional)
         The id of the drive.    
     
+
     Notes
     -----------
     If tier = 'all', all tiers are searched (optional)
@@ -40,6 +41,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     
     For example, tier = 1 is same as tier = 'curr'
     
+
     Returns
     -----------
     paths and path_ids satisfying the query : tuple
@@ -359,6 +361,7 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
     Returns list of ids for folders or files with title = name in the drive folder
     with id = parent_folder_id
     
+
     Parameters
     --------------
     name : string
@@ -367,7 +370,8 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
         ID of the parent folder
     drive : pydrive.GoogleDrive() object
     file_type : string (optional)
-        
+    
+
     Notes
     --------------
     For file_type, use one of the following:
@@ -378,6 +382,7 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
         
         'all' to return all ids with the name (default)
     
+
     Returns
     --------------
     ids and mime types : tuple
@@ -422,6 +427,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     The last id in this list will be of a folder or a file, which the user must determine
     with the path_to arguement
     
+
     Parameters
     -------------
 
@@ -445,6 +451,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
         
         'not-folder' to return ids other than folders
     
+
     Returns
     -------------
     path_ids : list
@@ -518,6 +525,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     
     If a file is present at init_folder_path, just returns the file_name and id
 
+
     Parameters
     ---------------
     init_folder_path : string
@@ -550,6 +558,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     
     default_root : string (optional)
         id of the drive
+
 
     Returns
     ---------------
@@ -742,6 +751,7 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
     A typical drive path must be like this :
         Folder1_title/Folder2_title/Folder3_title or file_title
         
+
     Parameters
     --------------
     curr_file_path : string
@@ -754,7 +764,8 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
         1 (default) to print the file's count when uploading folder
     total_count : int (optional)
         1 (DEFAULT) to print the total files in a folder when uploading
-                    
+         
+
     Notes:
     ------------
     For prompt, use the following:
@@ -767,6 +778,7 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
         
         'copy' creates an extra copy
     
+
     Returns
     -------------
     multiple outputs : None or string
@@ -846,6 +858,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_roo
     A typical drive path must be like this :
         Folder1_title/Folder2_title/Folder3_title or file_title
         
+
     Parameters
     ---------------
     curr_path : string
@@ -855,6 +868,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_roo
     drive : pydrive.GoogleDrive() object
     prompt : string (optional)
     
+
     Notes:
     ------------
     For prompt, use the following:
@@ -867,6 +881,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_roo
         
         'copy' creates an extra copy
     
+
     Returns
     ---------------
     None
@@ -929,6 +944,7 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
     A typical drive path must be like this :
         Folder1_title/Folder2_title/Folder3_title or file_title
         
+
     Parameters
     ----------------
     file_id : string
@@ -942,6 +958,7 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
     total_count : int (optional)
         1 (default) to print the total files in a folder when downloading        
     
+
     Notes:
     ------------
     For prompt, use the following:
@@ -954,6 +971,7 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
         
         'copy' creates an extra copy
     
+
     Returns
     ----------------
     multiple outputs : None or string
@@ -1019,6 +1037,7 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     A typical drive path must be like this :
         Folder1_title/Folder2_title/Folder3_title or file_title
         
+
     Parameters
     -----------------
     drive : pydrive.GoogleDrive() object
@@ -1038,6 +1057,7 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     
     prompt : string (optional)
     
+
     Notes:
     ------------
     For prompt, use the following:
@@ -1050,6 +1070,7 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
         
         'copy' creates an extra copy
     
+
     Returns
     -----------------
     None
@@ -1100,6 +1121,7 @@ def delete(drive, drive_path=None, drive_path_id=None, relative_id=None, hard_de
     A typical drive path must be like this :
         Folder1_title/Folder2_title/Folder3_title or file_title
     
+
     Parameters
     ---------------
     drive : pydrive.GoogleDrive() object
@@ -1123,6 +1145,7 @@ def delete(drive, drive_path=None, drive_path_id=None, relative_id=None, hard_de
     default_root : string (optional)
         id of the drive
     
+
     Returns
     --------------
     None

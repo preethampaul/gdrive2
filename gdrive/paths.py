@@ -29,4 +29,4 @@ if not os.path.exists(CREDS_DIR):
 if not os.path.exists(CLIENT_SECRETS_DIR):
     os.mkdir(CLIENT_SECRETS_DIR)
 
-__version__="0.4.4"
+__version__="0.4.5"

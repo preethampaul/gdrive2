@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gdrive",
-    version="0.4.4",
+    version="0.4.5",
     author="Preetham Paul",
     author_email="preeth@uw.edu",
     description="File management tools for Google Drive based on PyDrive",
