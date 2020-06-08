@@ -49,6 +49,7 @@ Overview of initializing/listing fucnctions:\n\
            changes parent information like user_names, paths, root folders (Ex: shared drives), clients\n\
            deletes parents, delete authentication data,\n\
 'ls'     : lists all files/folders in parent paths, shows registered usernames and their shared drives, clients\n\
+'find'   : Searches for files and folders based on query\n\
 'cd'     : changes parent_path directly without using 'reset' function\n\
 'mkdir'  : creates new folder in the parent or path provided\n\
 'rm'     : creates existing folder/file in the parent or path provided\n\
@@ -921,9 +922,9 @@ def ls(args):
     2. ls(['<parent_name>',])   /   gd ls <parent_name>
         If no arg. after '<parent_name>', it shows files or folders in the <parent_name> cwd
         
-        '<path>' : shows files/folders in <path> in the <parent_name>
+        '<path>' / <path> : shows files/folders in <path> in the <parent_name>
         
-        '-a'     : shows files/folders in parent_name and/or path with ids
+        '-a' / -a    : shows files/folders in parent_name and/or path with ids
             
     3. ls(['-users'])   /   gd ls -users
         shows all usernames registered in the SYSTEM
@@ -1102,6 +1103,141 @@ def ls(args):
     _, _, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
 
 
+#--------------------------------------
+def find(args):
+    """
+    [syntax when imported / syntax when called via CMD]
+    
+    Searched for file and folder names using a query
+
+    Parameters
+    ----------
+    args : list
+        list of arguement strings.
+
+    Returns
+    ----------
+    information : tuple
+        (list of paths, list of ids)
+
+    Notes
+    ----------
+    The following commands go into args :
+    
+    0. '-h' / -h  or '-help' / -help : shows help
+    
+    1. find(["<query>"])   /   gd find "<query>"
+        Uses the <query> string to find the file in default parent path
+    
+    2. find(['<parent_name>', "<query>"])   /   gd find <parent_name> "<query>"
+        Uses the <query> string to find the file in <parent_name>'s path
+    
+    3. find(["<query>", '-path', '<path>'])   /   gd find "<query>" -path <path>
+        Finds the file in <path> specified. If no parent_name specified, default parent is considered.
+    
+    4. find(["<query>", -<tier>]) / gd find "<query>" -<tier>
+        Finds the file/folder upto the specified <tier> in the file hierarchy.
+        
+        Only following arguements can be passed as -<tier>:
+            
+            '-<int>' / -<int> : if integer, upto that tier
+            
+            '-curr' / -curr : Current tier (same as tier = 1)
+            
+            '-all'  / -all  : all tiers
+    
+    Additional optional arguements:
+    -path, -<tier>
+     
+
+    Examples
+    ----------
+    find(["*.jpg"])                 /   gd find "*.jpg"
+
+    find(["*.*", '-path', 'folder1/folder2'])   /   gd find "*.*" -path folder1/folder2
+
+    find(['origin2', '-4', "*.xlsx* and *.csv*"])          /   gd find origin2 -4 "*.xlsx and *.csv"
+
+    """
+    
+    if '-h' in args or '-help' in args:
+        print(find.__doc__)
+        return
+    
+    info = check_info()
+    if len(info) == 0:
+        print('gd not initiated in this folder, try : gd init')
+        return
+    
+    parents_list = list(info.keys())
+    parents_list.remove('default_parent')
+    
+    search_folder_path = None
+    search_folder_id = None
+    tier = 'curr'
+    
+    #path input
+    if '-path' in args:
+        try:
+            path_idx = args.index('-path') + 1
+            search_folder_path = args.pop(path_idx)
+        except:
+            print('No path provided.')
+        
+        #removes '-path' from args
+        _ = args.pop(path_idx-1)
+    
+    #tier input    
+    for iarg in args:
+        if '-' in iarg:
+            tier = iarg[1:]
+            args.remove(iarg)
+            break
+    
+    #converting tier to integer if not 'all' or 'curr'
+    try:
+        tier = int(tier)
+    except:
+        pass
+    
+    if len(args)==0 or len(args)>2:
+        print("Invalid number of arguements passed. See gd find -help")
+        return
+    
+    if len(args)==2:
+        parent_name = args[0]
+        if not parent_name in parents_list:
+            print("The parent name entered doesnt not exist.")
+            return
+    
+    else:
+        parent_name = info['default_parent']
+    
+    #Authentication
+    [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
+    auth_from_cred(gauth, user_name, client)
+    drive = GoogleDrive(gauth)
+    
+    if search_folder_path == None:
+        search_folder_path = parent_path
+        search_folder_id = parent_id
+        
+    #query to find files
+    find_query = args[-1]
+    
+    query_paths = query_to_paths(drive, find_query, search_folder_path, path_id=search_folder_id, 
+                           tier=tier, default_root=drive_id)
+    
+    if RETURN_RESULT:
+        return query_paths
+    
+    print("file id : file path\n-----------------------\n")
+    for i in range(len(query_paths[0])):
+        print(query_paths[1][i] + ' : ' + query_paths[0][i])
+        
+    print("")
+
+
 #-----------------------------------------
 def cd(args):
     """
@@ -1217,7 +1353,9 @@ def rm(args):
     0. '-h' / -h  or '-help' / -help : shows help
     
     The <path> being passed need no be limited to be within the parent_path folder.
+    
     It can to any file or folder within current driveID.
+    
     It can be relative to the parent_path or can be absolute wrt to driveId.
     
     1. rm(['<path>'])   /   gd rm <path>
@@ -1787,89 +1925,6 @@ def pull(args):
         
         download(drive, drive_path=drive_path, drive_path_id=drive_path_id, download_path=save_path, prompt=prompt, default_root=drive_id)    
 
-#--------------------------------------
-def find(args):
-    """
-    
-    
-    """
-    
-    if '-h' in args or '-help' in args:
-        print(find.__doc__)
-        return
-    
-    info = check_info()
-    if len(info) == 0:
-        print('gd not initiated in this folder, try : gd init')
-        return
-    
-    parents_list = list(info.keys())
-    parents_list.remove('default_parent')
-    
-    search_folder_path = None
-    search_folder_id = None
-    tier = 'curr'
-    
-    #path input
-    if '-path' in args:
-        try:
-            path_idx = args.index('-path') + 1
-            search_folder_path = args.pop(path_idx)
-        except:
-            print('No path provided.')
-        
-        #removes '-path' from args
-        _ = args.pop(path_idx-1)
-    
-    #tier input    
-    for iarg in args:
-        if '-' in iarg:
-            tier = iarg[1:]
-            args.remove(iarg)
-            break
-    
-    #converting tier to integer if not 'all' or 'curr'
-    try:
-        tier = int(tier)
-    except:
-        pass
-    
-    if len(args)==0 or len(args)>2:
-        print("Invalid number of arguements passed. See gd find -help")
-        return
-    
-    if len(args)==2:
-        parent_name = args[0]
-        if not parent_name in parents_list:
-            print("The parent name entered doesnt not exist.")
-            return
-    
-    else:
-        parent_name = info['default_parent']
-    
-    #Authentication
-    [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
-    auth_from_cred(gauth, user_name, client)
-    drive = GoogleDrive(gauth)
-    
-    if search_folder_path == None:
-        search_folder_path = parent_path
-        search_folder_id = parent_id
-        
-    #query to find files
-    find_query = args[-1]
-    
-    query_paths = query_to_paths(drive, find_query, search_folder_path, path_id=search_folder_id, 
-                           tier=tier, default_root=drive_id)
-    
-    if RETURN_RESULT:
-        return query_paths
-    
-    print("file id : file path\n-----------------------\n")
-    for i in range(len(query_paths[0])):
-        print(query_paths[1][i] + ' : ' + query_paths[0][i])
-        
-    print("")
     
     
 #------------------------------------------------------------------------------------------------

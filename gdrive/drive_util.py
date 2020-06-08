@@ -12,6 +12,7 @@ DEFAULT_ROOT = 'root'
 def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DEFAULT_ROOT):
     """
     Used in gdrive.find function to obtain paths from queries.
+    
     A query includes strings with * delimiter connected by 'and' and/or 'or' operators
     
     Parameters
@@ -26,12 +27,18 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         id of the directory path
     tier : string or int
         The tier in the hierarchy of files
-        If tier = 'all', all tiers are searched (optional)
-        If tier = 'curr', only immediate children are searched
-        If integer passed, search will be done upto that tier.
-        For example, tier = 1 is same as tier = 'curr'
     default_root : string (optional)
         The id of the drive.    
+    
+    Notes
+    -----------
+    If tier = 'all', all tiers are searched (optional)
+    
+    If tier = 'curr', only immediate children are searched
+    
+    If integer passed, search will be done upto that tier.
+    
+    For example, tier = 1 is same as tier = 'curr'
     
     Returns
     -----------
@@ -135,8 +142,9 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
 def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
     """
     Parses path into an absolute drive path
+    
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
     
     Parameters
     -------------
@@ -214,7 +222,7 @@ def fetchMetadata(drive_file, fields=None):
     -------------
     drive_file : pydrive.GoogleDriveFile() object
     fields : string (optional)
-        If metadata about a specific field is required, pass it here as querry string
+        If metadata about a specific field is required, pass it here as querry string. 
         For example : fields = "field1,field2,field3"
 
     Returns
@@ -302,8 +310,9 @@ def create_folder(folder_name, parent_folder_id, drive):
 def get_path_from_id(drive, file_id, default_root=DEFAULT_ROOT):
     """
     Returns drive path of file with specified id.
+    
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
     
     Parameters
     -------------
@@ -358,8 +367,15 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
         ID of the parent folder
     drive : pydrive.GoogleDrive() object
     file_type : string (optional)
+        
+    Notes
+    --------------
+    For file_type, use one of the following:
+        
         'folder' to return only folders' ids
+        
         'not-folder' to return ids other than folders
+        
         'all' to return all ids with the name (default)
     
     Returns
@@ -399,8 +415,10 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     
     """
     Returns list of ids for folders or files in the path to the drive_path
+    
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
+    
     The last id in this list will be of a folder or a file, which the user must determine
     with the path_to arguement
     
@@ -409,23 +427,33 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
 
     drive_path : string
         path to a file or folder in drive
+    
     drive : pydrive.GoogleDrive() object
+    
     create_missing_folders : bool (optional)
+        
         True if create the folders in the path if they dont exist
+        
         False returns a error if any of the folder in the path doesnt exist
+    
     relative_id : None or string (optional)
-        None if absolute paths are desired
-        <current working folder id> if relative paths are desired
+        None if absolute paths are desired and <current working folder id> if relative paths are desired
+    
     path_to : string (optional)
+    
         'folder' to return only folders' ids (default)
+        
         'not-folder' to return ids other than folders
     
     Returns
     -------------
     path_ids : list
         returns a list of all ids in the path like this -
+            
             [Folder1_id, Folder2_id, Folder3_id] if path_to = 'folder'
+            
             [Folder1_id, Folder2_id, File id] if path_to = 'not-folder'
+            
             [Folder1_id, Folder2_id, 'no-file-found'] if path_to = 'not-folder' and the file at the end of path doesnt exist
         
         Gives error if there are more than one files or more than folders with same name
@@ -484,6 +512,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     
     A typical drive path must be like this :
         Folder1_title/Folder2_title/Folder3_title or file_title
+    
     For example : if init_folder_path = Folder1_title
         relative paths are Folder2_title and Folder2_title/Folder3_title
     
@@ -493,21 +522,32 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     ---------------
     init_folder_path : string
         path to folder on current system
+    
     init_folder_id : string or None (optional)
+        
         id of the folder at init_folder_path
+        
         Only one of init_folder_path and init_folder_id is sufficient
+        
         None if unknown, but init_folder_path is known
+    
     drive : pydrive.GoogleDrive() drive object or None (optional)
         None for listing paths in local system; otherwise, lists paths in drive
+    
     dynamic_show : bool (optional)
         if True, prints each nested_path dynamically, False doesn't
+    
     tier : string or int(optional)
         'all' returns all nested paths
+        
         'curr' returns contents immediately below current folder
+        
         If int, tier should be the number of tiers in hierarchy of nested files to list.
         For example, tier = 1 is same as tier == 'curr'
+    
     show_ids : bool (optional)
         If True, prints ids along with file names when dynamic_show = True
+    
     default_root : string (optional)
         id of the drive
 
@@ -516,7 +556,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     contnets of the folder : tuple
         a tuple of 3 elements
         (the paths_list with the relative paths, 
-        the list of ids of contents if used for GDrive (same as paths_list for drive = None) ,
+        the list of ids of contents if used for GDrive (same as paths_list for drive = None),
         total_count = the number of 'non-folder' items in the folder at folder_path)
 
     """
@@ -590,10 +630,14 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 sub_folders = [file['title'] for file in sub_folders_list]
                 sub_folder_ids = [file['id'] for file in sub_folders_list]
                 
-                if tier=='curr':
-                    paths_list+=sub_folders
-                    ids_list+=sub_folder_ids
+                if tier=='curr' or type(tier)==int:
                     
+                    if tier=='curr':
+                        paths_list+=sub_folders
+                    else:
+                        paths_list += [folder_path + '/' + i for i in sub_folders]
+                    
+                    ids_list+=sub_folder_ids
                     if dynamic_show:
                         
                         if len(sub_folders)==0:
@@ -613,7 +657,8 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                                     
                                 print(print_id +" : "+ ftype+'[{}kB] {} : '.format(fsize, count+1) + i)
                     
-                    return len(sub_folders)
+                    if tier=='curr':
+                        return len(sub_folders)
                 
             else:
                 #if folder_path leads to a file
@@ -705,20 +750,31 @@ def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file
         id of drive folder into which upload will be done
     drive : pydrive.GoogleDrive() object
     prompt : string (optional)
-        'ask' asks user to skip or overwrite if file already exists in drive (default)
-        'skip' or 's' skips file if already exists
-        'overwrite' or 'o' overwrites the file if it already exists
-        'copy' creates an extra copy
     file_count : int (optional)
         1 (default) to print the file's count when uploading folder
     total_count : int (optional)
         1 (DEFAULT) to print the total files in a folder when uploading
                     
+    Notes:
+    ------------
+    For prompt, use the following:
+        
+        'ask' asks user to skip or overwrite if file already exists in drive (default)
+        
+        'skip' or 's' skips file if already exists
+        
+        'overwrite' or 'o' overwrites the file if it already exists
+        
+        'copy' creates an extra copy
+    
     Returns
     -------------
     multiple outputs : None or string
+        
         Uploads the file into the drive folder with id = drive_folder_id
+        
         returns None if no change in prompt,
+        
         returns change in prompt from user otherwise
     
     """
@@ -788,7 +844,7 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_roo
     Use drive_parent_folder_path = '' for uploading into the root folder
     
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
         
     Parameters
     ---------------
@@ -798,9 +854,17 @@ def upload(curr_path, drive_parent_folder_path, drive, prompt='ask', default_roo
         path to drive folder into which upload will be done
     drive : pydrive.GoogleDrive() object
     prompt : string (optional)
-        'ask' asks user to skip or overwrite if file already exists in drive (DEFAULT)
+    
+    Notes:
+    ------------
+    For prompt, use the following:
+        
+        'ask' asks user to skip or overwrite if file already exists in drive (default)
+        
         'skip' or 's' skips file if already exists
+        
         'overwrite' or 'o' overwrites the file if it already exists
+        
         'copy' creates an extra copy
     
     Returns
@@ -863,7 +927,7 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
     if file_id is known
     
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
         
     Parameters
     ----------------
@@ -873,14 +937,22 @@ def download_file_by_id(file_id, download_path, drive, prompt='ask',file_count=1
         path to folder into which download will be done
     drive : pydrive.GoogleDrive() object
     prompt : string (optional)
-        'ask' asks user to skip or overwrite if file already exists in drive
-        'skip' or 's' skips file if already exists
-        'overwrite' or 'o' overwrites the file if it already exists
-        'copy' creates an extra copy
     file_count : int (optional)
         1 (default) to print the file's count when downloading folder
     total_count : int (optional)
         1 (default) to print the total files in a folder when downloading        
+    
+    Notes:
+    ------------
+    For prompt, use the following:
+        
+        'ask' asks user to skip or overwrite if file already exists in drive (default)
+        
+        'skip' or 's' skips file if already exists
+        
+        'overwrite' or 'o' overwrites the file if it already exists
+        
+        'copy' creates an extra copy
     
     Returns
     ----------------
@@ -945,23 +1017,37 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     Either id or path - one of them is sufficient
     
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
         
     Parameters
     -----------------
     drive : pydrive.GoogleDrive() object
+    
     drive_path : string or None
         path to file/folder on drive (None is default)
+    
     drive_path_id : string or None
-        id of file/folder in drive
+        id of file/folder in drive.
+        
         Either the drive path o the drive_path_id is sufficient (None is default)
+    
     download_path : string (optional)
         path to folder into which download will be done
+        
         current_working directory is default
+    
     prompt : string (optional)
-        'ask' asks user to skip or overwrite if file already exists in drive
+    
+    Notes:
+    ------------
+    For prompt, use the following:
+        
+        'ask' asks user to skip or overwrite if file already exists in drive (default)
+        
         'skip' or 's' skips file if already exists
+        
         'overwrite' or 'o' overwrites the file if it already exists
+        
         'copy' creates an extra copy
     
     Returns
@@ -1010,23 +1096,30 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
 def delete(drive, drive_path=None, drive_path_id=None, relative_id=None, hard_delete=False, default_root=DEFAULT_ROOT):
     """
     deletes a file or folder using the drive_path or the drive_path_id.
+    
     A typical drive path must be like this :
-    Folder1_title/Folder2_title/Folder3_title or file_title
+        Folder1_title/Folder2_title/Folder3_title or file_title
     
     Parameters
     ---------------
     drive : pydrive.GoogleDrive() object
+    
     drive_path : stringor None
         path to the file or folder in drive to be deleted
+    
     drive_path_id : string or None
-        id of the folder or file to be deleted
+        id of the folder or file to be deleted.
+        
         Only one of drive_path and drive_path_id is sufficient.
+    
     relative_id : None or string (optional)
-        None if absolute paths are desired (default)
-        <current working folder id> if relative paths are desired
+        None if absolute paths are desired (default) and <current working folder id> if relative paths are desired
+    
     hard_delete : bool (optional)
         If False, files are moved to trash (default)
+        
         If True, files are deleted permanently
+    
     default_root : string (optional)
         id of the drive
     
