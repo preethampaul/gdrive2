@@ -48,21 +48,27 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         (paths, path_ids)
     
     """
-    cond_list = re.split(r"(\Wand\W|\Wor\W|\Wnot\W)+" ,query)
+    cond_list = re.split(r"(\Wand\W|\Wor\W)+" ,query)
     path_ind_list = cond_list
     
     #Listing all paths
     (paths_list, ids_list, count) = list_all_contents(path, init_folder_id=path_id, drive=drive, dynamic_show=False, tier=tier, default_root=default_root)
     
     i = 0
+    is_not = False #if not is present
     while i<len(cond_list):
         
-        if cond_list[i] == ' and ' or cond_list[i] == ' or ' or cond_list[i] == ' not ':
+        if cond_list[i] == ' and ' or cond_list[i] == ' or ':
             i+=1
             continue
         
         file_cond = cond_list[i]
         path_ind_list[i] = []
+        
+        #checks if not is present
+        if file_cond.startswith('not '):
+            file_cond = file_cond.partition('not ')[-1]
+            is_not = True
         
         if "\"" in file_cond or "'" in file_cond:
             file_cond = re.split("\"|\'", file_cond)[1]
@@ -72,10 +78,11 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         #full match
         if not '*' in file_cond:
             for j in range(len(paths_list)):
-                if file_cond == paths_list[j]:
+                if ((not is_not) and file_cond == paths_list[j]) or (is_not and not file_cond == paths_list[j]):
                     path_ind_list[i] += [j]
-            
+
             i += 1
+            is_not = False
             continue
         
         #partial matches using *
@@ -111,38 +118,31 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
                 
                 j+=1
         
+        if is_not:
+            path_ind_list[i] = list(np.array(range(len(paths_list)))[[not (ind in path_ind_list[i]) for ind in range(len(paths_list))]])
+            is_not = False
+            
         #while loop for connecting strings connected by and/or operators
         i+=1
     
     #logic operation
     op = None
-    is_not = False
     op_list = np.array([])
     
     for ii in path_ind_list:
         if type(ii) == str:
-            if 'not' in ii:
-                is_not = True
-            else:
-                op = ii
-            
+            op = ii
             continue
         
         if len(op_list)==0:
             op_list = np.array(ii)
             continue
         
-        ii_indices = ii.copy()
-        
-        if is_not:
-            ii_indices = np.array(range(len(paths_list)))[[not (ind in ii) for ind in range(len(paths_list))]]
-            is_not = False
-        
         if 'and' in op:
-            op_list = op_list[ [ind in ii_indices for ind in op_list] ]
+            op_list = op_list[ [ind in ii for ind in op_list] ]
         
         elif 'or' in op:
-            op_list = np.unique(np.concatenate((op_list, ii_indices)))
+            op_list = np.unique(np.concatenate((op_list, ii)))
             
         op = None
     
