@@ -220,11 +220,16 @@ Quickdemo 4 : Query search of filenames in drive
 #######################################################
 A query can be used to search for files in the parent path or a user-specified path using `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function.
 
-The example written searches for all png files that start with g.
+The example command here searches for all png files that start with g.
 
 ::
 
 	$ gd find "g* and *.png*"
+	
+	file_id : file_name
+	--------------------------
+	
+	34efd...rtW : guava.png
 
 
 For more information, see `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function and the `Query for gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#query-for-gdrive-find>`_ section below it.
