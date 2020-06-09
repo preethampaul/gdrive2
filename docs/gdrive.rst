@@ -77,6 +77,17 @@ Initilizing/Listing:
 .. currentmodule:: gdrive.gd
 .. autofunction:: find
 
+Query for gdrive.find:
+*************************
+A query must be passed as a string enclosed by " ". It can have logical operators `and` or `or`. When logical operators are used, there must spaces between the file query and the operators. * is the wildcard character which can be used to fill in unknown strings. See examples below:
+
+::
+
+  "*.jpg* and *fruit* or *.tif*"  -   Searches filenames with .jpg extension and having 'fruit' in title, or any .tif file
+  "U* and *Y"                     -   Searches files/folders names which start with U and end with Y.
+  "U*Y"                           -   Searches files/folders names which start with U and end with Y.
+  "*.*"                           -   Searches all files with extensions
+
 .. currentmodule:: gdrive.gd
 .. autofunction:: cd
 
@@ -107,17 +118,6 @@ Miscellaneous:
 
 .. currentmodule:: gdrive.gd
 .. autofunction:: default
-
-Query for gdrive.find:
-*************************
-A query must be passed as a string enclosed by " ". It can have logical operators `and` or `or`. When logical operators are used, there must spaces between the file query and the operators. * is the wildcard character which can be used to fill in unknown strings. See examples below:
-
-::
-
-  "*.jpg* and *fruit* or *.tif*"  -   Searches filenames with .jpg extension and having 'fruit' in title, or any .tif file
-  "U* and *Y"                     -   Searches files/folders names which start with U and end with Y.
-  "U*Y"                           -   Searches files/folders names which start with U and end with Y.
-  "*.*"                           -   Searches all files with extensions
 
 
 gdrive.drive\_util module
