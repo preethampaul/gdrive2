@@ -79,7 +79,7 @@ Initilizing/Listing:
 
 Query for gdrive.find:
 *************************
-A query must be passed as a string enclosed by "". It can have logical operators `and` or `or`. When logical operators are used, there must spaces between the file query and the operators. * is the wildcard character which can be used to fill in unknown strings. See examples below:
+A query must be passed as a string enclosed by " ". It can have logical operators `and` or `or`. When logical operators are used, there must spaces between the file query and the operators. * is the wildcard character which can be used to fill in unknown strings. See examples below:
 
 ::
 
