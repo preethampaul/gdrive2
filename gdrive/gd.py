@@ -1941,7 +1941,7 @@ def rmgd(args):
 def default(args):
     """brings the package to its default (if imported, args = [])"""
     shutil.rmtree(CREDS_DIR)
-    rmgd()
+    rmgd(args)
 
     
 #-------------------------------------------------------------------------------------------------
