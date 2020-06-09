@@ -79,7 +79,7 @@ Initilizing/Listing:
 
 Query for gdrive.find:
 *************************
-A query must be passed as a string enclosed by " ". It can have only the following logical operators - **and**,**or** and **not**. All the contents must be separated by **spaces** as shown in examples below. **not** applies to the immediate next word. Similarly, **and** and **or** considers the immediate string if there is no **not**, otherwise the next two strings including **not**. * is the wildcard character which can be used to fill in unknown strings. See examples below:
+A query must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the contents must be separated by **spaces** as shown in examples below. **not** applies to the immediate next word. Similarly, **and** and **or** considers the immediate string if there is no **not**, otherwise the next two strings including **not**. * is the wildcard character which can be used to fill in unknown strings. See examples below:
 
 ::
 
