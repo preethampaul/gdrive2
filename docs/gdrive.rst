@@ -51,6 +51,7 @@ From python console, **gdrive.help()** can be used.
    'help'   : Shows the list of functions or commands available
    'rmgd'   : Removes the gd file created by importing gdrive
    'default' : Brings the package to its default state (removes all clients, auth. data and the gd commandline functionality)
+   'version' : Prints the current version
 
    positional arguments:
      func
@@ -127,6 +128,9 @@ Miscellaneous:
 
 .. currentmodule:: gdrive.gd
 .. autofunction:: default
+
+.. currentmodule:: gdrive.gd
+.. autofunction:: version
 
 
 gdrive.drive\_util module

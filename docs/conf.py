@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
+from gdrive.paths import VERSION
 
 # -- Project information -----------------------------------------------------
 
@@ -22,7 +23,7 @@ copyright = '2020, Preetham Paul'
 author = 'Preetham Paul'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.7'
+release = VERSION
 
 
 # -- General configuration ---------------------------------------------------

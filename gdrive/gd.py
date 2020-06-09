@@ -65,6 +65,7 @@ Miscelleneous functions:\n\
 'help'   : Shows the list of functions or commands available\n\
 'rmgd'   : Removes the gd file created by importing gdrive\n\
 'default' : Brings the package to its default state (removes all clients, auth. data and the gd commandline functionality)\n\
+'version' : Prints the current version\n\
 \n\
 Use '-h' / -h  or '-help' / -help to see help about a function/command.\n\
 Example: gdrive.init(['-h']) / gd init -h\n"
@@ -1945,7 +1946,11 @@ def default(args):
     shutil.rmtree(CREDS_DIR)
     rmgd(args)
 
-    
+def version(args):
+	"""prints the current version of gdrive"""
+	print(VERSION)
+
+
 #-------------------------------------------------------------------------------------------------
 #COMMAND-LINE INTERACTION
 #-------------------------------------------------------------------------------------------------
