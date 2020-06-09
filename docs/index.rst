@@ -223,7 +223,9 @@ A query can be used to search for files in the parent path or a user-specified p
 The example written searches for all png files that start with g.
 
 ::
-	gd find "g* and *.png*"
+
+	$ gd find "g* and *.png*"
+
 
 For more information, see `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function and the `Query for gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#query-for-gdrive-find>`_ section below it.
 
