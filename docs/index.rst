@@ -350,16 +350,16 @@ Functions
 
 Update gdrive
 ***********************
-Although, the package gets updated successfully with the pip install command shown above, the gd file in the package folder does not get updated. So, one has to use ``gd default`` before updating.
+Although, the package gets updated successfully with the pip install command shown below, the gd file in the package folder does not get updated. So, one has to use ``gd default`` before updating.
 
 .. note::
-	This is only for those who have been using gd in terminal as shown in :ref:`Quickstart`. If you want to use this only as a python package, a pip install command is sufficient.
+	This is only for those who have been using gd in terminal as shown in :ref:`Quickstart`. If you want to use this only as a python package, a pip update command shown below is sufficient.
 
 
 ::
 
 	$ gd default
-	$ pip install -i https://test.pypi.org/simple/ gdrive 
+	$ pip install -i https://test.pypi.org/simple/ gdrive -U 
 
 
 Uninstall gdrive
