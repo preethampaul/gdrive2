@@ -323,6 +323,8 @@ This file can be renamed as <**client_name**>.json and can be used to access par
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   
+   gdrive
 
 
 Functions
