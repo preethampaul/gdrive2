@@ -216,6 +216,18 @@ All these commands can be used in a python script as shown below. The only diffe
 	>> gd.add(['berry.jpg', 'mango.jpg'])
 
 
+Quickdemo 4 : Query search of filenames in drive
+#######################################################
+A query can be used to search for files in the parent path or a user-specified path using `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function.
+
+The example written searches for all png files that start with g.
+
+::
+	gd find "g* and *.png*"
+
+For more information, see `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function and the `Query for gdrive.find()<https://gdrive.readthedocs.io/en/latest/gdrive.html#query-for-gdrive-find>`_ section below it.
+
+
 Data Structuring
 **************************************
 Parents
@@ -315,21 +327,17 @@ This is the name of the drive in which the **parent_path** is located. Each goog
 client_name
 ######################################
 
-A client secrets (app credentials) file can be created on `Google Cloud Console <https://console.cloud.google.com>`_ as shown in `Requirements <Requirements>`_.
+A client secrets (app credentials) file can be created on `Google Cloud Console <https://console.cloud.google.com>`_ as shown in :ref:`Requirements`.
 Once credentials are created, they can be downloaded as a **.json** file with the name **client_secrets<some_long_id>.json**.
 This file can be renamed as <**client_name**>.json and can be used to access parent_path. If gdrive is being used for the time, it asks the user to show the file location of a client secrets file and creates a default file - **client_secrets.json**. Later, more such files can be added with different **client_names** as <client_name1>.json, <someother_user_specified_name>.json etc. Each parent can be assigned a **client_name** different from the default name - **client_secrets**.
 
-
+Functions
+***************************
 .. toctree::
    :maxdepth: 2
    
    gdrive
 
-
-Functions
-***************************
-
-* :doc:`gdrive`
 * :ref:`genindex`
 * :ref:`search`
 
@@ -338,13 +346,12 @@ Update gdrive
 Although, the package gets updated successfully with the pip install command shown above, the gd file in the package folder does not get updated. So, one has to use ``gd default`` before updating.
 
 .. note::
-	This is only for those who have been using gd in terminal as shown in `Quickstart <Quickstart>`_. If you want to use this only as a python package, a pip install command is sufficient.
+	This is only for those who have been using gd in terminal as shown in :ref:`Quickstart`. If you want to use this only as a python package, a pip install command is sufficient.
 
 
 ::
 
 	$ gd default
-	
 	$ pip install -i https://test.pypi.org/simple/ gdrive 
 
 
