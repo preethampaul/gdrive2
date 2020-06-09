@@ -48,7 +48,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         (paths, path_ids)
     
     """
-    cond_list = re.split(r"(\Wand\W|\Wor\W)+" ,query)
+    cond_list = re.split(r"(\Wand\W|\Wor\W|\Wnot\W)+" ,query)
     path_ind_list = cond_list
     
     #Listing all paths
@@ -57,7 +57,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     i = 0
     while i<len(cond_list):
         
-        if cond_list[i] == ' and ' or cond_list[i] == ' or ':
+        if cond_list[i] == ' and ' or cond_list[i] == ' or ' or cond_list[i] == ' not ':
             i+=1
             continue
         
@@ -116,22 +116,33 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     
     #logic operation
     op = None
+    is_not = False
     op_list = np.array([])
     
     for ii in path_ind_list:
         if type(ii) == str:
-            op = ii
+            if 'not' in ii:
+                is_not = True
+            else:
+                op = ii
+            
             continue
         
         if len(op_list)==0:
             op_list = np.array(ii)
             continue
         
+        ii_indices = ii.copy()
+        
+        if is_not:
+            ii_indices = np.array(range(len(paths_list)))[[not (ind in ii) for ind in range(len(paths_list))]]
+            is_not = False
+        
         if 'and' in op:
-            op_list = op_list[ [ind in ii for ind in op_list] ]
+            op_list = op_list[ [ind in ii_indices for ind in op_list] ]
         
         elif 'or' in op:
-            op_list = np.unique(np.concatenate((op_list, ii)))
+            op_list = np.unique(np.concatenate((op_list, ii_indices)))
             
         op = None
     

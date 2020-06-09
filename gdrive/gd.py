@@ -1156,7 +1156,9 @@ def find(args):
 
     find(["*.*", '-path', 'folder1/folder2'])   /   gd find "*.*" -path folder1/folder2
 
-    find(['origin2', '-4', "*.xlsx* and *.csv*"])          /   gd find origin2 -4 "*.xlsx and *.csv"
+    find(['origin2', '-4', "*.xlsx* and *.csv*"]) /   gd find origin2 -4 "*.xlsx and *.csv"
+    
+    find(["*fruits* and not *.* and not *-*"]) / gd find "*fruits* and not *.* and not *-*"
 
     """
     
