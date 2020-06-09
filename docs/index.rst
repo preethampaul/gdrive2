@@ -59,7 +59,7 @@ This file can be renamed to some simple name and save on the local computer.
 
 Quickstart
 ###########################
-gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from command line.
+gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from terminal.
 First, import the gdrive in a python console.::
 	$ python
 	>> import gdrive
@@ -333,3 +333,19 @@ Functions
 * :doc:`gdrive`
 * :ref:`genindex`
 * :ref:`search`
+
+Updating/uninstalling gdrive
+***********************
+Although, the package gets updated successfully with the pip install command shown above, the gd file in the package folder does not get updated.
+So, one has to use ``gd default`` before updating.
+
+.. note::
+	This is only for those who have been using gd in terminal as shown in `Quickstart <Quickstart>`_. If you want to use this only as a python package, a pip install command is sufficient.
+
+::
+	$ gd default
+	
+ 	$ pip install -i https://test.pypi.org/simple/ gdrive 
+
+
+
