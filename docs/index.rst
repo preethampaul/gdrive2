@@ -322,7 +322,6 @@ This file can be renamed as <**client_name**>.json and can be used to access par
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
    
    gdrive
 
@@ -334,18 +333,29 @@ Functions
 * :ref:`genindex`
 * :ref:`search`
 
-Updating/uninstalling gdrive
+Update gdrive
 ***********************
-Although, the package gets updated successfully with the pip install command shown above, the gd file in the package folder does not get updated.
-So, one has to use ``gd default`` before updating.
+Although, the package gets updated successfully with the pip install command shown above, the gd file in the package folder does not get updated. So, one has to use ``gd default`` before updating.
 
 .. note::
 	This is only for those who have been using gd in terminal as shown in `Quickstart <Quickstart>`_. If you want to use this only as a python package, a pip install command is sufficient.
 
+
 ::
+
 	$ gd default
 	
- 	$ pip install -i https://test.pypi.org/simple/ gdrive 
+	$ pip install -i https://test.pypi.org/simple/ gdrive 
+
+
+Uninstall gdrive
+***********************
+The pip uninstall command does not remove the gd file from the package. The package has to be brought to its default state before uninstalling.
+
+::
+	
+	$ gd default
+	$ pip uninstall gdrive
 
 
 
