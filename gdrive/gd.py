@@ -926,6 +926,8 @@ def ls(args):
         If no arg. after '<parent_name>', it shows files or folders in the <parent_name> cwd
         
         '<path>' / <path> : shows files/folders in <path> in the <parent_name>
+
+        '-id' <id> / -id <id> : shows files/folders in folder with <id> in <parent_name>
         
         '-i' / -i    : shows files/folders in parent_name and/or path with ids
         
@@ -1035,6 +1037,7 @@ def ls(args):
     info = check_info()
     show_ids = False
     get_types = False
+    is_id = False
     
     if len(info) == 0:
         print('gd not initiated in this folder, try : gd init')
@@ -1050,7 +1053,11 @@ def ls(args):
     if '-t' in args:
         get_types = True
         args.remove('-t')
-        
+    
+    if '-id' in args:
+        is_id = True
+        args.remove('-id')
+
     if len(args)==0:
         parent_name = info['default_parent']
         [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]
@@ -1061,37 +1068,42 @@ def ls(args):
         
         if len(args)==2:
             parent_name = args[0]
-            drive_path = '/'.join(re.split('[\\\\/]', args[1]))
+
+            if not is_id:
+                drive_path = '/'.join(re.split('[\\\\/]', args[1]))
+                    
+                if CURR_HOME_DIR in drive_path :
+                    drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+                    
+                if not parent_name in parents_list:
+                    print("'" + parent_name + "' : parent name not defined before.")
+                    return
                 
-            if CURR_HOME_DIR in drive_path :
-                drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+                [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]  
+                auth_from_cred(gauth, user_name, client)
+                drive = GoogleDrive(gauth)
                 
-            if not parent_name in parents_list:
-                print("'" + parent_name + "' : parent name not defined before.")
-                return
-            
-            [user_name, parent_path, parent_id, drive_name, drive_id, client] = info[parent_name]  
-            auth_from_cred(gauth, user_name, client)
-            drive = GoogleDrive(gauth)
-            
-            #---------------DEBUGGING REQ---------------------
-            if drive_path.startswith('/'):
-                drive_path = '~/' + drive_path[1:]
+                #---------------DEBUGGING REQ---------------------
+                if drive_path.startswith('/'):
+                    drive_path = '~/' + drive_path[1:]
+                    
+                if CURR_HOME_DIR in drive_path:
+                    drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+                  
+                if drive_path=='/':
+                    drive_path = '~'
+                #----------------------------------------------------
+                drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
                 
-            if CURR_HOME_DIR in drive_path:
-                drive_path = drive_path.split(CURR_HOME_DIR)[-1]
-              
-            if drive_path=='/':
-                drive_path = '~'
-            #----------------------------------------------------
-            drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+                parent_id = get_path_ids(drive_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
+                parent_path = drive_path
             
-            new_parent_id = get_path_ids(drive_path, drive, create_missing_folders = False, path_to = 'folder', default_root=drive_id)[-1]
-            new_parent_path = drive_path            
-            
-            parent_path = new_parent_path
-            parent_id = new_parent_id
-            
+            else:
+                parent_path = None
+                parent_id = args[1]
+                if "'" or "\"" in parent_id:
+                    parent_id = parent_id[1:-1]
+
         
         elif len(args) == 1:
             parent_name = args[0]
