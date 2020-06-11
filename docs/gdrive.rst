@@ -84,20 +84,20 @@ A query must be passed as a string enclosed by " ". It can have only the followi
 
 ::
 
-  "*.jpg* and *fruit* or *.tif*"     -   Searches files and folders ending with .jpg
-  										 and having 'fruit' in title, or files and
-                                         folders ending with .tif
+  "*.jpg* and *fruit* or *.tif*"     -  Searches files and folders ending with .jpg
+  										and having 'fruit' in title, or files and
+  										folders ending with .tif
 
-  "U* and *Y"                        -   Searches files and folders names which 
-                                         start with U and end with Y.
+  "U* and *Y"                        -  Searches files and folders names which 
+  										start with U and end with Y.
 
-  "%f U*Y"                           -   Searches files which 
-                                         start with U and end with Y.
+  "%f U*Y"                           -  Searches files which 
+                                        start with U and end with Y.
 
-  "*.*"                           	 -   Searches files and folders containing '.'
+  "*.*"                           	 -  Searches files and folders containing '.'
 
-  "%d F*T and not *.* and not FART"  -   Seaches for folders starting with F and 
-                                         ending with T, but with no extension and not FART.
+  "%d F*T and not *.* and not FART"  -  Seaches for folders starting with F and 
+  										ending with T, but with no extension and not FART.
 
 .. currentmodule:: gdrive.gd
 .. autofunction:: cd
