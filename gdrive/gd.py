@@ -1818,11 +1818,11 @@ def pull(args):
         Downloads all the paths specified into current dir from the username
         related to this parent.
         
-    4. push(['<parent_name>', '-id', '<path_id1>', '<path_id2>', ...]) / gd pull <parent_name> -id <path_id1> <path_id2> ...
+    4. pull(['<parent_name>', '-id', '<path_id1>', '<path_id2>', ...]) / gd pull <parent_name> -id <path_id1> <path_id2> ...
         Use of '-id' : Downloads from all the path_ids specified into current dir from the username
         related to this parent.
         
-    5. push(['<parent_name>', '-dest', '<save_path>']) / gd pull <parent_name> -dest <save_path>
+    5. pull(['<parent_name>', '-dest', '<save_path>']) / gd pull <parent_name> -dest <save_path>
         Use of '-dest' : downloads into <save_path> in local system specified from parent_path")
     
 
