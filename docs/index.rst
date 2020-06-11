@@ -348,28 +348,24 @@ Functions
 * :ref:`genindex`
 * :ref:`search`
 
-Update gdrive
+Update/uninstall gdrive
 ***********************
-Although, the package gets updated successfully with the pip install command shown below, the gd file in the package folder does not get updated. So, one has to use ``gd default`` before updating.
 
-.. note::
-	This is only for those who have been using gd in terminal as shown in :ref:`Quickstart`. If you want to use this only as a python package, a pip update command shown below is sufficient.
-
+For updating gdrive:
 
 ::
 
-	$ gd default
 	$ pip install -i https://test.pypi.org/simple/ gdrive -U 
 
-
-Uninstall gdrive
-***********************
-The pip uninstall command does not remove the gd file from the package. The package has to be brought to its default state before uninstalling.
+For uninstalling gdrive:
 
 ::
-	
-	$ gd default
+
 	$ pip uninstall gdrive
 
+To remove the authentication data saved, use this before uninstalling gdrive:
 
+::
+
+	$ gd default
 

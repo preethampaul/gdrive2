@@ -63,8 +63,7 @@ Overview of push/pull functions:\n\
 Miscelleneous functions:\n\
 ---------------------------------\n\
 'help'   : Shows the list of functions or commands available\n\
-'rmgd'   : Removes the gd file created by importing gdrive\n\
-'default' : Brings the package to its default state (removes all clients, auth. data and the gd commandline functionality)\n\
+'default' : Brings the package to its default state (removes all clients and auth. data)\n\
 'version' : Prints the current version\n\
 \n\
 Use '-h' / -h  or '-help' / -help to see help about a function/command.\n\
@@ -1953,14 +1952,9 @@ def help(args):
     """displays help text (if imported, args = [])"""
     print(help_text)
 
-def rmgd(args):
-    """removes the created gd file (if imported, args = [])"""
-    os.remove(os.path.join(ROOT_PATH, 'gd'))
-
 def default(args):
     """brings the package to its default (if imported, args = [])"""
     shutil.rmtree(CREDS_DIR)
-    rmgd(args)
 
 def version(args):
 	"""prints the current version of gdrive"""
