@@ -80,7 +80,7 @@ Initilizing/Listing:
 
 Query for gdrive.find:
 *************************
-A query must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the contents must be separated by **spaces** as shown in examples below. **not** applies to the immediate next word. Similarly, **and** and **or** considers the immediate string if there is no **not**, otherwise the next two strings including **not**. * is the wildcard character which can be used to fill in unknown strings. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
+A query made with glob patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the glob patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. Currently, * is the only wildcard character allowed in the glob patterns. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
 
 ::
 

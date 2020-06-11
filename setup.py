@@ -27,6 +27,6 @@ setuptools.setup(
     python_requires='>=3',
 
     package_data={
-    "gd" : ["gd"],
+    "" : ["gd"],
     }
 )

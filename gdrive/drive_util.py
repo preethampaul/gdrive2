@@ -38,7 +38,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     """
     Used in gdrive.find function to obtain paths from queries.
     
-    A query includes strings with * delimiter connected by 'and' and/or 'or' operators
+    A query includes glob patterns connected by 'and' and/or 'or' operators
     
     Parameters
     -----------
