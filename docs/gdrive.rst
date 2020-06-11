@@ -94,7 +94,7 @@ A query must be passed as a string enclosed by " ". It can have only the followi
   "%f U*Y"                           -  Searches files which 
                                         start with U and end with Y.
 
-  "*.*"                           	 -  Searches files and folders containing '.'
+  "*.*"                              -  Searches files and folders containing '.'
 
   "%d F*T and not *.* and not FART"  -  Seaches for folders starting with F and 
                                         ending with T, but with no extension and not FART.
