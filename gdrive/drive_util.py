@@ -663,7 +663,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
     else:
         system = 'drive'  
 
-    def list_all_contents_recur(folder_path, folder_id, paths_list, ids_list, file_count, type_list, tier):
+    def list_all_contents_recur(folder_path, folder_id, paths_list, ids_list, type_list, file_count, tier):
         
         #if tiers end
         if tier==0:
