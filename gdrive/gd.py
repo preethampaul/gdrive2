@@ -903,6 +903,9 @@ def ls(args):
         List as shown here for files -
             [file_paths_list, file_ids_list]
         
+        List as shown here for files when -t is used-
+            [file_paths_list, file_ids_list, file_types_list]
+        
         List of usernames when -users is used
         
         List of names of client secrets json files when -clients is used.
@@ -925,7 +928,9 @@ def ls(args):
         
         '<path>' / <path> : shows files/folders in <path> in the <parent_name>
         
-        '-a' / -a    : shows files/folders in parent_name and/or path with ids
+        '-i' / -i    : shows files/folders in parent_name and/or path with ids
+        
+        '-t' / -t    : returns file types too when imported
             
     3. ls(['-users'])   /   gd ls -users
         shows all usernames registered in the SYSTEM
@@ -935,13 +940,14 @@ def ls(args):
         
     5. ls(['-shared', '<username>'])   /  gd ls -shared <username>
         shows all shared drives in <user_name>
+    
         
 
     Examples
     ----------
     ls([])                          /   gd ls
 
-    ls(['origin', '-path', '-a'])   /   gd ls origin -path -a
+    ls(['origin', '-path', '-i'])   /   gd ls origin -path -i
 
     ls(['-info'])                   /   gd ls -info
 
@@ -1029,6 +1035,7 @@ def ls(args):
     
     info = check_info()
     show_ids = False
+    get_types = False
     
     if len(info) == 0:
         print('gd not initiated in this folder, try : gd init')
@@ -1037,9 +1044,13 @@ def ls(args):
     parents_list = list(info.keys())
     parents_list.remove('default_parent')
     
-    if '-a' in args:
+    if '-i' in args:
         show_ids = True
-        args.remove('-a')
+        args.remove('-i')
+        
+    if '-t' in args:
+        get_types = True
+        args.remove('-t')
         
     if len(args)==0:
         parent_name = info['default_parent']
@@ -1098,8 +1109,13 @@ def ls(args):
             return
     
     if RETURN_RESULT:
-        file_paths_list, file_ids_list, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=False, tier = 'curr', show_ids=show_ids, default_root=drive_id)
-        return file_paths_list, file_ids_list
+        if get_types:
+            file_paths_list, file_ids_list, file_types_list, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=False, tier = 'curr', show_ids=show_ids, get_types=get_types, default_root=drive_id)
+            return [file_paths_list, file_ids_list, file_types_list]
+        
+        else:
+            file_paths_list, file_ids_list, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=False, tier = 'curr', show_ids=show_ids, get_types=get_types, default_root=drive_id)
+            return [file_paths_list, file_ids_list]
     
     _, _, _ = list_all_contents(parent_path, init_folder_id=parent_id, drive=drive, dynamic_show=True, tier = 'curr', show_ids=show_ids, default_root=drive_id)
 

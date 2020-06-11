@@ -80,23 +80,24 @@ Initilizing/Listing:
 
 Query for gdrive.find:
 *************************
-A query must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the contents must be separated by **spaces** as shown in examples below. **not** applies to the immediate next word. Similarly, **and** and **or** considers the immediate string if there is no **not**, otherwise the next two strings including **not**. * is the wildcard character which can be used to fill in unknown strings. See examples below:
+A query must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the contents must be separated by **spaces** as shown in examples below. **not** applies to the immediate next word. Similarly, **and** and **or** considers the immediate string if there is no **not**, otherwise the next two strings including **not**. * is the wildcard character which can be used to fill in unknown strings. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
 
 ::
 
-  "*.jpg* and *fruit* or *.tif*"  -   Searches filenames with .jpg extension
-                                      and having 'fruit' in title, or any .tif file
+  "*.jpg* and *fruit* or *.tif*"     -   Searches files and folders ending with .jpg
+  										 and having 'fruit' in title, or files and
+                                         folders ending with .tif
 
-  "U* and *Y"                     -   Searches files/folders names which 
-                                      start with U and end with Y.
+  "U* and *Y"                        -   Searches files and folders names which 
+                                         start with U and end with Y.
 
-  "U*Y"                           -   Searches files/folders names which 
-                                      start with U and end with Y.
+  "%f U*Y"                           -   Searches files which 
+                                         start with U and end with Y.
 
-  "*.*"                           -   Searches all files with extensions
+  "*.*"                           	 -   Searches files and folders containing '.'
 
-  "F*T and not *.* and not FART"  -   Seaches for files/folders starting with F and 
-                                      ending with T, but with no extension and not FART.
+  "%d F*T and not *.* and not FART"  -   Seaches for folders starting with F and 
+                                         ending with T, but with no extension and not FART.
 
 .. currentmodule:: gdrive.gd
 .. autofunction:: cd

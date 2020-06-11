@@ -9,6 +9,31 @@ import numpy as np
 #when my drive is the current drive
 DEFAULT_ROOT = 'root'
 
+def isdir(drive, file_id):
+    """
+    checks if the file with file_id is a directory.
+    
+    Parameters
+    -----------------
+    drive : pydrive.GoogleDrive() object
+    file_id : string
+        The file_id of file whose mimeType is to be checked
+        
+    Returns
+    ----------------
+    Whether dir. or not : bool
+        True if it is a directory/folder
+        
+    """
+    file = drive.CreateFile({'id' : file_id})
+    fetchMetadata(file, fields="mimeType")
+    
+    if 'folder' in file['mimeType']:
+        return True
+    else:
+        return False
+
+
 def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DEFAULT_ROOT):
     """
     Used in gdrive.find function to obtain paths from queries.
@@ -48,6 +73,16 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         (paths, path_ids)
     
     """
+    file_type = None
+    
+    if query.startswith('%f '):
+        file_type = 'f'
+        query.strip('%f ')
+    
+    elif query.startswith('%d '):
+        file_type = 'd'
+        query.strip('%d ')
+    
     cond_list = re.split(r"(\Wand\W|\Wor\W)+" ,query)
     path_ind_list = cond_list
     
@@ -149,8 +184,39 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     if len(op_list)==0:
         return ([], [])
     
-    return (list(np.array(paths_list)[op_list]), list(np.array(ids_list)[op_list]))
-
+    #updating paths_list and ids_list
+    paths_list = list(np.array(paths_list)[op_list])
+    ids_list = list(np.array(ids_list)[op_list])
+    
+    if file_type==None:
+        return (paths_list, ids_list)
+    
+    #Now checking for the required file type
+    count = 0
+    list_len = len(ids_list)
+    remove_id = False
+    
+    while count<list_len:
+        file_id = ids_list[count]
+        if isdir(drive, file_id):
+            if file_type == 'f':
+                remove_id = True
+        else:
+            if file_type == 'd':
+                remove_id = True
+        
+        if remove_id:
+            _ = ids_list.pop(count)
+            _ = paths_list.pop(count)
+            remove_id = False
+            list_len = len(ids_list)
+            continue
+        
+        count+=1
+    
+    return (paths_list, ids_list)
+    
+    
 
 def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):
     """
@@ -427,6 +493,7 @@ def get_id_by_name(name, parent_folder_id, drive, file_type = 'all'):
         
     return file_id_list, file_mime_list
 
+
 def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id = None, path_to = 'folder', default_root=DEFAULT_ROOT):
     
     """
@@ -522,7 +589,9 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
     return path_id_list
  
     
-def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic_show=False, tier = 'all', show_ids=False, default_root=DEFAULT_ROOT):
+def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
+                      dynamic_show=False, tier = 'all', show_ids=False, 
+                      get_types = False, default_root=DEFAULT_ROOT):
         
     """
     Lists "relative" paths to nested files and folders in a folder with path = folder_path
@@ -563,9 +632,14 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
         
         If int, tier should be the number of tiers in hierarchy of nested files to list.
         For example, tier = 1 is same as tier == 'curr'
+        
+        Interger-type tier works only for system = 'drive'
     
     show_ids : bool (optional)
         If True, prints ids along with file names when dynamic_show = True
+    
+    get_types : bool (optional)
+        If True, even the file types are returned as in the tuple and works
     
     default_root : string (optional)
         id of the drive
@@ -574,10 +648,12 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     Returns
     ---------------
     contnets of the folder : tuple
-        a tuple of 3 elements
-        (the paths_list with the relative paths, 
-        the list of ids of contents if used for GDrive (same as paths_list for drive = None),
-        total_count = the number of 'non-folder' items in the folder at folder_path)
+        a tuple of 3 **(or 4)** elements
+            (the paths_list with the relative paths, 
+            the list of ids of contents if used for GDrive (same as paths_list for drive = None),
+            **the list of file_types (included only if get_types = True),**
+            total_count = the number of 'non-folder' items in the folder at folder_path)
+        
 
     """
 
@@ -587,7 +663,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
     else:
         system = 'drive'  
 
-    def list_all_contents_recur(folder_path, folder_id, paths_list, ids_list, file_count, tier):
+    def list_all_contents_recur(folder_path, folder_id, paths_list, ids_list, file_count, type_list, tier):
         
         #if tiers end
         if tier==0:
@@ -600,12 +676,15 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 sub_folders = os.listdir(folder_path)
                 if tier=='curr':
                     paths_list+=sub_folders
-                    if dynamic_show:
-                        for count, i in enumerate(sub_folders):
-                            if os.path.isdir(folder_path+'\\'+i):
-                                ftype = 'D'
-                            else:
-                                ftype = 'F'
+                    
+                    for count, i in enumerate(sub_folders):
+                        if os.path.isdir(folder_path+'\\'+i):
+                            ftype = 'D'
+                        else:
+                            ftype = 'F'
+                        
+                        type_list+=[ftype]
+                        if dynamic_show:
                             fsize = round(os.path.getsize(folder_path+'\\'+i)/1000, 2)
                             print(ftype+'[{}kB] {} : '.format(fsize, count+1) + i)
                             
@@ -619,6 +698,8 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 else:
                     fname = re.split('[\\\\/]', init_folder_path)[-1]
                     paths_list.append(fname)
+                
+                type_list += ['F']
                 if dynamic_show:
                     print('F[{}kB] : '.format(fsize) + paths_list[-1])
                 
@@ -628,6 +709,9 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
             if len(sub_folders) == 0:
                 fsize = round(os.path.getsize(folder_path)/1000, 2)
                 paths_list.append(folder_path.split(init_folder_path)[-1])
+                
+                type_list += ['D']
+                
                 if dynamic_show:
                     print('D[{}kB] : '.format(fsize) + paths_list[-1])
                 
@@ -649,15 +733,19 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                                                    }).GetList()
                 sub_folders = [file['title'] for file in sub_folders_list]
                 sub_folder_ids = [file['id'] for file in sub_folders_list]
+                sub_types = [file['mimeType'] for file in sub_folders_list]
                 
                 if tier=='curr' or type(tier)==int:
                     
                     if tier=='curr':
                         paths_list+=sub_folders
-                    else:
+                        ids_list+=sub_folder_ids
+                        type_list += sub_types
+                    elif tier == 1:
                         paths_list += [folder_path + '/' + i for i in sub_folders]
+                        ids_list+=sub_folder_ids
+                        type_list += sub_types
                     
-                    ids_list+=sub_folder_ids
                     if dynamic_show:
                         
                         if len(sub_folders)==0:
@@ -665,7 +753,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                         
                         else:
                             for count, i in enumerate(sub_folders):
-                                if 'folder' in sub_folders_list[count]['mimeType']:
+                                if 'folder' in sub_types[count]:
                                     ftype = 'D'
                                 else:
                                     ftype = 'F'
@@ -701,6 +789,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                     print(print_id +" : "+ 'F[{}kB] : '.format(fsize) + paths_list[-1])
                 
                 ids_list.append(folder_id)
+                type_list.append(file['mimeType'])
                 return 1
             
             #if folder_path leads to empy folder
@@ -720,6 +809,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                     print(print_id +" : "+ 'D[0.0kB] : ' + paths_list[-1])
                     
                 ids_list.append(folder_id)
+                type_list.append(file['mimeType'])
                 return 0
         
         #------------------------------------------Common for both drive and Local---------------------------
@@ -727,14 +817,15 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
         
         for path, path_id in zip(sub_folder_paths, sub_folder_ids):
             if type(tier)==int:
-                file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, 0, tier-1)
+                file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, type_list, 0, tier-1)
             else:
-                file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, 0, tier)
+                file_count += list_all_contents_recur(path, path_id, paths_list, ids_list, type_list, 0, tier)
         
         return file_count
     
     paths_list = []
     ids_list = []
+    type_list = []
     
     if system == 'local':
         init_folder_id = init_folder_path #if system is local
@@ -748,9 +839,12 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None, dynamic
                 list_path_ids = get_path_ids(init_folder_path, drive, create_missing_folders = False, path_to = 'not-folder', default_root=default_root)
                 init_folder_id = list_path_ids[-1]
                 
-    total_count = list_all_contents_recur(init_folder_path, init_folder_id, paths_list, ids_list, 0, tier)    
+    total_count = list_all_contents_recur(init_folder_path, init_folder_id, paths_list, ids_list, type_list, 0, tier)    
     
-    return paths_list, ids_list, total_count
+    if get_types:
+        return paths_list, ids_list, type_list, total_count
+    else:
+        return paths_list, ids_list, total_count
 
 
 def upload_file_by_id(curr_file_path, drive_folder_id, drive, prompt='ask', file_count=1, total_count=1):
