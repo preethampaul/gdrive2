@@ -1,7 +1,7 @@
 
 import os
 
-VERSION = '0.5.3'
+VERSION = '0.5.4'
 
 #Deafult info during initialization
 DEFAULT_INFO = {

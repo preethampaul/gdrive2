@@ -735,17 +735,17 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                 sub_folder_ids = [file['id'] for file in sub_folders_list]
                 sub_types = [file['mimeType'] for file in sub_folders_list]
                 
-                if tier=='curr' or type(tier)==int:
+                if tier=='curr' or tier==1:
                     
                     if tier=='curr':
-                        paths_list+=sub_folders
-                        ids_list+=sub_folder_ids
-                        type_list += sub_types
+                        paths_list += sub_folders
+                        
                     elif tier == 1:
                         paths_list += [folder_path + '/' + i for i in sub_folders]
-                        ids_list+=sub_folder_ids
-                        type_list += sub_types
                     
+                    ids_list+=sub_folder_ids
+                    type_list += sub_types
+
                     if dynamic_show:
                         
                         if len(sub_folders)==0:
