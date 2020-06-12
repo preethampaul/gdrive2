@@ -369,3 +369,15 @@ To remove the authentication data saved, use this before uninstalling gdrive:
 
 	$ gd default
 
+Conditions for using the package
+*****************************************
+
+1. The file path to the grapes.jpg in the example shown above must be passed as shown below:
+
+::
+
+	fruits/soft/grapes.jpg
+
+Note that the root folder (which is **My Drive** in this case), must not be passed in the path. The information of the root folder is included in the **drive_id** of the parent.
+
+2. As much as possible, try to avoid having more than one folder with the same name in the same folder. Some functions like gdrive.gd.find() might work, but others may not. Most functions throw an error when they find more than one file or folder with same name in the same folder.

@@ -1101,8 +1101,10 @@ def ls(args):
             else:
                 parent_path = None
                 parent_id = args[1]
-                if "'" or "\"" in parent_id:
-                    parent_id = parent_id[1:-1]
+
+                [user_name, _, _, drive_name, drive_id, client] = info[parent_name]  
+                auth_from_cred(gauth, user_name, client)
+                drive = GoogleDrive(gauth)
 
         
         elif len(args) == 1:
@@ -1146,7 +1148,9 @@ def find(args):
     Returns
     ----------
     information : tuple
-        (list of paths, list of ids)
+        (list of paths, list of ids) for "<query>", and 
+
+        (path to file with <id>, list of ids forming the path) for the required file when "-id" / -id is passed.
 
     Notes
     ----------
@@ -1156,14 +1160,18 @@ def find(args):
     
     1. find(["<query>"])   /   gd find "<query>"
         Uses the <query> string to find the file in default parent path
+
+    2. find(['-id', '<id>'])   /   gd find -id <id>
+        Uses the <id> string to find the file or folder in default parent path
     
-    2. find(['<parent_name>', "<query>"])   /   gd find <parent_name> "<query>"
-        Uses the <query> string to find the file in <parent_name>'s path
+    3. find(['<parent_name>', "<query>"])   /   gd find <parent_name> "<query>"
+        Uses the <query> string to find the file in <parent_name>'s path. '-id' can be used 
+        in place of "<query>" to get file path of that id.
     
-    3. find(["<query>", '-path', '<path>'])   /   gd find "<query>" -path <path>
+    4. find(["<query>", '-path', '<path>'])   /   gd find "<query>" -path <path>
         Finds the file in <path> specified. If no parent_name specified, default parent is considered.
     
-    4. find(["<query>", -<tier>]) / gd find "<query>" -<tier>
+    5. find(["<query>", -<tier>]) / gd find "<query>" -<tier>
         Finds the file/folder upto the specified <tier> in the file hierarchy.
         
         Only following arguements can be passed as -<tier>:
@@ -1175,7 +1183,7 @@ def find(args):
             '-all'  / -all  : all tiers
     
     Additional optional arguements:
-    -path, -<tier>
+    -path, -<tier>, -id
      
 
     Examples
@@ -1205,7 +1213,14 @@ def find(args):
     search_folder_path = None
     search_folder_id = None
     tier = 'curr'
+    is_id = False
     
+    #Searching for file name with id
+    if '-id' in args:
+        args.remove('-id')
+        is_id = True
+        file_id = args[-1]
+
     #path input
     if '-path' in args:
         try:
@@ -1231,8 +1246,9 @@ def find(args):
         pass
     
     if len(args)==0 or len(args)>2:
-        print("Invalid number of arguements passed. See gd find -help")
-        return
+        if not is_id:
+            print("Invalid number of arguements passed. See gd find -help")
+            return
     
     if len(args)==2:
         parent_name = args[0]
@@ -1248,6 +1264,16 @@ def find(args):
     auth_from_cred(gauth, user_name, client)
     drive = GoogleDrive(gauth)
     
+    #Looking for file with id
+    if is_id:
+    	file_path, ids_list = get_path_from_id(drive, file_id, default_root=drive_id)
+
+    	if RETURN_RESULT:
+    		return file_path, ids_list
+
+    	print(file_path)
+
+
     if search_folder_path == None:
         search_folder_path = parent_path
         search_folder_id = parent_id
@@ -1929,18 +1955,19 @@ def pull(args):
     
     for drive_path, drive_path_id in zip(drive_path_list, drive_path_id_list):    
         
-        #parsing drive_path
-        #---------------DEBUGGING REQ---------------------
-        if drive_path.startswith('/'):
-            drive_path = '~/' + drive_path[1:]
-            
-        if CURR_HOME_DIR in drive_path:
-            drive_path = drive_path.split(CURR_HOME_DIR)[-1]
-          
-        if drive_path=='/':
-            drive_path = '~'
-        #----------------------------------------------------
-        drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
+        if not drive_path==None:
+	        #parsing drive_path
+	        #---------------DEBUGGING REQ---------------------
+	        if drive_path.startswith('/'):
+	            drive_path = '~/' + drive_path[1:]
+	            
+	        if CURR_HOME_DIR in drive_path:
+	            drive_path = drive_path.split(CURR_HOME_DIR)[-1]
+	          
+	        if drive_path=='/':
+	            drive_path = '~'
+	        #----------------------------------------------------
+	        drive_path = parse_drive_path(drive_path, drive, parent_id, default_root=drive_id)
         
         #parsing save_path
         if "'" in save_path or "\"" in save_path:

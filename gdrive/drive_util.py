@@ -403,7 +403,8 @@ def get_path_from_id(drive, file_id, default_root=DEFAULT_ROOT):
 
     Returns
     -------------
-    path to file or folder : string
+    path to file or folder : tuple
+        (string of path, list of ids leading up to file_id)
 
     """
 
@@ -570,7 +571,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
             path_id, _ = get_id_by_name(path_list[i], parent_folder_id, drive, file_type = path_to)
         
         if len(path_id) > 1:
-            raise NameError('More than one folder or file found with the same name : '+ path_list[i] +' in ' + '\\'.join(path_list[:i]))
+            raise NameError('More than one folder or file found with the same name : '+ path_list[i] +' in ' + '/'.join(path_list[:i]))
         
         elif len(path_id) == 0:
             
@@ -581,7 +582,7 @@ def get_path_ids(drive_path, drive, create_missing_folders = True, relative_id =
                 path_id_list[i] = create_folder(path_list[i], parent_folder_id, drive)
             
             else:
-                raise ValueError("path to file-type: '" + path_to +"' not found with name : "+ path_list[i] +" in '" + '\\'.join(path_list[:i]) + "'")
+                raise ValueError("path to file-type: '" + path_to +"' not found with name : "+ path_list[i] +" in '" + '/'.join(path_list[:i]) + "'")
         
         else:
             path_id_list[i] = path_id[0]
@@ -1183,10 +1184,12 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     
     """
     print("Fetching ids_list : ",end='')
+    
+    paths_list, ids_list, total_count = list_all_contents(drive_path, drive_path_id, drive=drive, dynamic_show=False, tier = 'all', default_root=default_root)
+    
     if drive_path==None and drive_path_id != None:
         drive_path, _ = get_path_from_id(drive, drive_path_id)
-            
-    paths_list, ids_list, total_count = list_all_contents(drive_path, drive_path_id, drive=drive, dynamic_show=False, tier = 'all', default_root=default_root)
+    
     count = 1
     print("{} paths found ...".format(total_count))
     
