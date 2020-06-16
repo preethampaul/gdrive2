@@ -34,7 +34,7 @@ def isdir(drive, file_id):
         return False
 
 
-def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DEFAULT_ROOT):
+def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=False, default_root=DEFAULT_ROOT):
     """
     Used in gdrive.find function to obtain paths from queries.
     
@@ -52,6 +52,8 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         id of the directory path
     tier : string or int
         The tier in the hierarchy of files
+    path_search : bool
+        If true, looks for the globs in the files paths instead of filenames in the specified tier
     default_root : string (optional)
         The id of the drive.    
     
@@ -88,6 +90,10 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
     
     #Listing all paths
     (paths_list, ids_list, count) = list_all_contents(path, init_folder_id=path_id, drive=drive, dynamic_show=False, tier=tier, default_root=default_root)
+    full_paths_list = paths_list.copy()
+    if not path_search:
+        for i, path in enumerate(paths_list):
+            paths_list[i] = re.split('[/\\\\]', path)[-1]
     
     i = 0
     is_not = False #if not is present
@@ -185,11 +191,11 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         return ([], [])
     
     #updating paths_list and ids_list
-    paths_list = list(np.array(paths_list)[op_list])
+    full_paths_list = list(np.array(full_paths_list)[op_list])
     ids_list = list(np.array(ids_list)[op_list])
     
     if file_type==None:
-        return (paths_list, ids_list)
+        return (full_paths_list, ids_list)
     
     #Now checking for the required file type
     count = 0
@@ -207,14 +213,14 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', default_root=DE
         
         if remove_id:
             _ = ids_list.pop(count)
-            _ = paths_list.pop(count)
+            _ = full_paths_list.pop(count)
             remove_id = False
             list_len = len(ids_list)
             continue
         
         count+=1
     
-    return (paths_list, ids_list)
+    return (full_paths_list, ids_list)
     
     
 

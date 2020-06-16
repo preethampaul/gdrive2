@@ -1209,18 +1209,21 @@ def find(args):
 
     1. find(["<query>"])   /   gd find "<query>"
         Uses the <query> string to find the file in default parent path
+        
+    2. find(["<query>", '--path-search'])   /   gd find "<query>" --path-search
+        Searches the glob pattern in <query> in the file paths instead of file names 
 
-    2. find(['-id', '<id>'])   /   gd find -id <id>
+    3. find(['-id', '<id>'])   /   gd find -id <id>
         Uses the <id> string to find the file or folder in default parent path
 
-    3. find(['<parent_name>', "<query>"])   /   gd find <parent_name> "<query>"
+    4. find(['<parent_name>', "<query>"])   /   gd find <parent_name> "<query>"
         Uses the <query> string to find the file in <parent_name>'s path. '-id' can be used 
         in place of "<query>" to get file path of that id.
 
-    4. find(["<query>", '-path', '<path>'])   /   gd find "<query>" -path <path>
+    5. find(["<query>", '-path', '<path>'])   /   gd find "<query>" -path <path>
         Finds the file in <path> specified. If no parent_name specified, default parent is considered.
 
-    5. find(["<query>", -<tier>]) / gd find "<query>" -<tier>
+    6. find(["<query>", -<tier>]) / gd find "<query>" -<tier>
         Finds the file/folder upto the specified <tier> in the file hierarchy.
 
         Only following arguements can be passed as -<tier>:
@@ -1232,7 +1235,7 @@ def find(args):
             '-all'  / -all  : all tiers
 
     Additional optional arguements:
-    -path, -<tier>, -id
+    -path, -<tier>, -id, --path-search
 
 
     Examples
@@ -1263,12 +1266,17 @@ def find(args):
     search_folder_id = None
     tier = 'curr'
     is_id = False
+    path_search = False
 
     # Searching for file name with id
     if '-id' in args:
         args.remove('-id')
         is_id = True
         file_id = args[-1]
+        
+    if '--path-search':
+        path_search = True
+        args.remove('--path-search')
 
     # path input
     if '-path' in args:
@@ -1333,7 +1341,7 @@ def find(args):
     find_query = args[-1]
 
     query_paths = query_to_paths(drive, find_query, search_folder_path, path_id=search_folder_id,
-                                 tier=tier, default_root=drive_id)
+                                 tier=tier, path_search=path_search, default_root=drive_id)
 
     if RETURN_RESULT:
         return query_paths
