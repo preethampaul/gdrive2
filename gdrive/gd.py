@@ -1272,6 +1272,7 @@ def find(args):
     		return file_path, ids_list
 
     	print(file_path)
+        return
 
 
     if search_folder_path == None:
@@ -2016,13 +2017,14 @@ if __name__ == "__main__":
     #func is the main function
     func = args_func.func
     args = args_func.args
+    args_dup = args.copy()
     
     RETURN_RESULT = False
     try:
         exec( func + '(args)' )
     #sometimes token fails to refresh
     except:
-        exec( func + '(args)' )
+        exec( func + '(args_dup)' )
     """
     except errors.HttpError:
         delete_cred_files()
