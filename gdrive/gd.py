@@ -1274,7 +1274,6 @@ def find(args):
     	print(file_path)
         return
 
-
     if search_folder_path == None:
         search_folder_path = parent_path
         search_folder_id = parent_id
