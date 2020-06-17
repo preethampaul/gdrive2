@@ -23,14 +23,16 @@ Setup
 Use the following command to install the package.
 (The package is still under testing)
 ::
-	$ pip install -i https://test.pypi.org/simple/ gdrive
+	pip install -i https://test.pypi.org/simple/ gdrive
 
 Requirements
 #######################
 First of all, pyDrive library is required for this. To install Pydrive, use any one of these commands.
 ::
-	$ pip install PyDrive
-	$ conda install -c conda-forge pydrive
+	pip install PyDrive
+
+::
+	conda install -c conda-forge pydrive
 
 In addition to this, a client secrets file is required. The instructions are provided in pydrive `Quickstart guide <https://pythonhosted.org/PyDrive/quickstart.html>`_, but are shown here again:
 
@@ -74,7 +76,7 @@ Lets see how gdrive can be used from command line.
 
 Open terminal and set some folder where you intend to download or from where you intend to upload files.
 ::
-	$ gd init
+	gd init
 
 When asked for a username, this is not same as the google username. More about this explained in the *username* documentation.
 Enter some nickname (for example, *mygdrive*) you would like to give to your google account, so that you can use this for quick authentication into your account in future.
@@ -90,7 +92,9 @@ After, initialization and authentication, you can use all the gdrive commands fr
 
 :: 
 
-	$ gd status
+	gd status
+
+::
 	---------------
 	Parent dicts :
 	---------------
@@ -130,7 +134,9 @@ To list my files in the path stored in the **path** variable of the dictionary s
 
 ::
 
-	$ gd ls
+	gd ls
+
+::
 	: D[2351.5kB] 1 : fruits
 	: D[6571.2kB] 2 : flowers
 
@@ -138,7 +144,9 @@ To list my files in the path stored in the **path** variable of the dictionary s
 
 ::
 
-	$ gd ls fruits/hard
+	gd ls fruits/hard
+
+::
 	: f[1000.5kB] 1 : apple.jpg
 	: F[321.0kB] 2 : guava.jpg
 
@@ -171,13 +179,13 @@ If I want to download the folder:
 
 ::
 
-	$ gd pull
+	gd pull
 
 Or, to just download the *apple.jpg*:
 
 ::
 
-	$ gd pull origin apple.jpg
+	gd pull origin apple.jpg
 
 If I want to upload *berry.png* to **fruits/hard**:
 
@@ -195,12 +203,12 @@ Quickdemo 2 : Multiple Parent functionality
 To add a new parent:
 ::
 
-	$ git init -add
+	git init -add
 
 Once a parent is added (say, origin2), we can assign different parameters (like username, path etc.) and push files simultaneously
 ::
 
-	$ git push origin origin2
+	git push origin origin2
 
 
 Quickdemo 3 : Use of these commands in python script:
@@ -355,19 +363,19 @@ For updating gdrive:
 
 ::
 
-	$ pip install -i https://test.pypi.org/simple/ gdrive -U 
+	pip install -i https://test.pypi.org/simple/ gdrive -U 
 
 For uninstalling gdrive:
 
 ::
 
-	$ pip uninstall gdrive
+	pip uninstall gdrive
 
 To remove the authentication data saved, use this before uninstalling gdrive:
 
 ::
 
-	$ gd default
+	gd default
 
 Conditions for using the package
 *****************************************
