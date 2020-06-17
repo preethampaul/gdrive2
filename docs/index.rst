@@ -31,7 +31,9 @@ First of all, pyDrive library is required for this. To install Pydrive, use any 
 ::
 	pip install PyDrive
 
+
 ::
+
 	conda install -c conda-forge pydrive
 
 In addition to this, a client secrets file is required. The instructions are provided in pydrive `Quickstart guide <https://pythonhosted.org/PyDrive/quickstart.html>`_, but are shown here again:
@@ -94,7 +96,9 @@ After, initialization and authentication, you can use all the gdrive commands fr
 
 	gd status
 
+
 ::
+
 	---------------
 	Parent dicts :
 	---------------
@@ -136,7 +140,9 @@ To list my files in the path stored in the **path** variable of the dictionary s
 
 	gd ls
 
+
 ::
+
 	: D[2351.5kB] 1 : fruits
 	: D[6571.2kB] 2 : flowers
 
@@ -146,7 +152,9 @@ To list my files in the path stored in the **path** variable of the dictionary s
 
 	gd ls fruits/hard
 
+
 ::
+
 	: f[1000.5kB] 1 : apple.jpg
 	: F[321.0kB] 2 : guava.jpg
 
