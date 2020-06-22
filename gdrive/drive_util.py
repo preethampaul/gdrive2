@@ -5,6 +5,7 @@ import os
 import re
 from apiclient import errors
 import numpy as np
+import fnmatch
 
 #when my drive is the current drive
 DEFAULT_ROOT = 'root'
@@ -126,39 +127,25 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
             is_not = False
             continue
         
+        
         #partial matches using *
         q_path_list = paths_list.copy()
         path_ind_list[i] = list(range(len(paths_list)))
+        q_path_len = len(q_path_list)
         
-        #delimiters attached by *
-        delims = re.split('\*', file_cond)
-        for delim_i in range(len(delims)):
-            if delims[delim_i] == '':
+        j = 0
+        while j < q_path_len:
+            path_j = q_path_list[j]
+            remove_from_list = not fnmatch.fnmatch(path_j, file_cond)
+
+            if remove_from_list:
+                _ = q_path_list.pop(j)
+                _ = path_ind_list[i].pop(j)
+                q_path_len -= 1
                 continue
-            
-            q_path_len = len(q_path_list)
-            j = 0
-            while j < q_path_len:
-                path_j = q_path_list[j]
-                parted_q_path = path_j.partition(delims[delim_i])
-                
-                if not (delims[delim_i] == parted_q_path[1] and parted_q_path[-1] == ''):
-                    q_path_list[j] = parted_q_path[-1]
-                    
-                if not file_cond.startswith('*') and not parted_q_path[0] == '':
-                    q_path_list[j] = ''
-                
-                if not file_cond.endswith('*') and not parted_q_path[-1] == '':
-                    q_path_list[j] = ''
-                
-                if q_path_list[j] == '':
-                    _ = q_path_list.pop(j)
-                    _ = path_ind_list[i].pop(j)
-                    q_path_len -= 1
-                    continue
-                
-                j+=1
-        
+
+            j+=1
+
         if is_not:
             path_ind_list[i] = list(np.array(range(len(paths_list)))[[not (ind in path_ind_list[i]) for ind in range(len(paths_list))]])
             is_not = False
@@ -683,44 +670,54 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                 sub_folders = os.listdir(folder_path)
                 if tier=='curr':
                     paths_list+=sub_folders
+                elif tier==1:
+                    paths_list += [os.path.join(folder_path, i) for i in sub_folders]
                     
-                    for count, i in enumerate(sub_folders):
-                        if os.path.isdir(folder_path+'\\'+i):
-                            ftype = 'D'
-                        else:
-                            ftype = 'F'
-                        
-                        type_list+=[ftype]
-                        if dynamic_show:
-                            fsize = round(os.path.getsize(folder_path+'\\'+i)/1000, 2)
-                            print(ftype+'[{}kB] {} : '.format(fsize, count+1) + i)
-                            
+                for count, i in enumerate(sub_folders):
+                    if os.path.isdir(folder_path+'\\'+i):
+                        ftype = 'D'
+                    else:
+                        ftype = 'F'
+                    type_list+=[ftype]
+                    if dynamic_show:
+                        fsize = round(os.path.getsize(folder_path+'\\'+i)/1000, 2)
+                        print(ftype+'[{}kB] {} : '.format(fsize, count+1) + i)
+                
+                if tier=='curr':            
                     return len(sub_folders)
             
             except NotADirectoryError:
                 #if folder_path leads to a file
                 fsize = round(os.path.getsize(folder_path)/1000, 2)
-                if not folder_path == init_folder_path:
-                    paths_list.append(folder_path.split(init_folder_path)[-1])
-                else:
-                    fname = re.split('[\\\\/]', init_folder_path)[-1]
-                    paths_list.append(fname)
+                if type(tier) == str:
+                    if not folder_path == init_folder_path:
+                        paths_list.append(folder_path.split(init_folder_path)[-1])
+                    else:
+                        fname = re.split('[\\\\/]', init_folder_path)[-1]
+                        paths_list.append(fname)
                 
                 type_list += ['F']
                 if dynamic_show:
-                    print('F[{}kB] : '.format(fsize) + paths_list[-1])
+                    if type(tier) == str:
+                        print('F[{}kB] : '.format(fsize) + paths_list[-1])
+                    else:
+                        print('F[{}kB] : '.format(fsize) + folder_path)
                 
                 return 1
             
             #If folder_path leads to empty folder
             if len(sub_folders) == 0:
                 fsize = round(os.path.getsize(folder_path)/1000, 2)
-                paths_list.append(folder_path.split(init_folder_path)[-1])
+                if type(tier) == str:
+                    paths_list.append(folder_path.split(init_folder_path)[-1])
                 
                 type_list += ['D']
                 
                 if dynamic_show:
-                    print('D[{}kB] : '.format(fsize) + paths_list[-1])
+                    if type(tier) == str:
+                        print('D[{}kB] : '.format(fsize) + paths_list[-1])
+                    else:
+                        print('D[{}kB] : '.format(fsize) + folder_path)
                 
                 return 0
             
@@ -793,7 +790,10 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                         print_id = ''
                     else:
                         print_id = folder_id
-                    print(print_id +" : "+ 'F[{}kB] : '.format(fsize) + paths_list[-1])
+                    if type(tier)==str:
+                        print(print_id +" : "+ 'F[{}kB] : '.format(fsize) + paths_list[-1])
+                    else:
+                        print(print_id +" : "+ 'F[{}kB] : '.format(fsize) + folder_path)
                 
                 return 1
             
@@ -812,7 +812,10 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                         print_id = ''
                     else:
                         print_id = folder_id
-                    print(print_id +" : "+ 'D[0.0kB] : ' + paths_list[-1])
+                    if type(tier)==str:
+                        print(print_id +" : "+ 'D[0.0kB] : ' + paths_list[-1])
+                    else:
+                        print(print_id +" : "+ 'D[0.0kB] : ' + folder_path)
                 
                 return 0
         
