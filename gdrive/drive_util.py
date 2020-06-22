@@ -79,11 +79,11 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
     
     if query.startswith('%f '):
         file_type = 'f'
-        query.strip('%f ')
+        query = query.strip('%f ')
     
     elif query.startswith('%d '):
         file_type = 'd'
-        query.strip('%d ')
+        query = query.strip('%d ')
     
     cond_list = re.split(r"(\Wand\W|\Wor\W)+" ,query)
     path_ind_list = cond_list
@@ -757,7 +757,6 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                         
                         if len(sub_folders)==0:
                             print("-- Empty folder --")
-                        
                         else:
                             for count, i in enumerate(sub_folders):
                                 if 'folder' in sub_types[count]:
@@ -777,46 +776,44 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                 
             else:
                 #if folder_path leads to a file
-                if not init_folder_path == '':
-                    if init_folder_id == folder_id:
-                        paths_list.append(file['title'])
+                if type(tier)==str:
+                    if not init_folder_path == '':
+                        if init_folder_id == folder_id:
+                            paths_list.append(file['title'])
+                        else:
+                            paths_list.append(folder_path.split(init_folder_path)[-1])
                     else:
-                        paths_list.append(folder_path.split(init_folder_path)[-1])
-                else:
-                    paths_list.append(folder_path)
+                        paths_list.append(folder_path)
+                    ids_list.append(folder_id)
+                    type_list.append(file['mimeType'])
                 
                 if dynamic_show:
                     fsize = round(float(file['quotaBytesUsed'])/1000, 2)
-                    
                     if not show_ids:
                         print_id = ''
                     else:
                         print_id = folder_id
-                        
                     print(print_id +" : "+ 'F[{}kB] : '.format(fsize) + paths_list[-1])
                 
-                ids_list.append(folder_id)
-                type_list.append(file['mimeType'])
                 return 1
             
             #if folder_path leads to empy folder
             if len(sub_folders_list)==0:
-                if not init_folder_path == '':
-                    paths_list.append(folder_path.split(init_folder_path)[-1])
-                else:
-                    paths_list.append(folder_path)
-                
+                if type(tier)==str:
+                    if not init_folder_path == '':
+                        paths_list.append(folder_path.split(init_folder_path)[-1])
+                    else:
+                        paths_list.append(folder_path)
+                    ids_list.append(folder_id)
+                    type_list.append(file['mimeType'])
+
                 if dynamic_show:
-                    
                     if not show_ids:
                         print_id = ''
                     else:
                         print_id = folder_id
-                    
                     print(print_id +" : "+ 'D[0.0kB] : ' + paths_list[-1])
-                    
-                ids_list.append(folder_id)
-                type_list.append(file['mimeType'])
+                
                 return 0
         
         #------------------------------------------Common for both drive and Local---------------------------

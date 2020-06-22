@@ -1187,7 +1187,8 @@ def find(args):
     """
     [syntax when imported / syntax when called via CMD]
 
-    Searched for file and folder names using a query
+    Searched for file and folder names using a query. Also, can be used to get the file path
+    if its id is known.
 
     Parameters
     ----------
@@ -1220,8 +1221,11 @@ def find(args):
         Uses the <query> string to find the file in <parent_name>'s path. '-id' can be used 
         in place of "<query>" to get file path of that id.
 
-    5. find(["<query>", '-path', '<path>'])   /   gd find "<query>" -path <path>
-        Finds the file in <path> specified. If no parent_name specified, default parent is considered.
+    5. find(["<query>", '-fold-path', '<fold_path>'])   /   gd find "<query>" -fold-path <fold_path>
+        Finds the file in folder with <fold_path> specified. If no parent_name specified, default parent is considered.
+
+    5. find(["<query>", '-fold-id', '<fold_id>'])   /   gd find "<query>" -fold-id <fold_id>
+        Finds the file in folder with <fold_id> specified. If no parent_name specified, default parent is considered.
 
     6. find(["<query>", -<tier>]) / gd find "<query>" -<tier>
         Finds the file/folder upto the specified <tier> in the file hierarchy.
@@ -1230,19 +1234,19 @@ def find(args):
 
             '-<int>' / -<int> : if integer, upto that tier
 
-            '-curr' / -curr : Current tier (same as tier = 1)
+            '-curr' / -curr : Current tier (same as tier = 1) (Default)
 
             '-all'  / -all  : all tiers
 
     Additional optional arguements:
-    -path, -<tier>, -id, --path-search
+    -fold-path, -fold-id, -<tier>, -id, --path-search
 
 
     Examples
     ----------
     find(["*.jpg"])                 /   gd find "*.jpg"
 
-    find(["*.*", '-path', 'folder1/folder2'])   /   gd find "*.*" -path folder1/folder2
+    find(["*.*", '-fold-path', 'folder1/folder2'])   /   gd find "*.*" -fold-path folder1/folder2
 
     find(['origin2', '-4', "*.xlsx* and *.csv*"]) /   gd find origin2 -4 "*.xlsx and *.csv"
 
@@ -1274,20 +1278,40 @@ def find(args):
         is_id = True
         file_id = args[-1]
         
-    if '--path-search':
+    if '--path-search' in args:
         path_search = True
         args.remove('--path-search')
 
-    # path input
-    if '-path' in args:
+    # folder path input
+    if '-fold-path' in args:
         try:
-            path_idx = args.index('-path') + 1
+            path_idx = args.index('-fold-path') + 1
             search_folder_path = args.pop(path_idx)
         except:
             print('No path provided.')
+            return
 
-        # removes '-path' from args
+        # removes '-fold-path' from args
         _ = args.pop(path_idx-1)
+
+
+    # folder id input
+    if '-fold-id' in args:
+        try:
+            id_idx = args.index('-fold-id') + 1
+            search_folder_id = args.pop(id_idx)
+        except:
+            print('No id provided.')
+            return
+
+        # removes '-fold-id' from args
+        _ = args.pop(id_idx-1)
+
+        #If both -fold-id and -fold-path are provided:
+        if not search_folder_path is None:
+            print('Both -fold-id and -fold-path are not allowed.')
+            return
+
 
     # tier input
     for iarg in args:
@@ -1333,7 +1357,7 @@ def find(args):
         print(file_path)
         return
 
-    if search_folder_path == None:
+    if search_folder_path == None and search_folder_id == None:
         search_folder_path = parent_path
         search_folder_id = parent_id
 
