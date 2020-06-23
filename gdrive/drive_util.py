@@ -73,7 +73,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
     Returns
     -----------
     paths and path_ids satisfying the query : tuple
-        (paths, path_ids)
+        (list of paths, list of path_ids)
     
     """
     file_type = None
@@ -696,12 +696,12 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                         fname = re.split('[\\\\/]', init_folder_path)[-1]
                         paths_list.append(fname)
                 
-                type_list += ['F']
-                if dynamic_show:
-                    if type(tier) == str:
-                        print('F[{}kB] : '.format(fsize) + paths_list[-1])
-                    else:
-                        print('F[{}kB] : '.format(fsize) + folder_path)
+                    type_list += ['F']
+                    if dynamic_show:
+                        if type(tier) == str:
+                            print('F[{}kB] : '.format(fsize) + paths_list[-1])
+                        else:
+                            print('F[{}kB] : '.format(fsize) + folder_path)
                 
                 return 1
             
@@ -711,13 +711,13 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
                 if type(tier) == str:
                     paths_list.append(folder_path.split(init_folder_path)[-1])
                 
-                type_list += ['D']
-                
-                if dynamic_show:
-                    if type(tier) == str:
-                        print('D[{}kB] : '.format(fsize) + paths_list[-1])
-                    else:
-                        print('D[{}kB] : '.format(fsize) + folder_path)
+                    type_list += ['D']
+                    
+                    if dynamic_show:
+                        if type(tier) == str:
+                            print('D[{}kB] : '.format(fsize) + paths_list[-1])
+                        else:
+                            print('D[{}kB] : '.format(fsize) + folder_path)
                 
                 return 0
             
@@ -836,6 +836,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
     
     if system == 'local':
         init_folder_id = init_folder_path #if system is local
+        ids_list = paths_list
     
     else: #if system is drive
         if init_folder_id == None:
