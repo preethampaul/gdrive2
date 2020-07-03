@@ -1192,10 +1192,10 @@ def download(drive, drive_path=None, drive_path_id=None, download_path=os.getcwd
     """
     print("Fetching ids_list : ",end='')
     
-    paths_list, ids_list, total_count = list_all_contents(drive_path, drive_path_id, drive=drive, dynamic_show=False, tier = 'all', default_root=default_root)
-    
     if drive_path==None and drive_path_id != None:
         drive_path, _ = get_path_from_id(drive, drive_path_id)
+    
+    paths_list, ids_list, total_count = list_all_contents(drive_path, drive_path_id, drive=drive, dynamic_show=False, tier = 'all', default_root=default_root)
     
     count = 1
     print("{} paths found ...".format(total_count))
