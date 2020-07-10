@@ -16,7 +16,7 @@ def isdir(drive, file_id):
     
     Parameters
     -----------------
-    drive : pydrive.GoogleDrive() object
+    drive : pydrive.GoogleDrive() object or None
     file_id : string
         The file_id of file whose mimeType is to be checked
         
@@ -24,22 +24,30 @@ def isdir(drive, file_id):
     ----------------
     Whether dir. or not : bool
         True if it is a directory/folder
-        
-    """
-    file = drive.CreateFile({'id' : file_id})
-    fetchMetadata(file, fields="mimeType")
     
-    if 'folder' in file['mimeType']:
-        return True
-    else:
-        return False
+    Notes
+    ----------------
+    If drive is None, it considers file_ids as a local file file path.
+    """
+    if drive==None:
+    	#If drive is None, that means looking in local system files ids are same as file paths
+    	return os.path.isdir(file_id)
+
+    else:	
+	    file = drive.CreateFile({'id' : file_id})
+	    fetchMetadata(file, fields="mimeType")
+	    
+	    if 'folder' in file['mimeType']:
+	        return True
+	    else:
+	        return False
 
 
 def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=False, default_root=DEFAULT_ROOT):
     """
     Used in gdrive.find function to obtain paths from queries.
     
-    A query includes glob patterns connected by 'and' and/or 'or' operators
+    A query includes fnmatch patterns connected by 'and' and/or 'or' operators
     
     Parameters
     -----------
@@ -54,7 +62,8 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
     tier : string or int
         The tier in the hierarchy of files
     path_search : bool
-        If true, looks for the globs in the files paths instead of filenames in the specified tier
+        If true, looks for the fnmatch in the files paths instead of filenames in the specified tier
+        This is similar to use of ** instead of * in a glob pattern.
     default_root : string (optional)
         The id of the drive.    
     
@@ -74,6 +83,12 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
     -----------
     paths and path_ids satisfying the query : tuple
         (list of paths, list of path_ids)
+
+    
+    Notes
+    -----------
+    If drive is None, it looks for files in the local system.
+
     
     """
     file_type = None
@@ -90,7 +105,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
     path_ind_list = cond_list
     
     #Listing all paths
-    (paths_list, ids_list, count) = list_all_contents(path, init_folder_id=path_id, drive=drive, dynamic_show=False, tier=tier, default_root=default_root)
+    (paths_list, ids_list, _) = list_all_contents(path, init_folder_id=path_id, drive=drive, dynamic_show=False, tier=tier, default_root=default_root)
     full_paths_list = paths_list.copy()
     if not path_search:
         for i, path in enumerate(paths_list):
@@ -147,7 +162,7 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
             j+=1
 
         if is_not:
-            path_ind_list[i] = list(np.array(range(len(paths_list)))[[not (ind in path_ind_list[i]) for ind in range(len(paths_list))]])
+            path_ind_list[i] = np.array(range(len(paths_list)))[[not (ind in path_ind_list[i]) for ind in range(len(paths_list))]]
             is_not = False
             
         #while loop for connecting strings connected by and/or operators

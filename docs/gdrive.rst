@@ -80,7 +80,7 @@ Initilizing/Listing:
 
 Query for gdrive.find:
 *************************
-A query made with glob patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the glob patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. Currently, * is the only wildcard character allowed in the glob patterns. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
+A query made with fnmatch (slighlty different from glob) patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the fnmatch patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
 
 ::
 
@@ -98,6 +98,26 @@ A query made with glob patterns must be passed as a string enclosed by " ". It c
 
   "%d F*T and not *.* and not FART"  -  Seaches for folders starting with F and 
                                         ending with T, but with no extension and not FART.
+
+Fnmatch Wilcard characters:
+*****************************
++--------------+----------------------+
+|   Wildcard   |       Meaning        |
++==============+======================+
+|      *       | matches everything   |
++--------------+----------------------+
+|      ?       | matches any single   |
+|              | character            |
++--------------+----------------------+
+|    [*seq*]   | matches any character|
+|              | in *seq*.            |
++--------------+----------------------+
+|   [!*seq*]   | matches any character|
+|              | not in *seq*.        |
++--------------+----------------------+
+Note that these do not have ** character as in glob patterns. To get the functionality of path search, use *--path-search* arguement
+in **gdrive.find** or **path_search = True** in **gdrive.drive_util.query_to_paths()**.
+
 
 .. currentmodule:: gdrive.gd
 .. autofunction:: cd
