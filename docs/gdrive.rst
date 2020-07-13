@@ -131,12 +131,12 @@ instead of just filenames at in the tier) enabled:
 
   "*.*"								-  Searches files and folders containing '.'
 
-  										1. fruits/hard/apple.jpg
-  										2. fruits/hard/guava.png
-  										3. fruits/soft/grapes.jpg
-  										4. flowers/yellow/sunflower.tiff
-  										5. flowers/red/roses.jpg
-  										6. flowers/red/poppy.png
+										1. fruits/hard/apple.jpg
+										2. fruits/hard/guava.png
+										3. fruits/soft/grapes.jpg
+										4. flowers/yellow/sunflower.tiff
+										5. flowers/red/roses.jpg
+										6. flowers/red/poppy.png
 
 
   "%d f*g and not png"  			-  Seaches for folders starting with f and 
