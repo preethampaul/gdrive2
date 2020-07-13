@@ -2,6 +2,9 @@
 ## What is gdrive?
 
 [![Documentation Status](https://readthedocs.org/projects/gdrive/badge/?version=latest)](https://gdrive.readthedocs.io/en/latest/?badge=latest)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/preethampaul/gdrive/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/preethampaul/gdrive/releases/)
+
 
 gdrive helps users to easily access files from Google Drive using paths, instead of File ids. Google API requires the users to know the File ID to access it, but this package which is built using the pyDrive package allows users to use a file path to access the file or folder.
 
