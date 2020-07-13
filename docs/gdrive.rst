@@ -82,22 +82,69 @@ Query for gdrive.find:
 *************************
 A query made with fnmatch (slighlty different from glob) patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the fnmatch patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
 
+Consider a file hierarchy as shown below for example:
+
 ::
 
-  "*.jpg* and *fruit* or *.tif*"     -  Searches files and folders ending with .jpg 
-                                        and having 'fruit' in title, or files and 
-                                        folders ending with .tif
+	My Drive                                  - - - - - - - tier 1
+	|
+	|___fruits                                - - - - - - - tier 2
+	|      |___hard                           - - - - - - - tier 3
+	|      |     |__apple.jpg                 - - - - - - - tier 4
+	|      |     |__guava.png                 - - - - - - - tier 4
+	|      |
+	|      |___soft                           - - - - - - - tier 3
+	|            |__grapes.jpg                - - - - - - - tier 4
+	|
+	|___flowers                               - - - - - - - tier 2
+	      |___yellow                          - - - - - - - tier 3
+	      |      |__sunflower.tiff            - - - - - - - tier 4
+	      |
+	      |___red                             - - - - - - - tier 3
+	           |__roses.jpg                   - - - - - - - tier 4
+	           |__poppy.png                   - - - - - - - tier 4
 
-  "U* and *Y"                        -  Searches files and folders names which start 
-                                        with U and end with Y.
+For the above drive, following are some examples for the query use for tier = 4 files,
+with *--path-search* option (searches entire paths to the files in the specified tier 
+instead of just filenames at in the tier) enabled:
 
-  "%f U*Y"                           -  Searches files which 
-                                        start with U and end with Y.
+::
 
-  "*.*"                              -  Searches files and folders containing '.'
+  "*.jpg* and *soft* or *.png*"     -  Searches files and folders ending with .jpg 
+                                        and having 'soft' in pathname, or files and 
+                                        folders ending with .png
+  
+                                        1. fruits/soft/grapes.jpg
+                                        2. fruits/hard/guava.png
+                                        3. flowers/red/poppy.png
 
-  "%d F*T and not *.* and not FART"  -  Seaches for folders starting with F and 
-                                        ending with T, but with no extension and not FART.
+  "f* and *f"                       -  Searches files and folders names which start 
+                                        with f and end with f.
+
+                                        1. flowers/yellow/sunflower.tiff
+
+  "%f f*ng"                         -  Searches files which 
+                                        start with f and end with ng.
+
+                                        1. fruits/hard/guava.png
+                                        2. flowers/red/poppy.png
+
+  "*.*"								-  Searches files and folders containing '.'
+
+  										1. fruits/hard/apple.jpg
+  										2. fruits/hard/guava.png
+  										3. fruits/soft/grapes.jpg
+  										4. flowers/yellow/sunflower.tiff
+  										5. flowers/red/roses.jpg
+  										6. flowers/red/poppy.png
+
+
+  "%d f*g and not png"  			-  Seaches for folders starting with f and 
+                                        ending with g, but not png files.
+
+                                        1. fruits/hard/apple.jpg
+  										2. fruits/soft/grapes.jpg
+  										3. flowers/red/roses.jpg
 
 Fnmatch Wilcard characters:
 *****************************

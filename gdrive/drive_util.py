@@ -6,6 +6,7 @@ import re
 from apiclient import errors
 import numpy as np
 import fnmatch
+import shlex
 
 #when my drive is the current drive
 DEFAULT_ROOT = 'root'
@@ -41,7 +42,6 @@ def isdir(drive, file_id):
 	        return True
 	    else:
 	        return False
-
 
 def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=False, default_root=DEFAULT_ROOT):
     """
@@ -91,19 +91,6 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
 
     
     """
-    file_type = None
-    
-    if query.startswith('%f '):
-        file_type = 'f'
-        query = query.strip('%f ')
-    
-    elif query.startswith('%d '):
-        file_type = 'd'
-        query = query.strip('%d ')
-    
-    cond_list = re.split(r"(\Wand\W|\Wor\W)+" ,query)
-    path_ind_list = cond_list
-    
     #Listing all paths
     (paths_list, ids_list, _) = list_all_contents(path, init_folder_id=path_id, drive=drive, dynamic_show=False, tier=tier, default_root=default_root)
     full_paths_list = paths_list.copy()
@@ -111,84 +98,84 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
         for i, path in enumerate(paths_list):
             paths_list[i] = re.split('[/\\\\]', path)[-1]
     
-    i = 0
-    is_not = False #if not is present
-    while i<len(cond_list):
+    #Default file type : anything    
+    file_type = None
+    
+    #Checking if folder
+    if query.startswith('%f '):
+        file_type = 'f'
+        query = query.strip('%f ')
+    #or if a file
+    elif query.startswith('%d '):
+        file_type = 'd'
+        query = query.strip('%d ')
+    
+    #Splitting by 'or' operator
+    query_list = re.split(r"(\Wor\W)+", query)
+    op_list = np.array([])
+    
+    #considering each query_list item separately
+    for iquery in query_list:
+        path_ind_list = shlex.split(iquery)
         
-        if cond_list[i] == ' and ' or cond_list[i] == ' or ':
-            i+=1
-            continue
-        
-        file_cond = cond_list[i]
-        path_ind_list[i] = []
+        is_not = False #whether not is present or not
+        file_cond = path_ind_list[0]
+        path_ind_list[0] = []
         
         #checks if not is present
         if file_cond.startswith('not '):
             file_cond = file_cond.partition('not ')[-1]
             is_not = True
         
+        #if starting and trailing apostrophies are present
         if "\"" in file_cond or "'" in file_cond:
             file_cond = re.split("\"|\'", file_cond)[1]
-        else:
-            file_cond = re.split("\"|\'", file_cond)[0]
         
-        #full match
-        if not '*' in file_cond:
-            for j in range(len(paths_list)):
-                if ((not is_not) and file_cond == paths_list[j]) or (is_not and not file_cond == paths_list[j]):
-                    path_ind_list[i] += [j]
-
-            i += 1
-            is_not = False
-            continue
+        #Matching
+        for j, path_j in enumerate(paths_list):
+            match_found = fnmatch.fnmatch(path_j, file_cond) #fnmatch
+            if (match_found and not is_not) or (is_not and not match_found):
+                path_ind_list[0] += [j]
         
+        is_not = False #resetting not status
         
-        #partial matches using *
-        q_path_list = paths_list.copy()
-        path_ind_list[i] = list(range(len(paths_list)))
-        q_path_len = len(q_path_list)
-        
-        j = 0
-        while j < q_path_len:
-            path_j = q_path_list[j]
-            remove_from_list = not fnmatch.fnmatch(path_j, file_cond)
-
-            if remove_from_list:
-                _ = q_path_list.pop(j)
-                _ = path_ind_list[i].pop(j)
-                q_path_len -= 1
-                continue
-
-            j+=1
-
-        if is_not:
-            path_ind_list[i] = np.array(range(len(paths_list)))[[not (ind in path_ind_list[i]) for ind in range(len(paths_list))]]
-            is_not = False
-            
-        #while loop for connecting strings connected by and/or operators
-        i+=1
-    
-    #logic operation
-    op = None
-    op_list = np.array([])
-    
-    for ii in path_ind_list:
-        if type(ii) == str:
-            op = ii
-            continue
-        
-        if len(op_list)==0:
-            op_list = np.array(ii)
-            continue
-        
-        if 'and' in op:
-            op_list = op_list[ [ind in ii for ind in op_list] ]
-        
-        elif 'or' in op:
-            op_list = np.unique(np.concatenate((op_list, ii)))
-            
+        #'and' logic operation
         op = None
+        op_list_i = path_ind_list[0]
+        
+        if len(path_ind_list)>1:
+            
+            for ii in path_ind_list[1:]:
+                
+                if ii == 'and' and op == None:
+                    op = 'and'
+                    continue
+                
+                file_cond = ii
+                #checks if not is present
+                if file_cond.startswith('not '):
+                    file_cond = file_cond.partition('not ')[-1]
+                    is_not = True
+        
+                if 'and' in op:
+                    j = 0
+                    while j<len(op_list_i):
+                        match_found = fnmatch.fnmatch(paths_list[op_list_i[j]], ii)
+                        if (match_found and is_not) or ((not match_found) and not is_not):
+                            _ = op_list_i.pop(j)
+                            continue
+                        j+=1
+                    op = None
+                
+                is_not = False #resetting is_not value
+            
+        #'or' logic operation
+        if len(op_list)==0:
+            op_list = np.array(op_list_i)
+        else:
+            op_list = np.unique(np.concatenate((op_list, op_list_i))).astype(int)
     
+    #Return empty lists if no query matched
     if len(op_list)==0:
         return ([], [])
     
