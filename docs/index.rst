@@ -14,7 +14,7 @@ to access the file or folder.
 
 In addition to this, the package also provides commands that can be called from a terminal,
 like ``cd``, ``ls``, ``pull`` or ``push``, to quickly view, modify, download or upload files from or to Google drive using
-a python code or just the command line.
+a python code or just the command line. pyDrive package is used to build this.
 
 Getting Started
 ***********************
@@ -27,16 +27,7 @@ Use the following command to install the package.
 
 Requirements
 #######################
-First of all, pyDrive library is required for this. To install Pydrive, use any one of these commands.
-::
-	pip install PyDrive
-
-
-::
-
-	conda install -c conda-forge pydrive
-
-In addition to this, a client secrets file is required. The instructions are provided in pydrive `Quickstart guide <https://pythonhosted.org/PyDrive/quickstart.html>`_, but are shown here again:
+A client secrets file is required for authentication. The instructions to create a client secrets file are provided in pydrive `Quickstart guide <https://pythonhosted.org/PyDrive/quickstart.html>`_, but are shown here again:
 
 To use Google Drive API, an application has to be created using the `Google Cloud Console <https://console.cloud.google.com>`_. To obtain a client secrets file, create an application as shown below.
 
