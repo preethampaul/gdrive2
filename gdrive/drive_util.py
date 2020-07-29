@@ -46,7 +46,6 @@ def isdir(drive, file_id):
 def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=False, default_root=DEFAULT_ROOT):
     """
     Used in gdrive.find function to obtain paths from queries.
-    
     A query includes fnmatch patterns connected by 'and' and/or 'or' operators
     
     Parameters
@@ -117,27 +116,28 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
     #considering each query_list item separately
     for iquery in query_list:
         path_ind_list = shlex.split(iquery)
-        
-        is_not = False #whether not is present or not
-        file_cond = path_ind_list[0]
-        path_ind_list[0] = []
+        is_not = False               # assume no 'not' is present
+        file_cond = path_ind_list[0] # initial condition
+        path_ind_list[0] = []        # empty that location in path_ind_list
         
         #checks if not is present
-        if file_cond.startswith('not '):
-            file_cond = file_cond.partition('not ')[-1]
+        if file_cond == 'not':
+            _ = path_ind_list.pop(0) #remove not's location in list
+            file_cond = path_ind_list[0] #set the next element as initial condition
+            path_ind_list[0] = []       #empty that location
             is_not = True
         
-        #if starting and trailing apostrophies are present
+        #if starting and trailing apostrophies are present, remove them
         if "\"" in file_cond or "'" in file_cond:
             file_cond = re.split("\"|\'", file_cond)[1]
         
-        #Matching
+        #Matching the first condition
         for j, path_j in enumerate(paths_list):
             match_found = fnmatch.fnmatch(path_j, file_cond) #fnmatch
             if (match_found and not is_not) or (is_not and not match_found):
                 path_ind_list[0] += [j]
         
-        is_not = False #resetting not status
+        is_not = False #resetting 'not' status
         
         #'and' logic operation
         op = None
@@ -151,13 +151,12 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
                     op = 'and'
                     continue
                 
-                file_cond = ii
                 #checks if not is present
-                if file_cond.startswith('not '):
-                    file_cond = file_cond.partition('not ')[-1]
-                    is_not = True
+                if ii == 'not' and op == 'and':
+                    is_not = not is_not
+                    continue
         
-                if 'and' in op:
+                if op == 'and':
                     j = 0
                     while j<len(op_list_i):
                         match_found = fnmatch.fnmatch(paths_list[op_list_i[j]], ii)
@@ -210,7 +209,6 @@ def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=Fal
         count+=1
     
     return (full_paths_list, ids_list)
-    
     
 
 def parse_drive_path(path, drive, parent_id, default_root=DEFAULT_ROOT):

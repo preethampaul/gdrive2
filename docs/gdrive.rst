@@ -80,7 +80,7 @@ Initilizing/Listing:
 
 Query for gdrive.find:
 *************************
-A query made with fnmatch (slighlty different from glob) patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the fnmatch patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. See examples below:
+A query made with `fnmatch <https://docs.python.org/3/library/fnmatch.html>`_ (slighlty different from glob) patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the fnmatch patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. In the and-separated query, the first string (after %f, %d or not, if present) sets the initial list of paths. The latter strings or conditions connected by 'and' to the previous one must lead to a subset of paths of the previous list. For the conditions connected by 'or', they are evaluated separately and the final list is the union of the sets obtained from individual condition evaluations. See examples below:
 
 Consider a file hierarchy as shown below for example:
 
