@@ -30,6 +30,6 @@ setuptools.setup(
     "" : ["gd"],
     },
     install_requires=[
-        'PyDrive>=1.3.1'
+        'PyDrive>=1.3.1',
     ]
 )
