@@ -1,7 +1,7 @@
 
 import os
 
-VERSION = '0.6.8'
+VERSION = '0.7.0'
 #Deafult info during initialization
 DEFAULT_INFO = {
         'default_parent' : 'origin',
