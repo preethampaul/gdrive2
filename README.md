@@ -11,7 +11,7 @@ gdrive2 helps users to easily access files from Google Drive using paths, instea
 In addition to this, the package also provides commands that can be called from a terminal, like cd, ls, pull or push, to quickly view, modify, download or upload files from or to Google drive using a python code or just the command line.
 
 ## Setup:
-<pre>pip install -i https://test.pypi.org/simple/ gdrive2</pre>
+<pre>pip install gdrive2</pre>
 
 ## Documentation:
 For more details about **setup** and **commands**, check [gdrive2.readthedocs.io](https://gdrive2.readthedocs.io).

@@ -23,7 +23,7 @@ Setup
 Use the following command to install the package.
 (The package is still under testing)
 ::
-	pip install -i https://test.pypi.org/simple/ gdrive2
+	pip install gdrive2
 
 Requirements
 #######################
@@ -362,7 +362,7 @@ For updating gdrive2:
 
 ::
 
-	pip install -i https://test.pypi.org/simple/ gdrive2 -U 
+	pip install gdrive2 -U 
 
 For uninstalling gdrive2:
 
