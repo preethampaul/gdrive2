@@ -1,23 +1,23 @@
-gdrive Functions and Commands
+gdrive2 Functions and Commands
 ==============
 
 The following submodules are present in the package:
 ::
 
-   gdrive
+   gdrive2
    |_______gd
    |_______drive_util
    |_______auth_util
    |_______paths
 
-The main module that is automatically imported when gdrive is imported is **gdrive.gd**.Other modules are utility modules, whose functions are used in **gd**. **paths** module only contains file paths which are imported as constants in other modules.
+The main module that is automatically imported when gdrive2 is imported is **gdrive2.gd**.Other modules are utility modules, whose functions are used in **gd**. **paths** module only contains file paths which are imported as constants in other modules.
 
-gdrive.gd module
+gdrive2.gd module
 ####################
 
-This module need not be imported explicilty and is imported automatically when gdrive is imported.
+This module need not be imported explicilty and is imported automatically when gdrive2 is imported.
 All the commands and the functions that can be readily used are from this module. The following command gives the list of commands callable.
-From python console, **gdrive.help()** can be used.
+From python console, **gdrive2.help()** can be used.
 ::
 
    $ gd -h
@@ -29,7 +29,7 @@ From python console, **gdrive.help()** can be used.
 
    Overview of initializing/listing fucnctions:
   --------------------------------
-  'init'   : initialize gdrive, add new parents to initialized dir., add new clients
+  'init'   : initialize gdrive2, add new parents to initialized dir., add new clients
   'status' : show parents list, show stage list, show users and clients list
   'reset'  : changes default parent, client secrets
              changes parent information like user_names, paths, root folders (Ex: shared drives), clients
@@ -49,7 +49,7 @@ From python console, **gdrive.help()** can be used.
    Miscelleneous functions:
    ---------------------------------
    'help'   : Shows the list of functions or commands available
-   'rmgd'   : Removes the gd file created by importing gdrive
+   'rmgd'   : Removes the gd file created by importing gdrive2
    'default' : Brings the package to its default state (removes all clients, auth. data and the gd commandline functionality)
    'version' : Prints the current version
 
@@ -63,22 +63,22 @@ From python console, **gdrive.help()** can be used.
 
 Initilizing/Listing:
 -----------------------
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: init
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: status
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: reset
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: ls
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: find
 
-Query for gdrive.find:
+Query for gdrive2.find:
 *************************
 A query made with `fnmatch <https://docs.python.org/3/library/fnmatch.html>`_ (slighlty different from glob) patterns must be passed as a string enclosed by " ". It can have only the following logical operators - **and**, **or** and **not**. All the fnmatch patterns and the operators must be separated by **spaces** as shown in examples below. **not** operates on the immediately following pattern. Similarly, **and** and **or** operates on the following pattern or on the result of a **not** operation. To search for only files, append **%f** in the beginning of the query and for only folders, append **%d**. In the and-separated query, the first string (after %f, %d or not, if present) sets the initial list of paths. The latter strings or conditions connected by 'and' to the previous one must lead to a subset of paths of the previous list. For the conditions connected by 'or', they are evaluated separately and the final list is the union of the sets obtained from individual condition evaluations. See examples below:
 
@@ -163,60 +163,60 @@ Fnmatch Wilcard characters:
 |              | not in *seq*.        |
 +--------------+----------------------+
 Note that these do not have ** character as in glob patterns. To get the functionality of path search, use *--path-search* arguement
-in **gdrive.find** or **path_search = True** in **gdrive.drive_util.query_to_paths()**.
+in **gdrive2.find** or **path_search = True** in **gdrive2.drive_util.query_to_paths()**.
 
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: cd
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: mkdir
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: rm
 
 Upload/Download:
 --------------------
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: add
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: push
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: pull
 
 Miscellaneous:
 --------------------
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: help
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: rmgd
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: default
 
-.. currentmodule:: gdrive.gd
+.. currentmodule:: gdrive2.gd
 .. autofunction:: version
 
 
-gdrive.drive\_util module
+gdrive2.drive\_util module
 ####################
 
-These functions are utility functions which are used in gd to control files in gdrive. The functions here take pyDrive.GoogleDrive() object as an arguement to do this.
+These functions are utility functions which are used in gd to control files in gdrive2. The functions here take pyDrive.GoogleDrive() object as an arguement to do this.
 
-.. automodule:: gdrive.drive_util
+.. automodule:: gdrive2.drive_util
    :members:
    :undoc-members:
    :show-inheritance:
 
-gdrive.auth\_util module
+gdrive2.auth\_util module
 ####################
 
 This module contains functions which are responsible for managing the pyDrive.GoogleAuth() object. The functions here are used in gd to authenticate users, check for username cedentials and adding client files on the system.
 
-.. automodule:: gdrive.auth_util
+.. automodule:: gdrive2.auth_util
    :members:
    :undoc-members:
    :show-inheritance:

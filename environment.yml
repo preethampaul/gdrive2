@@ -1,4 +1,4 @@
-name: gdrive
+name: gdrive2
 channels:
   - defaults
 dependencies:

@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import setuptools
-from gdrive.paths import VERSION
+from gdrive2.paths import VERSION
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="gdrive",
+    name="gdrive2",
     version=VERSION,
     author="Preetham Paul",
     author_email="preeth@uw.edu",
     description="File management tools for Google Drive based on PyDrive",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/preethampaul/gdrive",
+    url="https://github.com/preethampaul/gdrive2",
     project_urls={
-    	"Documentation" : "https://gdrive.readthedocs.io"
+    	"Documentation" : "https://gdrive2.readthedocs.io"
     },
     packages=setuptools.find_packages(),
     classifiers=[

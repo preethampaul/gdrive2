@@ -1,13 +1,13 @@
-gdrive Documentation
+gdrive2 Documentation
 ==================================
 
 Github
 **********************
-The code is available `here <https://github.com/preethampaul/gdrive>`_
+The code is available `here <https://github.com/preethampaul/gdrive2>`_
 
-What is gdrive?
+What is gdrive2?
 ***********************
-gdrive helps users to easily access files from Google Drive using paths, instead of File ids.
+gdrive2 helps users to easily access files from Google Drive using paths, instead of File ids.
 Google API requires the users to know the File ID to access it, but this package which is built
 using the `pyDrive <https://github.com/gsuitedevs/PyDrive>`_ package allows users to use a *file path*
 to access the file or folder.
@@ -23,7 +23,7 @@ Setup
 Use the following command to install the package.
 (The package is still under testing)
 ::
-	pip install -i https://test.pypi.org/simple/ gdrive
+	pip install -i https://test.pypi.org/simple/ gdrive2
 
 Requirements
 #######################
@@ -54,34 +54,34 @@ This file can be renamed to some simple name and save on the local computer.
 
 Quickstart
 ###########################
-gdrive can be used as a python package right away, but try the following steps to be able to use gdrive's functions directly from terminal.
-First, import the gdrive in a python console.::
+gdrive2 can be used as a python package right away, but try the following steps to be able to use gdrive2's functions directly from terminal.
+First, import the gdrive2 in a python console.::
 	$ python
-	>> import gdrive
-	>> gdrive.ROOT_PATH
+	>> import gdrive2
+	>> gdrive2.ROOT_PATH
 
-**ROOT_PATH** is the local system path to the gdrive package. Add this path to the **PATH** environment variable.
+**ROOT_PATH** is the local system path to the gdrive2 package. Add this path to the **PATH** environment variable.
 Now, `gd` can be used as a command in command prompt or bash shell.
 
 Quickdemo 1 : Basics
 ###########################
-Lets see how gdrive can be used from command line.
+Lets see how gdrive2 can be used from command line.
 
 Open terminal and set some folder where you intend to download or from where you intend to upload files.
 ::
 	gd init
 
 When asked for a username, this is not same as the google username. More about this explained in the *username* documentation.
-Enter some nickname (for example, *mygdrive*) you would like to give to your google account, so that you can use this for quick authentication into your account in future.
+Enter some nickname (for example, *mygdrive2*) you would like to give to your google account, so that you can use this for quick authentication into your account in future.
 This should take you to a Oauth Consent screen, where you'll be asked to enter your Google username and password. You are good, if you see this a html page showing this::
 	The authentication is successful.
 
-Once authentication is done, from the current working folder, you can try several gdrive commands. Just like `git`, gdrive also creates a hidden folder **.gd** which contains information about the fileIDs, driveIDs etc. More about this explained in the *parents* documentation.
+Once authentication is done, from the current working folder, you can try several gdrive2 commands. Just like `git`, gdrive2 also creates a hidden folder **.gd** which contains information about the fileIDs, driveIDs etc. More about this explained in the *parents* documentation.
 
 .. warning::
     After authentication of a new account, the credentials are stored in **ROOT_PATH/api_data** folder. The contents of this folder must be handled with discretion.
 
-After, initialization and authentication, you can use all the gdrive commands from this directory.
+After, initialization and authentication, you can use all the gdrive2 commands from this directory.
 
 :: 
 
@@ -94,7 +94,7 @@ After, initialization and authentication, you can use all the gdrive commands fr
 	Parent dicts :
 	---------------
 	// origin // <DEFAULT>
-	username : mygdrive
+	username : mygdrive2
 	path     : ''
 	id       : 'root'
 	drive    : 'My Drive'
@@ -165,7 +165,7 @@ This is how the paths can be simply used to get the file contents. Now, I'll cha
 	Parent dicts :
 	---------------
 	// origin // <DEFAULT>
-	username : mygdrive
+	username : mygdrive2
 	path     : 'fruits/hard'
 	id       : '34eWf..iT23'
 	drive    : 'My Drive'
@@ -216,7 +216,7 @@ All these commands can be used in a python script as shown below. The only diffe
 
 ::
 
-	>> import gdrive as gd
+	>> import gdrive2 as gd
 	>> 
 	>> gd.init([])
 	>> gd.status([])
@@ -225,7 +225,7 @@ All these commands can be used in a python script as shown below. The only diffe
 
 Quickdemo 4 : Query search of filenames in drive
 #######################################################
-A query can be used to search for files in the parent path or a user-specified path using `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function.
+A query can be used to search for files in the parent path or a user-specified path using `gdrive2.find() <https://gdrive2.readthedocs.io/en/latest/gdrive2.html#gdrive2.gd.find>`_ function.
 
 The example command here searches for all png files that start with g.
 
@@ -239,7 +239,7 @@ The example command here searches for all png files that start with g.
 	34efd...rtW : guava.png
 
 
-For more information, see `gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#gdrive.gd.find>`_ function and the `Query for gdrive.find() <https://gdrive.readthedocs.io/en/latest/gdrive.html#query-for-gdrive-find>`_ section below it.
+For more information, see `gdrive2.find() <https://gdrive2.readthedocs.io/en/latest/gdrive2.html#gdrive2.gd.find>`_ function and the `Query for gdrive2.find() <https://gdrive2.readthedocs.io/en/latest/gdrive2.html#query-for-gdrive2-find>`_ section below it.
 
 
 Data Structuring
@@ -343,34 +343,34 @@ client_name
 
 A client secrets (app credentials) file can be created on `Google Cloud Console <https://console.cloud.google.com>`_ as shown in :ref:`Requirements`.
 Once credentials are created, they can be downloaded as a **.json** file with the name **client_secrets<some_long_id>.json**.
-This file can be renamed as <**client_name**>.json and can be used to access parent_path. If gdrive is being used for the time, it asks the user to show the file location of a client secrets file and creates a default file - **client_secrets.json**. Later, more such files can be added with different **client_names** as <client_name1>.json, <someother_user_specified_name>.json etc. Each parent can be assigned a **client_name** different from the default name - **client_secrets**.
+This file can be renamed as <**client_name**>.json and can be used to access parent_path. If gdrive2 is being used for the time, it asks the user to show the file location of a client secrets file and creates a default file - **client_secrets.json**. Later, more such files can be added with different **client_names** as <client_name1>.json, <someother_user_specified_name>.json etc. Each parent can be assigned a **client_name** different from the default name - **client_secrets**.
 
 Functions
 ***************************
 .. toctree::
    :maxdepth: 2
    
-   gdrive
+   gdrive2
 
 * :ref:`genindex`
 * :ref:`search`
 
-Update/uninstall gdrive
+Update/uninstall gdrive2
 ***********************
 
-For updating gdrive:
+For updating gdrive2:
 
 ::
 
-	pip install -i https://test.pypi.org/simple/ gdrive -U 
+	pip install -i https://test.pypi.org/simple/ gdrive2 -U 
 
-For uninstalling gdrive:
+For uninstalling gdrive2:
 
 ::
 
-	pip uninstall gdrive
+	pip uninstall gdrive2
 
-To remove the authentication data saved, use this before uninstalling gdrive:
+To remove the authentication data saved, use this before uninstalling gdrive2:
 
 ::
 
@@ -387,4 +387,4 @@ Conditions for using the package
 
 Note that the root folder (which is **My Drive** in this case), must not be passed in the path. The information of the root folder is included in the **drive_id** of the parent.
 
-2. As much as possible, try to avoid having more than one folder with the same name in the same folder. Some functions like gdrive.gd.find() might work, but others may not. Most functions throw an error when they find more than one file or folder with same name in the same folder.
+2. As much as possible, try to avoid having more than one folder with the same name in the same folder. Some functions like gdrive2.gd.find() might work, but others may not. Most functions throw an error when they find more than one file or folder with same name in the same folder.

@@ -45,7 +45,7 @@ def isdir(drive, file_id):
 
 def query_to_paths(drive, query, path, path_id=None, tier='all', path_search=False, default_root=DEFAULT_ROOT):
     """
-    Used in gdrive.find function to obtain paths from queries.
+    Used in gdrive2.find function to obtain paths from queries.
     A query includes fnmatch patterns connected by 'and' and/or 'or' operators
     
     Parameters
@@ -644,7 +644,7 @@ def list_all_contents(init_folder_path, init_folder_id=None, drive=None,
     contnets of the folder : tuple
         a tuple of 3 **(or 4)** elements
             (the paths_list with the relative paths, 
-            the list of ids of contents if used for GDrive (same as paths_list for drive = None),
+            the list of ids of contents if used for gdrive2 (same as paths_list for drive = None),
             **the list of file_types (included only if get_types = True),**
             total_count = the number of 'non-folder' items in the folder at folder_path)
         

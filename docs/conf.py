@@ -14,11 +14,11 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
-from gdrive.paths import VERSION
+from gdrive2.paths import VERSION
 
 # -- Project information -----------------------------------------------------
 
-project = 'gdrive'
+project = 'gdrive2'
 copyright = '2020, Preetham Paul'
 author = 'Preetham Paul'
 

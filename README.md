@@ -1,47 +1,47 @@
-# **gdrive**
-## What is gdrive?
+# **gdrive2**
+## What is gdrive2?
 
-[![Documentation Status](https://readthedocs.org/projects/gdrive/badge/?version=latest)](https://gdrive.readthedocs.io/en/latest/?badge=latest)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/preethampaul/gdrive/blob/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/preethampaul/gdrive/releases/)
+[![Documentation Status](https://readthedocs.org/projects/gdrive2/badge/?version=latest)](https://gdrive2.readthedocs.io/en/latest/?badge=latest)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/preethampaul/gdrive2/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/preethampaul/gdrive2/releases/)
 
 
-gdrive helps users to easily access files from Google Drive using paths, instead of File ids. Google API requires the users to know the File ID to access it, but this package which is built using the pyDrive package allows users to use a file path to access the file or folder.
+gdrive2 helps users to easily access files from Google Drive using paths, instead of File ids. Google API requires the users to know the File ID to access it, but this package which is built using the pyDrive package allows users to use a file path to access the file or folder.
 
 In addition to this, the package also provides commands that can be called from a terminal, like cd, ls, pull or push, to quickly view, modify, download or upload files from or to Google drive using a python code or just the command line.
 
 ## Setup:
-<pre>pip install -i https://test.pypi.org/simple/ gdrive</pre>
+<pre>pip install -i https://test.pypi.org/simple/ gdrive2</pre>
 
 ## Documentation:
-For more details about **setup** and **commands**, check [gdrive.readthedocs.io](https://gdrive.readthedocs.io).
+For more details about **setup** and **commands**, check [gdrive2.readthedocs.io](https://gdrive2.readthedocs.io).
 
 ### Quickdemo 1 : Basics
 
-Lets see how gdrive can be used from command line.
+Lets see how gdrive2 can be used from command line.
 
 Open terminal and set some folder where you intend to download or from where you intend to upload files.
 
 <pre><code>$ gd init</code></pre>
   
 When asked for a username, this is not same as the google username. More about this explained in the *username* documentation.
-Enter some nickname (for example, ***mygdrive***) you would like to give to your google account, so that you can use this for quick authentication into your account in future.
+Enter some nickname (for example, ***mygdrive2***) you would like to give to your google account, so that you can use this for quick authentication into your account in future.
 This should take you to a Oauth Consent screen, where you'll be asked to enter your Google username and password. You are good, if you see this a html page showing this.
 
 >  The authentication is successful.
 
-Once authentication is done, from the current working folder, you can try several gdrive commands. Just like `git`, gdrive also creates a hidden folder **.gd** which contains information about the fileIDs, driveIDs etc. More about this explained in the *parents* documentation.
+Once authentication is done, from the current working folder, you can try several gdrive2 commands. Just like `git`, gdrive2 also creates a hidden folder **.gd** which contains information about the fileIDs, driveIDs etc. More about this explained in the *parents* documentation.
 
 > :warning: After authentication of a new account, the credentials are stored in **ROOT_PATH/api_data** folder. The contents of this folder must be handled with discretion.
 
-After, initialization and authentication, you can use all the gdrive commands from this directory.
+After, initialization and authentication, you can use all the gdrive2 commands from this directory.
 
 <pre><code>$ gd status
 ---------------
 Parent dicts :
 ---------------
 // origin // <DEFAULT>
-username : mygdrive
+username : mygdrive2
 path     : ''
 id       : 'root'
 drive    : 'My Drive'
@@ -100,7 +100,7 @@ $ gd status
 Parent dicts :
 ---------------
 // origin // <DEFAULT>
-username : mygdrive
+username : mygdrive2
 path     : 'fruits/hard'
 id       : '34eWf..iT23'
 drive    : 'My Drive'
@@ -142,13 +142,13 @@ Once a parent is added (say, origin2), we can assign different parameters (like 
 
 All these commands can be used in a python script as shown below. The only difference from the terminal commands is that apart from the main function (init, status, etc), the optional arguements must be passed as strings in a list. If there is no arguements, an empty list must be passed in the function.
 
-<pre><code>>> import gdrive as gd
+<pre><code>>> import gdrive2 as gd
 >> 
 >> gd.init([])
 >> gd.status([])
 >> gd.add(['berry.jpg', 'mango.jpg'])</code></pre>
 
-For more details, check [gdrive.readthedocs.io](https://gdrive.readthedocs.io)
+For more details, check [gdrive2.readthedocs.io](https://gdrive2.readthedocs.io)
 
 
 #### Please post issues here or email me at preeth@uw.edu

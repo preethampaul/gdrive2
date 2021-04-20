@@ -18,7 +18,7 @@ else:
     from .auth_util import *
     from .drive_util import *
 
-# Important objects for gdrive
+# Important objects for gdrive2
 gauth = GoogleAuth()  # for authentication
 drive = GoogleDrive(gauth)  # for drive utilities
 
@@ -43,7 +43,7 @@ help_text = "\n\
 <args> = arguements\n\n\
 Overview of initializing/listing fucnctions:\n\
 --------------------------------\n\
-'init'   : initialize gdrive, add new parents to initialized dir., add new clients\n\
+'init'   : initialize gdrive2, add new parents to initialized dir., add new clients\n\
 'status' : show parents list, show stage list, show users and clients list\n\
 'reset'  : changes default parent, client secrets\n\
            changes parent information like user_names, paths, root folders (Ex: shared drives), clients\n\
@@ -67,7 +67,7 @@ Miscelleneous functions:\n\
 'version' : Prints the current version\n\
 \n\
 Use '-h' / -h  or '-help' / -help to see help about a function/command.\n\
-Example: gdrive.init(['-h']) / gd init -h\n"
+Example: gdrive2.init(['-h']) / gd init -h\n"
 
 # ---------------------------------------------------------------------------------------
 # UTILITY-FUNCTIONS
@@ -129,7 +129,7 @@ def check_user_name(user_name=None):
 
     if not exists_bool:
         if not check_only:
-            print('New gdrive account registered.')
+            print('New gdrive2 account registered.')
 
     return user_name, exists_bool
 
@@ -366,7 +366,7 @@ def init(args):
     if len(info) == 0:
 
         if not len(args) == 0:
-            print('gdrive not initialized in this folder. Try command : gd init')
+            print('gdrive2 not initialized in this folder. Try command : gd init')
             return
 
         create_info(info)
@@ -458,7 +458,7 @@ def reset(args):
     if not ('-user' in args or '-client' in args):
 
         if len(info) == 0:
-            print('gdrive not initialized in this folder. Try command : gd init')
+            print('gdrive2 not initialized in this folder. Try command : gd init')
             return
 
         parents_list = list(info.keys())
@@ -478,7 +478,7 @@ def reset(args):
         if parent_name == '-user':
 
             if not os.path.exists(CRED_MAP_PATH):
-                print("No gdrive credentials found on this system.")
+                print("No gdrive2 credentials found on this system.")
                 return
 
             if len(args) == 2:
@@ -487,7 +487,7 @@ def reset(args):
 
                 if user_name == '-a':
                     prompt = input(
-                        "This removes 'all' authentication data of gdrive accounts stored in this system. Continue? [y/n]")
+                        "This removes 'all' authentication data of gdrive2 accounts stored in this system. Continue? [y/n]")
                     if prompt == 'y':
                         file_list = os.listdir(CREDS_DIR)
                         file_list.remove(CLIENT_FOLDER)
@@ -1038,7 +1038,7 @@ def ls(args):
     if '-users' in args:
 
         if not os.path.exists(CRED_MAP_PATH):
-            print("No gdrive credentials found on this system.")
+            print("No gdrive2 credentials found on this system.")
             return
 
         with open(CRED_MAP_PATH, 'r') as file:
@@ -2109,7 +2109,7 @@ def default(args):
 
 
 def version(args):
-    """prints the current version of gdrive"""
+    """prints the current version of gdrive2"""
     print(VERSION)
 
 

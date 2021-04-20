@@ -1,8 +1,8 @@
 
 # Do not push confidential secrets data
-gdrive/api_data
+gdrive2/api_data
 pypi_push.ssh
-gdrive/gd
+gdrive2/gd
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
